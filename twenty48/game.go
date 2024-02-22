@@ -32,7 +32,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Hello, World!")
 	screen.Fill(getColor(BEIGE))
 	g.board.drawBoard(screen)
-	m.DrawInput(screen)
+	m.DrawInput()
 
 }
 
