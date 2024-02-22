@@ -24,6 +24,7 @@ func NewBoard() (*Board, error) {
 	for i := 0; i < 2; i++ {
 		b.randomNewPiece()
 	}
+	fmt.Println(b.board)
 
 	return b, nil
 }
@@ -46,16 +47,16 @@ func (b *Board) randomNewPiece() {
 
 func (b *Board) drawBoard(screen *ebiten.Image) {
 	var start_pos_x, start_pos_y float32 = 0, 0
-	for x := 0; x < len(b.board); x++ {
-		for y := 0; y < len(b.board[0]); y++ {
+	for y := 0; y < len(b.board); y++ {
+		for x := 0; x < len(b.board[0]); x++ {
 			// border
 			vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE, start_pos_y+float32(y)*TILESIZE,
 				float32(TILESIZE)+BORDERSIZE*2, float32(TILESIZE)+BORDERSIZE*2, color.RGBA{200, 200, 200, 255}, false)
 			// inner
 			vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE+BORDERSIZE, start_pos_y+float32(y)*TILESIZE+BORDERSIZE,
 				float32(TILESIZE), float32(TILESIZE), color.RGBA{255, 255, 255, 255}, false)
-			if b.board[x][y] != 0 {
-				text.Draw(screen, fmt.Sprintf("%v", b.board[x][y]), mplusNormalFont, int(start_pos_x+float32(x)*TILESIZE+BORDERSIZE+10), int(start_pos_y+float32(y)*TILESIZE+BORDERSIZE)+int(TILESIZE-10),
+			if b.board[y][x] != 0 {
+				text.Draw(screen, fmt.Sprintf("%v", b.board[y][x]), mplusNormalFont, int(start_pos_x+float32(x)*TILESIZE+BORDERSIZE+10), int(start_pos_y+float32(y)*TILESIZE+BORDERSIZE)+int(TILESIZE-10),
 					color.Black)
 			}
 		}

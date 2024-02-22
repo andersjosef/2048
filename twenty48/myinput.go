@@ -16,8 +16,32 @@ var m = &MyInput{
 	keyIsBeingPressed: false,
 }
 
-func (m *MyInput) UpdateInput() error {
+func (m *MyInput) UpdateInput(b *Board) error {
 	m.keys = inpututil.AppendPressedKeys(m.keys[:0])
+	if len(m.keys) > 0 {
+		if !m.keyIsBeingPressed {
+			m.keyIsBeingPressed = true
+			key_pressed := m.keys[len(m.keys)-1]
+			// fmt.Println(key_pressed)
+			switch fmt.Sprintf("%v", key_pressed) {
+			case "D", "ArrowRight": // right@
+				b.moveRight()
+				fmt.Println("right")
+			case "A", "ArrowLeft": // left
+				b.moveLeft()
+				fmt.Println("left")
+			case "W", "ArrowUp":
+				b.moveUp()
+				fmt.Println("up")
+			case "S", "ArrowDown":
+				b.moveDown()
+				fmt.Println("down")
+			}
+			b.randomNewPiece()
+		}
+	} else {
+		m.keyIsBeingPressed = false
+	}
 	return nil
 }
 
@@ -36,24 +60,6 @@ func (m *MyInput) UpdateInput() error {
 // 	text.Draw(screen, strings.Join(keyStrs, ", ")+"\n"+strings.Join(keyNames, ", "), mplusBigFont, 4, 12, color.Black)
 // }
 
-func (m *MyInput) DrawInput() {
-	if len(m.keys) > 0 {
-		if !m.keyIsBeingPressed {
-			m.keyIsBeingPressed = true
-			key_pressed := m.keys[len(m.keys)-1]
-			// fmt.Println(key_pressed)
-			switch fmt.Sprintf("%v", key_pressed) {
-			case "D", "ArrowRight": // right
-				fmt.Println("right")
-			case "A", "ArrowLeft": // left
-				fmt.Println("left")
-			case "W", "ArrowUp":
-				fmt.Println("up")
-			case "S", "ArrowDown":
-				fmt.Println("down")
-			}
-		}
-	} else {
-		m.keyIsBeingPressed = false
-	}
-}
+// func (m *MyInput) DrawInput(b *Board) {
+
+// }

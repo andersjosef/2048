@@ -33,3 +33,49 @@ func TestAddTwoRandom(t *testing.T) {
 		t.Fatalf(`less than two pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
 	}
 }
+
+func TestMoveLeft(t *testing.T) {
+	board := Board{}
+
+	board.board = [4][4]int{
+		{2, 2, 0, 0},
+		{0, 2, 0, 0},
+		{0, 0, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want := [4][4]int{
+		{4, 0, 0, 0},
+		{2, 0, 0, 0},
+		{2, 0, 0, 0},
+		{2, 0, 0, 0},
+	}
+
+	board.moveLeft()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+
+}
+
+func TestMoveUp(t *testing.T) {
+	board := Board{}
+
+	board.board = [4][4]int{
+		{2, 2, 0, 0},
+		{0, 2, 0, 0},
+		{0, 0, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want := [4][4]int{
+		{2, 4, 2, 2},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+	}
+
+	board.moveUp()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+
+}

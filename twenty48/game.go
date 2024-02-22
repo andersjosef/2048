@@ -24,7 +24,7 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) Update() error {
-	m.UpdateInput()
+	m.UpdateInput(g.board)
 	return nil
 }
 
@@ -32,7 +32,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Hello, World!")
 	screen.Fill(getColor(BEIGE))
 	g.board.drawBoard(screen)
-	m.DrawInput()
+	// m.DrawInput(g.board)
 
 }
 
