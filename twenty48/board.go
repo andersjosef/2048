@@ -1,10 +1,12 @@
 package twenty48
 
 import (
+	"fmt"
 	"image/color"
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
@@ -32,10 +34,11 @@ func (b *Board) randomNewPiece() {
 	var posFound bool = false
 	var count int
 
-	for !posFound && count < x*y {
+	for !posFound && (count < x*y) {
 		var pos_x, pos_y int = rand.Intn(x), rand.Intn(y)
 		if b.board[pos_x][pos_y] == 0 {
 			b.board[pos_x][pos_y] = 2 // atm hardcoded to always give 2
+			break
 		}
 		count++
 	}
@@ -51,9 +54,10 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 			// inner
 			vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE+BORDERSIZE, start_pos_y+float32(y)*TILESIZE+BORDERSIZE,
 				float32(TILESIZE), float32(TILESIZE), color.RGBA{255, 255, 255, 255}, false)
-
-			// text.Draw(screen, fmt.Sprintf("%v", b.board[x][y]), mplusBigFont, int(start_pos_x+float32(x)*TILESIZE+BORDERSIZE), int(start_pos_y+float32(y)*TILESIZE+BORDERSIZE),
-			// 	color.Black)
+			if b.board[x][y] != 0 {
+				text.Draw(screen, fmt.Sprintf("%v", b.board[x][y]), mplusNormalFont, int(start_pos_x+float32(x)*TILESIZE+BORDERSIZE+10), int(start_pos_y+float32(y)*TILESIZE+BORDERSIZE)+int(TILESIZE-10),
+					color.Black)
+			}
 		}
 	}
 

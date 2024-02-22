@@ -16,7 +16,7 @@ func NewGame() (*Game, error) {
 
 	var err error
 	g.board, err = NewBoard()
-
+	initText()
 	if err != nil {
 		return nil, err
 	}
