@@ -30,6 +30,6 @@ func TestAddTwoRandom(t *testing.T) {
 	if count < 2 {
 		t.Fatalf(`less than two pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
 	} else if count > 2 {
-		t.Fatalf(`more than two pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+		t.Fatalf(`less than two pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
 	}
 }
