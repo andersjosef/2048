@@ -10,8 +10,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-const TILESIZE float32 = 50
-const BORDERSIZE float32 = 2
+const TILESIZE float32 = 100
+const BORDERSIZE float32 = TILESIZE / 25
 
 // colors for different numbers
 var color_map = map[int][4]uint8{
@@ -75,15 +75,16 @@ func (b *Board) randomNewPiece() {
 }
 
 func (b *Board) drawBoard(screen *ebiten.Image) {
-	var start_pos_x, start_pos_y float32 = float32((SCREENWIDTH_LAYOUT / 2) - (BOARDSIZE*int(TILESIZE))/2), float32((SCREENHEIGHT_LAYOUT / 2) - (BOARDSIZE*int(TILESIZE))/2)
+	var start_pos_x, start_pos_y float32 = float32((SCREENWIDTH / 2) - (BOARDSIZE*int(TILESIZE))/2), float32((SCREENHEIGHT / 2) - (BOARDSIZE*int(TILESIZE))/2)
 
 	for y := 0; y < len(b.board); y++ {
 		for x := 0; x < len(b.board[0]); x++ {
+			var xpos, ypos float32 = start_pos_x + float32(x)*TILESIZE, start_pos_y + float32(y)*TILESIZE
 			// border
-			vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE, start_pos_y+float32(y)*TILESIZE,
+			vector.DrawFilledRect(screen, xpos, ypos,
 				float32(TILESIZE)+BORDERSIZE*2, float32(TILESIZE)+BORDERSIZE*2, b.color_border, false) //border
 			// inner
-			vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE+BORDERSIZE, start_pos_y+float32(y)*TILESIZE+BORDERSIZE,
+			vector.DrawFilledRect(screen, xpos+BORDERSIZE, ypos+BORDERSIZE, // + bordersize so you can see the border size on the left
 				float32(TILESIZE), float32(TILESIZE), b.color_backgorund_tile, false) // tiles
 			if b.board[y][x] != 0 {
 				val, ok := color_map[b.board[y][x]] // checks if num in map, if it is make the background else draw normal
@@ -93,7 +94,9 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 						float32(TILESIZE), float32(TILESIZE), getColor(val), false) // tiles
 				}
 				// draw the number to the screen
-				text.Draw(screen, fmt.Sprintf("%v", b.board[y][x]), mplusNormalFont, int(start_pos_x+float32(x)*TILESIZE+BORDERSIZE+10), int(start_pos_y+float32(y)*TILESIZE+BORDERSIZE)+int(TILESIZE-10),
+				text.Draw(screen, fmt.Sprintf("%v", b.board[y][x]), mplusNormalFont,
+					int(xpos+BORDERSIZE+TILESIZE/2-13),
+					int(ypos+BORDERSIZE+TILESIZE/2+20),
 					color.Black) // letters
 			}
 		}
