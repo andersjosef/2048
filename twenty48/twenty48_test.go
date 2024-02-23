@@ -79,3 +79,49 @@ func TestMoveUp(t *testing.T) {
 	}
 
 }
+
+func TestMoveRight(t *testing.T) {
+	board := Board{}
+
+	board.board = [4][4]int{
+		{2, 2, 0, 0},
+		{0, 2, 0, 0},
+		{0, 0, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want := [4][4]int{
+		{0, 0, 0, 4},
+		{0, 0, 0, 2},
+		{0, 0, 0, 2},
+		{0, 0, 0, 2},
+	}
+
+	board.moveRight()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+
+}
+
+func TestMoveDown(t *testing.T) {
+	board := Board{}
+
+	board.board = [4][4]int{
+		{2, 2, 0, 0},
+		{0, 2, 0, 0},
+		{0, 0, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want := [4][4]int{
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{2, 4, 2, 2},
+	}
+
+	board.moveDown()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+
+}
