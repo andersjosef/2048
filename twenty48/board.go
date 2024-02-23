@@ -13,8 +13,18 @@ import (
 const TILESIZE float32 = 50
 const BORDERSIZE float32 = 2
 
+var color_map = map[int][4]uint8{
+	2:  {238, 228, 218, 255},
+	4:  {237, 224, 200, 255},
+	8:  {242, 177, 121, 255},
+	16: {245, 149, 99, 255},
+	32: {255, 104, 69, 255},
+	64: {246, 94, 59, 255},
+	-1: {255, 255, 255, 255},
+}
+
 type Board struct {
-	board                 [4][4]int // 2d array for the board :)
+	board                 [BOARDSIZE][BOARDSIZE]int // 2d array for the board :)
 	color_border          color.RGBA
 	color_backgorund_tile color.RGBA
 }
@@ -23,8 +33,9 @@ func NewBoard() (*Board, error) {
 
 	b := &Board{}
 
-	b.color_border = color.RGBA{200, 200, 200, 255}
-	b.color_backgorund_tile = color.RGBA{255, 255, 255, 255}
+	// border and background colors
+	b.color_border = color.RGBA{194, 182, 169, 255}
+	b.color_backgorund_tile = color.RGBA{204, 192, 179, 255}
 
 	for i := 0; i < 2; i++ {
 		b.randomNewPiece()
@@ -63,6 +74,14 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 			vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE+BORDERSIZE, start_pos_y+float32(y)*TILESIZE+BORDERSIZE,
 				float32(TILESIZE), float32(TILESIZE), b.color_backgorund_tile, false) // tiles
 			if b.board[y][x] != 0 {
+				val, ok := color_map[b.board[y][x]] // checks if num in map, if it is make the background else draw normal
+				// If the key exists
+				if ok {
+					vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE+BORDERSIZE, start_pos_y+float32(y)*TILESIZE+BORDERSIZE,
+						float32(TILESIZE), float32(TILESIZE), getColor(val), false) // tiles
+				} else {
+
+				}
 				text.Draw(screen, fmt.Sprintf("%v", b.board[y][x]), mplusNormalFont, int(start_pos_x+float32(x)*TILESIZE+BORDERSIZE+10), int(start_pos_y+float32(y)*TILESIZE+BORDERSIZE)+int(TILESIZE-10),
 					color.Black) // letters
 			}
