@@ -5,7 +5,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-/* variables */
+/* variables and constants */
+const (
+	SCREENWIDTH  int = 640
+	SCREENHEIGHT int = 480
+	BOARDSIZE    int = 4
+)
 
 type Game struct {
 	board *Board
@@ -37,5 +42,5 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 320, 240
+	return SCREENWIDTH / 2, SCREENHEIGHT / 2
 }
