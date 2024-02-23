@@ -7,9 +7,11 @@ import (
 
 /* variables and constants */
 const (
-	SCREENWIDTH  int = 640
-	SCREENHEIGHT int = 480
-	BOARDSIZE    int = 4
+	SCREENWIDTH         int = 640
+	SCREENHEIGHT        int = 480
+	SCREENWIDTH_LAYOUT  int = 640 / 2
+	SCREENHEIGHT_LAYOUT int = 480 / 2
+	BOARDSIZE           int = 4
 )
 
 type Game struct {
