@@ -16,12 +16,14 @@ var m = &MyInput{
 	keyIsBeingPressed: false,
 }
 
+// this is also the game logic I guess
 func (m *MyInput) UpdateInput(b *Board) error {
 	m.keys = inpututil.AppendPressedKeys(m.keys[:0])
 	if len(m.keys) > 0 {
 		if !m.keyIsBeingPressed {
 			m.keyIsBeingPressed = true
 			key_pressed := m.keys[len(m.keys)-1]
+			var board_before_change [4][4]int = b.board
 			// fmt.Println(key_pressed)
 			switch fmt.Sprintf("%v", key_pressed) {
 			case "D", "ArrowRight": // right@
@@ -37,7 +39,9 @@ func (m *MyInput) UpdateInput(b *Board) error {
 				b.moveDown()
 				fmt.Println("down")
 			}
-			b.randomNewPiece()
+			if board_before_change != b.board { // there will only be a new piece if it is a change
+				b.randomNewPiece()
+			}
 		}
 	} else {
 		m.keyIsBeingPressed = false
