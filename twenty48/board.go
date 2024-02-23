@@ -79,8 +79,6 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 				if ok {
 					vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE+BORDERSIZE, start_pos_y+float32(y)*TILESIZE+BORDERSIZE,
 						float32(TILESIZE), float32(TILESIZE), getColor(val), false) // tiles
-				} else {
-
 				}
 				text.Draw(screen, fmt.Sprintf("%v", b.board[y][x]), mplusNormalFont, int(start_pos_x+float32(x)*TILESIZE+BORDERSIZE+10), int(start_pos_y+float32(y)*TILESIZE+BORDERSIZE)+int(TILESIZE-10),
 					color.Black) // letters
