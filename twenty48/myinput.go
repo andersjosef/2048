@@ -51,5 +51,6 @@ func (m *MyInput) UpdateInput(b *Board) error {
 
 func (b *Board) ResetGame() {
 	b.board = [BOARDSIZE][BOARDSIZE]int{}
+	b.game.score = 0
 	b.randomNewPiece()
 }

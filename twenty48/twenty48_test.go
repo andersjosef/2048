@@ -36,6 +36,7 @@ func TestAddTwoRandom(t *testing.T) {
 
 func TestMoveLeft(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
@@ -76,6 +77,7 @@ func TestMoveLeft(t *testing.T) {
 
 func TestMoveUp(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
@@ -115,6 +117,7 @@ func TestMoveUp(t *testing.T) {
 
 func TestMoveRight(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
@@ -154,6 +157,7 @@ func TestMoveRight(t *testing.T) {
 
 func TestMoveDown(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
@@ -194,6 +198,7 @@ func TestMoveDown(t *testing.T) {
 
 func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
@@ -238,5 +243,16 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
 	} else if count > 4 {
 		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	}
+}
+
+func TestReset(t *testing.T) {
+	game, _ := NewGame()
+	game.board.randomNewPiece()
+	game.board.randomNewPiece()
+	game.board.ResetGame()
+
+	if game.score != 0 {
+		t.Fatalf(`score is not zero, score = %v, want 0. board = %v error`, game.score, game.board.board)
 	}
 }

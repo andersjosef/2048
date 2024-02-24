@@ -5,7 +5,7 @@ func (b *Board) moveLeft() {
 		// Shift tiles to the left
 		compactTiles(&b.board[i])
 		// Merge tiles and shift again if needed
-		mergeTiles(&b.board[i])
+		mergeTiles(&b.board[i], b)
 		compactTiles(&b.board[i])
 	}
 }
@@ -16,7 +16,7 @@ func (b *Board) moveUp() {
 		// Shift tiles "left" (actually up, due to transposition)
 		compactTiles(&b.board[i])
 		// Merge tiles and shift again if needed
-		mergeTiles(&b.board[i])
+		mergeTiles(&b.board[i], b)
 		compactTiles(&b.board[i])
 	}
 	transpose(&b.board) // Transpose back to the original orientation
@@ -29,7 +29,7 @@ func (b *Board) moveRight() {
 		// Shift tiles "left" (actually right, due to reversal)
 		compactTiles(&b.board[i])
 		// Merge tiles and shift again if needed
-		mergeTiles(&b.board[i])
+		mergeTiles(&b.board[i], b)
 		compactTiles(&b.board[i])
 		// Reverse back to original orientation
 		reverseRow(&b.board[i])
@@ -43,7 +43,7 @@ func (b *Board) moveDown() {
 		// Shift tiles "left" (actually down, due to reversal and transposition)
 		compactTiles(&b.board[i])
 		// Merge tiles and shift again if needed
-		mergeTiles(&b.board[i])
+		mergeTiles(&b.board[i], b)
 		compactTiles(&b.board[i])
 		// Reverse back to treat the bottom as the top
 		reverseRow(&b.board[i])
@@ -74,10 +74,11 @@ func compactTiles(row *[BOARDSIZE]int) {
 	}
 }
 
-func mergeTiles(row *[BOARDSIZE]int) {
+func mergeTiles(row *[BOARDSIZE]int, b *Board) {
 	for i := 0; i < len(*row)-1; i++ {
 		if (*row)[i] == (*row)[i+1] && (*row)[i] != 0 {
 			(*row)[i] *= 2
+			b.game.score += (*row)[i]
 			(*row)[i+1] = 0
 			i++ // Skip next tile as it has been merged and set to 0
 		}
