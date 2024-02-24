@@ -13,6 +13,8 @@ import (
 const TILESIZE float32 = 100
 const BORDERSIZE float32 = TILESIZE / 25
 
+var color_text = color.RGBA{110, 93, 71, 255}
+
 // colors for different numbers
 var color_map = map[int][4]uint8{
 	2:     {238, 228, 218, 255},
@@ -113,7 +115,7 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 				text.Draw(screen, msg, fontUsed,
 					xpos,
 					ypos,
-					color.Black)
+					color_text)
 			}
 		}
 	}

@@ -1,8 +1,11 @@
 package twenty48
 
 import (
+	"fmt"
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 /* variables and constants */
@@ -17,6 +20,7 @@ const (
 type Game struct {
 	board *Board
 	state int //if game is in menu. running, end etc 1: running
+	score int
 }
 
 func NewGame() (*Game, error) {
@@ -37,16 +41,45 @@ func (g *Game) Update() error {
 	switch g.state {
 	case 1: //game is running loop
 		m.UpdateInput(g.board)
+		g.GetScore()
+
 	}
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	ebitenutil.DebugPrint(screen, "Hello, World!")
 	screen.Fill(getColor(BEIGE))
 	g.board.drawBoard(screen)
+	DrawScore(screen, g)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return SCREENWIDTH, SCREENHEIGHT
+}
+
+func (g *Game) GetScore() {
+	var score int
+	for i := range g.board.board {
+		for j := range g.board.board[i] {
+			score += g.board.board[i][j]
+		}
+	}
+	g.score = score
+}
+
+func DrawScore(screen *ebiten.Image, g *Game) {
+	myFont := mplusNormalFontSmaller
+
+	margin := 10
+	var shadowOffsett int = 2
+	var score_text string = fmt.Sprintf("%v", g.score)
+
+	text.Draw(screen, score_text, myFont,
+		shadowOffsett+margin,
+		shadowOffsett+margin+text.BoundString(myFont, score_text).Dy(),
+		color.Black)
+	text.Draw(screen, score_text, myFont,
+		10,
+		10+text.BoundString(myFont, score_text).Dy(),
+		color.White)
 }
