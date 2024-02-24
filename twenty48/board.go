@@ -42,8 +42,6 @@ func NewBoard() (*Board, error) {
 
 	b := &Board{}
 
-	b.board[0][0] = 8192
-
 	// border and background colors
 	b.color_border = color.RGBA{194, 182, 169, 255}
 	b.color_backgorund_tile = color.RGBA{204, 192, 179, 255}
