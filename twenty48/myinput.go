@@ -28,16 +28,16 @@ func (m *MyInput) UpdateInput(b *Board) error {
 			switch fmt.Sprintf("%v", key_pressed) {
 			case "D", "ArrowRight": // right@
 				b.moveRight()
-				fmt.Println("right")
+				// fmt.Println("right")
 			case "A", "ArrowLeft": // left
 				b.moveLeft()
-				fmt.Println("left")
+				// fmt.Println("left")
 			case "W", "ArrowUp":
 				b.moveUp()
-				fmt.Println("up")
+				// fmt.Println("up")
 			case "S", "ArrowDown":
 				b.moveDown()
-				fmt.Println("down")
+				// fmt.Println("down")
 			}
 			b.addNewRandomPieceIfBoardChanged(board_before_change)
 		}
