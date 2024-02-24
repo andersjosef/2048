@@ -6,7 +6,7 @@ import (
 
 func TestEmptyBoard(t *testing.T) {
 	board := Board{}
-	want := [4][4]int{}
+	want := [BOARDSIZE][BOARDSIZE]int{}
 
 	if board.board != want {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
@@ -37,7 +37,7 @@ func TestAddTwoRandom(t *testing.T) {
 func TestMoveLeft(t *testing.T) {
 	board := Board{}
 
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
@@ -55,13 +55,13 @@ func TestMoveLeft(t *testing.T) {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
 	}
 
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
 		{0, 0, 0, 2},
 	}
-	want = [4][4]int{
+	want = [BOARDSIZE][BOARDSIZE]int{
 		{4, 2, 0, 0},
 		{2, 0, 0, 0},
 		{2, 0, 0, 0},
@@ -77,7 +77,7 @@ func TestMoveLeft(t *testing.T) {
 func TestMoveUp(t *testing.T) {
 	board := Board{}
 
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
@@ -94,13 +94,13 @@ func TestMoveUp(t *testing.T) {
 	if board.board != want {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
 	}
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	want = [4][4]int{
+	want = [BOARDSIZE][BOARDSIZE]int{
 		{2, 4, 4, 2},
 		{0, 2, 0, 0},
 		{0, 0, 0, 0},
@@ -116,13 +116,13 @@ func TestMoveUp(t *testing.T) {
 func TestMoveRight(t *testing.T) {
 	board := Board{}
 
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
 		{0, 0, 0, 2},
 	}
-	want := [4][4]int{
+	want := [BOARDSIZE][BOARDSIZE]int{
 		{0, 0, 0, 4},
 		{0, 0, 0, 2},
 		{0, 0, 0, 2},
@@ -133,13 +133,13 @@ func TestMoveRight(t *testing.T) {
 	if board.board != want {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
 	}
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	want = [4][4]int{
+	want = [BOARDSIZE][BOARDSIZE]int{
 		{0, 0, 2, 4},
 		{0, 0, 0, 2},
 		{0, 0, 0, 4},
@@ -155,13 +155,13 @@ func TestMoveRight(t *testing.T) {
 func TestMoveDown(t *testing.T) {
 	board := Board{}
 
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
 		{0, 0, 0, 2},
 	}
-	want := [4][4]int{
+	want := [BOARDSIZE][BOARDSIZE]int{
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
@@ -173,13 +173,13 @@ func TestMoveDown(t *testing.T) {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
 	}
 
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	want = [4][4]int{
+	want = [BOARDSIZE][BOARDSIZE]int{
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 2, 0, 0},
@@ -194,7 +194,7 @@ func TestMoveDown(t *testing.T) {
 
 func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 	board := Board{}
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
@@ -217,7 +217,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 	} else if count > 6 {
 		t.Fatalf(`less than 6 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
 	}
-	board.board = [4][4]int{
+	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 2},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},

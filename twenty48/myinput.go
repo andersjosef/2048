@@ -23,7 +23,7 @@ func (m *MyInput) UpdateInput(b *Board) error {
 		if !m.keyIsBeingPressed {
 			m.keyIsBeingPressed = true
 			key_pressed := m.keys[len(m.keys)-1]
-			var board_before_change [4][4]int = b.board
+			var board_before_change [BOARDSIZE][BOARDSIZE]int = b.board
 			// fmt.Println(key_pressed)
 			switch fmt.Sprintf("%v", key_pressed) {
 			case "D", "ArrowRight": // right@

@@ -122,7 +122,7 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 
 }
 
-func (b *Board) addNewRandomPieceIfBoardChanged(board_before_change [4][4]int) {
+func (b *Board) addNewRandomPieceIfBoardChanged(board_before_change [BOARDSIZE][BOARDSIZE]int) {
 	if board_before_change != b.board { // there will only be a new piece if it is a change
 		b.randomNewPiece()
 	}

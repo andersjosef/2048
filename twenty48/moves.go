@@ -51,13 +51,13 @@ func (b *Board) moveDown() {
 	transpose(&b.board) // Transpose back to the original orientation
 }
 
-func reverseRow(row *[4]int) {
+func reverseRow(row *[BOARDSIZE]int) {
 	for i, j := 0, len(*row)-1; i < j; i, j = i+1, j-1 {
 		(*row)[i], (*row)[j] = (*row)[j], (*row)[i]
 	}
 }
 
-func compactTiles(row *[4]int) {
+func compactTiles(row *[BOARDSIZE]int) {
 	insertPos := 0
 	for _, val := range *row {
 		if val != 0 {
@@ -74,7 +74,7 @@ func compactTiles(row *[4]int) {
 	}
 }
 
-func mergeTiles(row *[4]int) {
+func mergeTiles(row *[BOARDSIZE]int) {
 	for i := 0; i < len(*row)-1; i++ {
 		if (*row)[i] == (*row)[i+1] && (*row)[i] != 0 {
 			(*row)[i] *= 2
@@ -84,7 +84,7 @@ func mergeTiles(row *[4]int) {
 	}
 }
 
-func transpose(board *[4][4]int) {
+func transpose(board *[BOARDSIZE][BOARDSIZE]int) {
 	for i := 0; i < len(*board); i++ {
 		for j := i; j < len((*board)[0]); j++ {
 			(*board)[i][j], (*board)[j][i] = (*board)[j][i], (*board)[i][j]
