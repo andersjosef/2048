@@ -5,14 +5,24 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-/* variables */
+/* variables and constants */
+const (
+	SCREENWIDTH         int = 640
+	SCREENHEIGHT        int = 480
+	SCREENWIDTH_LAYOUT  int = 640 / 2
+	SCREENHEIGHT_LAYOUT int = 480 / 2
+	BOARDSIZE           int = 4
+)
 
 type Game struct {
 	board *Board
+	state int //if game is in menu. running, end etc 1: running
 }
 
 func NewGame() (*Game, error) {
-	g := &Game{}
+	g := &Game{
+		state: 1,
+	}
 
 	var err error
 	g.board, err = NewBoard()
@@ -24,7 +34,10 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) Update() error {
-	m.UpdateInput(g.board)
+	switch g.state {
+	case 1: //game is running loop
+		m.UpdateInput(g.board)
+	}
 	return nil
 }
 
@@ -32,10 +45,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Hello, World!")
 	screen.Fill(getColor(BEIGE))
 	g.board.drawBoard(screen)
-	// m.DrawInput(g.board)
-
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 320, 240
+	return SCREENWIDTH, SCREENHEIGHT
 }

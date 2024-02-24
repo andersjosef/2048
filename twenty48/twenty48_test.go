@@ -55,6 +55,23 @@ func TestMoveLeft(t *testing.T) {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
 	}
 
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 0, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want = [4][4]int{
+		{4, 2, 0, 0},
+		{2, 0, 0, 0},
+		{2, 0, 0, 0},
+		{2, 0, 0, 0},
+	}
+	board.moveLeft()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+
 }
 
 func TestMoveUp(t *testing.T) {
@@ -73,6 +90,22 @@ func TestMoveUp(t *testing.T) {
 		{0, 0, 0, 0},
 	}
 
+	board.moveUp()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 2, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want = [4][4]int{
+		{2, 4, 4, 2},
+		{0, 2, 0, 0},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+	}
 	board.moveUp()
 	if board.board != want {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
@@ -96,6 +129,22 @@ func TestMoveRight(t *testing.T) {
 		{0, 0, 0, 2},
 	}
 
+	board.moveRight()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 2, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want = [4][4]int{
+		{0, 0, 2, 4},
+		{0, 0, 0, 2},
+		{0, 0, 0, 4},
+		{0, 0, 0, 2},
+	}
 	board.moveRight()
 	if board.board != want {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
@@ -124,4 +173,70 @@ func TestMoveDown(t *testing.T) {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
 	}
 
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 2, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want = [4][4]int{
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{0, 2, 0, 0},
+		{2, 4, 4, 2},
+	}
+	board.moveDown()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+
+}
+
+func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
+	board := Board{}
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 2, 2, 0},
+		{0, 0, 0, 2},
+	}
+	board_before_change := board.board
+	board.moveDown()
+	board.addNewRandomPieceIfBoardChanged(board_before_change)
+	count := 0
+	for x := 0; x < len(board.board); x++ {
+		for y := 0; y < len(board.board[0]); y++ {
+			if board.board[x][y] != 0 {
+				count++
+			}
+		}
+	}
+
+	if count < 6 {
+		t.Fatalf(`less than 6 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	} else if count > 6 {
+		t.Fatalf(`less than 6 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	}
+	board.board = [4][4]int{
+		{2, 2, 2, 2},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+	}
+	board_before_change = board.board
+	board.moveUp()
+	board.addNewRandomPieceIfBoardChanged(board_before_change)
+	count = 0
+	for x := 0; x < len(board.board); x++ {
+		for y := 0; y < len(board.board[0]); y++ {
+			if board.board[x][y] != 0 {
+				count++
+			}
+		}
+	}
+	if count < 4 {
+		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	} else if count > 4 {
+		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	}
 }
