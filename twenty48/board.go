@@ -94,10 +94,18 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 						float32(TILESIZE), float32(TILESIZE), getColor(val), false) // tiles
 				}
 				// draw the number to the screen
-				text.Draw(screen, fmt.Sprintf("%v", b.board[y][x]), mplusNormalFont,
-					int(xpos+BORDERSIZE+TILESIZE/2-13),
-					int(ypos+BORDERSIZE+TILESIZE/2+20),
-					color.Black) // letters
+				msg := fmt.Sprintf("%v", b.board[y][x])
+				fmt.Printf("%v\n", text.BoundString(mplusBigFont, msg).Dx())
+				var (
+					dx   float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
+					dy   float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
+					xpos int     = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
+					ypos int     = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
+				)
+				text.Draw(screen, msg, mplusNormalFont,
+					xpos,
+					ypos,
+					color.Black)
 			}
 		}
 	}

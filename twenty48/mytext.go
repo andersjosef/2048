@@ -14,6 +14,7 @@ import (
 var (
 	mplusNormalFont font.Face
 	mplusBigFont    font.Face
+	fontSize        int = 50
 )
 
 func initText() {
@@ -22,12 +23,15 @@ func initText() {
 		log.Fatal(err)
 	}
 
-	const dpi = 72
+	const dpi = 72 // Try adjusting this value for high-res displays
 	mplusNormalFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    40,
+		Size:    float64(fontSize),
 		DPI:     dpi,
-		Hinting: font.HintingVertical,
+		Hinting: font.HintingFull,
 	})
+	if err != nil {
+		log.Fatal(err)
+	}
 	if err != nil {
 		log.Fatal(err)
 	}

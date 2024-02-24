@@ -45,13 +45,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Hello, World!")
 	screen.Fill(getColor(BEIGE))
 	g.board.drawBoard(screen)
-	// m.DrawInput(g.board)
-
 }
 
-//	func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-//		return SCREENWIDTH / 2, SCREENHEIGHT / 2
-//	}
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return SCREENWIDTH, SCREENHEIGHT
 }
