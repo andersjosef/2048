@@ -52,7 +52,9 @@ func NewBoard() (*Board, error) {
 	for i := 0; i < 2; i++ {
 		b.randomNewPiece()
 	}
-
+	b.board[0][0] = 1024
+	b.board[0][1] = 2048
+	b.board[0][2] = 128
 	return b, nil
 }
 
@@ -105,7 +107,7 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 				)
 				if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE)+int(BORDERSIZE) {
 					fontUsed = mplusNormalFontSmaller
-					dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx())
+					dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE))
 					dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
 				}
 
