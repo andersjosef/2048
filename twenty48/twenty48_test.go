@@ -55,6 +55,23 @@ func TestMoveLeft(t *testing.T) {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
 	}
 
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 0, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want = [4][4]int{
+		{4, 2, 0, 0},
+		{2, 0, 0, 0},
+		{2, 0, 0, 0},
+		{2, 0, 0, 0},
+	}
+	board.moveLeft()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+
 }
 
 func TestMoveUp(t *testing.T) {
@@ -73,6 +90,22 @@ func TestMoveUp(t *testing.T) {
 		{0, 0, 0, 0},
 	}
 
+	board.moveUp()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 2, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want = [4][4]int{
+		{2, 4, 4, 2},
+		{0, 2, 0, 0},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+	}
 	board.moveUp()
 	if board.board != want {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
@@ -100,6 +133,22 @@ func TestMoveRight(t *testing.T) {
 	if board.board != want {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
 	}
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 2, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want = [4][4]int{
+		{0, 0, 2, 4},
+		{0, 0, 0, 2},
+		{0, 0, 0, 4},
+		{0, 0, 0, 2},
+	}
+	board.moveRight()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
 
 }
 
@@ -119,6 +168,23 @@ func TestMoveDown(t *testing.T) {
 		{2, 4, 2, 2},
 	}
 
+	board.moveDown()
+	if board.board != want {
+		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
+	}
+
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 2, 2, 0},
+		{0, 0, 0, 2},
+	}
+	want = [4][4]int{
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{0, 2, 0, 0},
+		{2, 4, 4, 2},
+	}
 	board.moveDown()
 	if board.board != want {
 		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
