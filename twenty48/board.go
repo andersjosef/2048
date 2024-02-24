@@ -42,6 +42,8 @@ func NewBoard() (*Board, error) {
 
 	b := &Board{}
 
+	b.board[0][0] = 8192
+
 	// border and background colors
 	b.color_border = color.RGBA{194, 182, 169, 255}
 	b.color_backgorund_tile = color.RGBA{204, 192, 179, 255}
@@ -94,13 +96,23 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 				}
 				// draw the number to the screen
 				msg := fmt.Sprintf("%v", b.board[y][x])
+
+				fontUsed := mplusNormalFont
 				var (
-					dx   float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
-					dy   float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
-					xpos int     = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
-					ypos int     = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
+					dx float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
+					dy float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
 				)
-				text.Draw(screen, msg, mplusNormalFont,
+				if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE)+int(BORDERSIZE) {
+					fontUsed = mplusNormalFontSmaller
+					dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx())
+					dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
+				}
+
+				var (
+					xpos int = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
+					ypos int = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
+				)
+				text.Draw(screen, msg, fontUsed,
 					xpos,
 					ypos,
 					color.Black)

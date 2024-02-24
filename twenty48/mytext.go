@@ -12,9 +12,11 @@ import (
 // const sampleText = `The quick brown fox jumps over the lazy dog.`
 
 var (
-	mplusNormalFont font.Face
-	mplusBigFont    font.Face
-	fontSize        int = 50
+	mplusNormalFont        font.Face
+	mplusNormalFontSmaller font.Face
+	mplusBigFont           font.Face
+	fontSize               int = 50
+	fontSizeSmall          int = 35
 )
 
 func initText() {
@@ -26,6 +28,17 @@ func initText() {
 	const dpi = 72 // Try adjusting this value for high-res displays
 	mplusNormalFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    float64(fontSize),
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	mplusNormalFontSmaller, err = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    float64(fontSizeSmall),
 		DPI:     dpi,
 		Hinting: font.HintingFull,
 	})
