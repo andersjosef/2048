@@ -36,6 +36,7 @@ func TestAddTwoRandom(t *testing.T) {
 
 func TestMoveLeft(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
@@ -76,6 +77,7 @@ func TestMoveLeft(t *testing.T) {
 
 func TestMoveUp(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
@@ -115,6 +117,7 @@ func TestMoveUp(t *testing.T) {
 
 func TestMoveRight(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
@@ -154,6 +157,7 @@ func TestMoveRight(t *testing.T) {
 
 func TestMoveDown(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
@@ -194,6 +198,7 @@ func TestMoveDown(t *testing.T) {
 
 func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 	board := Board{}
+	board.game = &Game{}
 	board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
