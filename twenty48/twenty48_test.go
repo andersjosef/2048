@@ -191,3 +191,52 @@ func TestMoveDown(t *testing.T) {
 	}
 
 }
+
+func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
+	board := Board{}
+	board.board = [4][4]int{
+		{2, 2, 2, 0},
+		{0, 2, 0, 0},
+		{0, 2, 2, 0},
+		{0, 0, 0, 2},
+	}
+	board_before_change := board.board
+	board.moveDown()
+	board.addNewRandomPieceIfBoardChanged(board_before_change)
+	count := 0
+	for x := 0; x < len(board.board); x++ {
+		for y := 0; y < len(board.board[0]); y++ {
+			if board.board[x][y] != 0 {
+				count++
+			}
+		}
+	}
+
+	if count < 6 {
+		t.Fatalf(`less than 6 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	} else if count > 6 {
+		t.Fatalf(`less than 6 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	}
+	board.board = [4][4]int{
+		{2, 2, 2, 2},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+	}
+	board_before_change = board.board
+	board.moveUp()
+	board.addNewRandomPieceIfBoardChanged(board_before_change)
+	count = 0
+	for x := 0; x < len(board.board); x++ {
+		for y := 0; y < len(board.board[0]); y++ {
+			if board.board[x][y] != 0 {
+				count++
+			}
+		}
+	}
+	if count < 4 {
+		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	} else if count > 4 {
+		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
+	}
+}

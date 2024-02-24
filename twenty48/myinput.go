@@ -39,9 +39,7 @@ func (m *MyInput) UpdateInput(b *Board) error {
 				b.moveDown()
 				fmt.Println("down")
 			}
-			if board_before_change != b.board { // there will only be a new piece if it is a change
-				b.randomNewPiece()
-			}
+			b.addNewRandomPieceIfBoardChanged(board_before_change)
 		}
 	} else {
 		m.keyIsBeingPressed = false

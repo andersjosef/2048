@@ -16,10 +16,13 @@ const (
 
 type Game struct {
 	board *Board
+	state int //if game is in menu. running, end etc 1: running
 }
 
 func NewGame() (*Game, error) {
-	g := &Game{}
+	g := &Game{
+		state: 1,
+	}
 
 	var err error
 	g.board, err = NewBoard()
@@ -31,7 +34,10 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) Update() error {
-	m.UpdateInput(g.board)
+	switch g.state {
+	case 1: //game is running loop
+		m.UpdateInput(g.board)
+	}
 	return nil
 }
 
