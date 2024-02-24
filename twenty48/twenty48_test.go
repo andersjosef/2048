@@ -240,3 +240,14 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
 	}
 }
+
+func TestReset(t *testing.T) {
+	game, _ := NewGame()
+	game.board.randomNewPiece()
+	game.board.randomNewPiece()
+	game.board.ResetGame()
+
+	if game.score != 0 {
+		t.Fatalf(`score is not zero, score = %v, want 0. board = %v error`, game.score, game.board.board)
+	}
+}
