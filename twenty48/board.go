@@ -97,8 +97,8 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 				var (
 					dx   float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
 					dy   float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
-					xpos int     = int(xpos + TILESIZE/2 - dx/2)
-					ypos int     = int(ypos + TILESIZE/2 + dy/2)
+					xpos int     = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
+					ypos int     = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
 				)
 				text.Draw(screen, msg, mplusNormalFont,
 					xpos,
