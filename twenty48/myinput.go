@@ -46,22 +46,3 @@ func (m *MyInput) UpdateInput(b *Board) error {
 	}
 	return nil
 }
-
-// func (m *MyInput) DrawInput(screen *ebiten.Image) {
-// 	var keyStrs []string
-// 	var keyNames []string
-// 	for _, k := range m.keys {
-// 		keyStrs = append(keyStrs, k.String())
-// 		if name := ebiten.KeyName(k); name != "" {
-// 			keyNames = append(keyNames, name)
-// 		}
-// 		fmt.Println(m.keys)
-// 	}
-
-// 	// Use bitmapfont.Face instead of ebitenutil.DebugPrint, since some key names might not be printed with DebugPrint.
-// 	text.Draw(screen, strings.Join(keyStrs, ", ")+"\n"+strings.Join(keyNames, ", "), mplusBigFont, 4, 12, color.Black)
-// }
-
-// func (m *MyInput) DrawInput(b *Board) {
-
-// }
