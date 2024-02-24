@@ -52,9 +52,6 @@ func NewBoard() (*Board, error) {
 	for i := 0; i < 2; i++ {
 		b.randomNewPiece()
 	}
-	b.board[0][0] = 1024
-	b.board[0][1] = 2048
-	b.board[0][2] = 128
 	return b, nil
 }
 
