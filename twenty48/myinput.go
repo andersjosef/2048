@@ -38,6 +38,8 @@ func (m *MyInput) UpdateInput(b *Board) error {
 			case "S", "ArrowDown":
 				b.moveDown()
 				// fmt.Println("down")
+			case "R": // reset button
+				b.ResetGame()
 			}
 			b.addNewRandomPieceIfBoardChanged(board_before_change)
 		}
@@ -45,4 +47,9 @@ func (m *MyInput) UpdateInput(b *Board) error {
 		m.keyIsBeingPressed = false
 	}
 	return nil
+}
+
+func (b *Board) ResetGame() {
+	b.board = [BOARDSIZE][BOARDSIZE]int{}
+	b.randomNewPiece()
 }
