@@ -38,6 +38,7 @@ type Board struct {
 	board                 [BOARDSIZE][BOARDSIZE]int // 2d array for the board :)
 	color_border          color.RGBA
 	color_backgorund_tile color.RGBA
+	game                  *Game
 }
 
 func NewBoard() (*Board, error) {

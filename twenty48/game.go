@@ -30,6 +30,7 @@ func NewGame() (*Game, error) {
 
 	var err error
 	g.board, err = NewBoard()
+	g.board.game = g
 	initText()
 	if err != nil {
 		return nil, err
@@ -41,7 +42,7 @@ func (g *Game) Update() error {
 	switch g.state {
 	case 1: //game is running loop
 		m.UpdateInput(g.board)
-		g.GetScore()
+		// g.GetScore()
 
 	}
 	return nil
@@ -57,15 +58,15 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 	return SCREENWIDTH, SCREENHEIGHT
 }
 
-func (g *Game) GetScore() {
-	var score int
-	for i := range g.board.board {
-		for j := range g.board.board[i] {
-			score += g.board.board[i][j]
-		}
-	}
-	g.score = score
-}
+// func (g *Game) GetScore() {
+// 	var score int
+// 	for i := range g.board.board {
+// 		for j := range g.board.board[i] {
+// 			score += g.board.board[i][j]
+// 		}
+// 	}
+// 	g.score = score
+// }
 
 func DrawScore(screen *ebiten.Image, g *Game) {
 	myFont := mplusNormalFontSmaller
