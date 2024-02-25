@@ -2,43 +2,38 @@ package twenty48
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestEmptyBoard(t *testing.T) {
 	board := Board{}
 	want := [BOARDSIZE][BOARDSIZE]int{}
 
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
-
+	assert.Equal(t, want, board.board)
 }
 
-func TestAddTwoRandom(t *testing.T) {
-	board := Board{}
+func TestInitializeGame(t *testing.T) {
+	game, err := NewGame()
 	count := 0
-	for i := 0; i < 2; i++ {
-		board.randomNewPiece()
-	}
-	for x := 0; x < len(board.board); x++ {
-		for y := 0; y < len(board.board[0]); y++ {
-			if board.board[x][y] != 0 {
+
+	// counts the number of pieces on the board
+	for x := 0; x < len(game.board.board); x++ {
+		for y := 0; y < len(game.board.board[0]); y++ {
+			if game.board.board[x][y] != 0 {
 				count++
 			}
 		}
 	}
-	if count < 2 {
-		t.Fatalf(`less than two pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
-	} else if count > 2 {
-		t.Fatalf(`less than two pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
-	}
+	assert.NoError(t, err)
+	assert.Equal(t, 2, count)
 }
 
 func TestMoveLeft(t *testing.T) {
-	board := Board{}
-	board.game = &Game{}
+	game, err := NewGame()
+	assert.NoError(t, err)
 
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
@@ -51,12 +46,10 @@ func TestMoveLeft(t *testing.T) {
 		{2, 0, 0, 0},
 	}
 
-	board.moveLeft()
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
+	game.board.moveLeft()
+	assert.Equal(t, want, game.board.board)
 
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
@@ -68,18 +61,17 @@ func TestMoveLeft(t *testing.T) {
 		{2, 0, 0, 0},
 		{2, 0, 0, 0},
 	}
-	board.moveLeft()
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
+	game.board.moveLeft()
+	assert.Equal(t, want, game.board.board)
 
 }
 
 func TestMoveUp(t *testing.T) {
-	board := Board{}
-	board.game = &Game{}
+	game, err := NewGame()
 
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	assert.NoError(t, err)
+
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
@@ -92,11 +84,10 @@ func TestMoveUp(t *testing.T) {
 		{0, 0, 0, 0},
 	}
 
-	board.moveUp()
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.moveUp()
+	assert.Equal(t, want, game.board.board)
+
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
@@ -108,18 +99,17 @@ func TestMoveUp(t *testing.T) {
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 	}
-	board.moveUp()
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
+	game.board.moveUp()
+	assert.Equal(t, want, game.board.board)
 
 }
 
 func TestMoveRight(t *testing.T) {
-	board := Board{}
-	board.game = &Game{}
+	game, err := NewGame()
 
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	assert.NoError(t, err)
+
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
@@ -132,11 +122,10 @@ func TestMoveRight(t *testing.T) {
 		{0, 0, 0, 2},
 	}
 
-	board.moveRight()
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.moveRight()
+	assert.Equal(t, want, game.board.board)
+
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
@@ -148,18 +137,17 @@ func TestMoveRight(t *testing.T) {
 		{0, 0, 0, 4},
 		{0, 0, 0, 2},
 	}
-	board.moveRight()
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
+	game.board.moveRight()
+	assert.Equal(t, want, game.board.board)
 
 }
 
 func TestMoveDown(t *testing.T) {
-	board := Board{}
-	board.game = &Game{}
+	game, err := NewGame()
 
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	assert.NoError(t, err)
+
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
@@ -172,12 +160,10 @@ func TestMoveDown(t *testing.T) {
 		{2, 4, 2, 2},
 	}
 
-	board.moveDown()
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
+	game.board.moveDown()
+	assert.Equal(t, want, game.board.board)
 
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
@@ -189,70 +175,60 @@ func TestMoveDown(t *testing.T) {
 		{0, 2, 0, 0},
 		{2, 4, 4, 2},
 	}
-	board.moveDown()
-	if board.board != want {
-		t.Fatalf(`board.board = %v, want %v error`, board.board, want)
-	}
+	game.board.moveDown()
+	assert.Equal(t, want, game.board.board)
 
 }
 
 func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
-	board := Board{}
-	board.game = &Game{}
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	game, err := NewGame()
+
+	assert.NoError(t, err)
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	board_before_change := board.board
-	board.moveDown()
-	board.addNewRandomPieceIfBoardChanged(board_before_change)
+	board_before_change := game.board.board
+	game.board.moveDown()
+	game.board.addNewRandomPieceIfBoardChanged(board_before_change)
 	count := 0
-	for x := 0; x < len(board.board); x++ {
-		for y := 0; y < len(board.board[0]); y++ {
-			if board.board[x][y] != 0 {
+	for x := 0; x < len(game.board.board); x++ {
+		for y := 0; y < len(game.board.board[0]); y++ {
+			if game.board.board[x][y] != 0 {
 				count++
 			}
 		}
 	}
+	assert.Equal(t, 6, count)
 
-	if count < 6 {
-		t.Fatalf(`less than 6 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
-	} else if count > 6 {
-		t.Fatalf(`less than 6 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
-	}
-	board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
 		{2, 2, 2, 2},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 	}
-	board_before_change = board.board
-	board.moveUp()
-	board.addNewRandomPieceIfBoardChanged(board_before_change)
+	board_before_change = game.board.board
+	game.board.moveUp()
+	game.board.addNewRandomPieceIfBoardChanged(board_before_change)
 	count = 0
-	for x := 0; x < len(board.board); x++ {
-		for y := 0; y < len(board.board[0]); y++ {
-			if board.board[x][y] != 0 {
+	for x := 0; x < len(game.board.board); x++ {
+		for y := 0; y < len(game.board.board[0]); y++ {
+			if game.board.board[x][y] != 0 {
 				count++
 			}
 		}
 	}
-	if count < 4 {
-		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
-	} else if count > 4 {
-		t.Fatalf(`less than 4 pieces are changed, count = %v, want 2. board = %v error`, count, board.board)
-	}
+	assert.Equal(t, 4, count)
 }
 
 func TestReset(t *testing.T) {
-	game, _ := NewGame()
+	game, err := NewGame()
+	assert.NoError(t, err)
 	game.board.randomNewPiece()
 	game.board.randomNewPiece()
 	game.board.ResetGame()
 
-	if game.score != 0 {
-		t.Fatalf(`score is not zero, score = %v, want 0. board = %v error`, game.score, game.board.board)
-	}
+	assert.Equal(t, 0, game.score)
 }
