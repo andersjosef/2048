@@ -238,12 +238,14 @@ func TestScore(t *testing.T) {
 	assert.NoError(t, err)
 
 	game.board.board = [BOARDSIZE][BOARDSIZE]int{
-		{8, 0, 2, 0},
+		{8, 16, 2, 0},
 		{0, 0, 2, 0},
 		{0, 0, 0, 0},
 		{8, 2, 0, 0},
 	}
 	game.board.moveUp()
-
 	assert.Equal(t, 20, game.score)
+	game.board.moveLeft()
+	assert.Equal(t, 52, game.score)
+
 }
