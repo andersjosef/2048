@@ -232,3 +232,18 @@ func TestReset(t *testing.T) {
 
 	assert.Equal(t, 0, game.score)
 }
+
+func TestScore(t *testing.T) {
+	game, err := NewGame()
+	assert.NoError(t, err)
+
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
+		{8, 0, 2, 0},
+		{0, 0, 2, 0},
+		{0, 0, 0, 0},
+		{8, 2, 0, 0},
+	}
+	game.board.moveUp()
+
+	assert.Equal(t, 20, game.score)
+}
