@@ -10,11 +10,9 @@ import (
 
 /* variables and constants */
 const (
-	SCREENWIDTH         int = 640
-	SCREENHEIGHT        int = 480
-	SCREENWIDTH_LAYOUT  int = 640 / 2
-	SCREENHEIGHT_LAYOUT int = 480 / 2
-	BOARDSIZE           int = 4
+	SCREENWIDTH  int = 640
+	SCREENHEIGHT int = 480
+	BOARDSIZE    int = 4
 )
 
 type Game struct {
@@ -24,14 +22,20 @@ type Game struct {
 }
 
 func NewGame() (*Game, error) {
+	// init game struct
 	g := &Game{
 		state: 1,
 	}
 
 	var err error
+
+	// initialize new board
 	g.board, err = NewBoard()
 	g.board.game = g
+
+	// initialize text
 	initText()
+
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +54,12 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(getColor(BEIGE))
-	g.board.drawBoard(screen)
-	DrawScore(screen, g)
+	switch g.state {
+	case 1:
+		g.board.drawBoard(screen)
+		DrawScore(screen, g)
+
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -61,6 +69,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 func DrawScore(screen *ebiten.Image, g *Game) {
 	myFont := mplusNormalFontSmaller
 
+	//TODO make more dynamig IG
 	margin := 10
 	var shadowOffsett int = 2
 	var score_text string = fmt.Sprintf("%v", g.score)

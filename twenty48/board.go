@@ -49,6 +49,7 @@ func NewBoard() (*Board, error) {
 	b.color_border = color.RGBA{194, 182, 169, 255}
 	b.color_backgorund_tile = color.RGBA{204, 192, 179, 255}
 
+	// add the two start pieces
 	for i := 0; i < 2; i++ {
 		b.randomNewPiece()
 	}
@@ -56,12 +57,11 @@ func NewBoard() (*Board, error) {
 }
 
 func (b *Board) randomNewPiece() {
-	var x, y int = len(b.board), len(b.board[0])
 
-	var posFound bool = false
+	var x, y int = len(b.board), len(b.board[0])
 	var count int
 
-	for !posFound && (count < x*y) {
+	for count < x*y {
 		var pos_x, pos_y int = rand.Intn(x), rand.Intn(y)
 		if b.board[pos_x][pos_y] == 0 {
 			if rand.Float32() > 0.16 {
@@ -112,6 +112,7 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 					xpos int = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
 					ypos int = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
 				)
+				// draw text
 				text.Draw(screen, msg, fontUsed,
 					xpos,
 					ypos,

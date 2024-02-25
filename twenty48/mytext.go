@@ -9,8 +9,6 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
-// const sampleText = `The quick brown fox jumps over the lazy dog.`
-
 var (
 	mplusNormalFont        font.Face
 	mplusNormalFontSmaller font.Face
@@ -34,9 +32,7 @@ func initText() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	mplusNormalFontSmaller, err = opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    float64(fontSizeSmall),
 		DPI:     dpi,
@@ -45,9 +41,7 @@ func initText() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
+
 	mplusBigFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    50,
 		DPI:     dpi,
