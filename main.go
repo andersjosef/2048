@@ -11,10 +11,14 @@ import (
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
-	game, _ := twenty48.NewGame()
+	game, err := twenty48.NewGame()
+	if err != nil {
+		log.Fatal(err)
+	}
 	ebiten.SetWindowSize(twenty48.SCREENWIDTH, twenty48.SCREENHEIGHT)
 	ebiten.SetWindowTitle("2048")
-	if err := ebiten.RunGame(game); err != nil {
+	err = ebiten.RunGame(game)
+	if err != nil {
 		log.Fatal(err)
 	}
 }
