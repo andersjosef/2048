@@ -249,3 +249,38 @@ func TestScore(t *testing.T) {
 	assert.Equal(t, 52, game.score)
 
 }
+
+func TestFullBoard(t *testing.T) {
+	game, err := NewGame()
+	assert.NoError(t, err)
+
+	game.board.board = [BOARDSIZE][BOARDSIZE]int{
+		{2, 8, 2, 8},
+		{8, 2, 8, 2},
+		{2, 8, 2, 8},
+		{8, 2, 8, 2},
+	}
+	early := game.board.board
+
+	want := game.board.board
+
+	game.board.moveDown()
+	game.board.addNewRandomPieceIfBoardChanged(early)
+
+	assert.Equal(t, want, game.board.board)
+
+	game.board.moveUp()
+	game.board.addNewRandomPieceIfBoardChanged(early)
+
+	assert.Equal(t, want, game.board.board)
+
+	game.board.moveLeft()
+	game.board.addNewRandomPieceIfBoardChanged(early)
+
+	assert.Equal(t, want, game.board.board)
+
+	game.board.moveRight()
+	game.board.addNewRandomPieceIfBoardChanged(early)
+
+	assert.Equal(t, want, game.board.board)
+}
