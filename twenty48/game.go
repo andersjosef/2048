@@ -78,7 +78,6 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	text.Draw(screen, score_text, myFont,
 		shadowOffsett+margin,
 		shadowOffsett+margin+text.BoundString(myFont, score_text).Dy(),
-		// font.MeasureString(myFont, score_text),
 		color.Black)
 	text.Draw(screen, score_text, myFont,
 		10,
