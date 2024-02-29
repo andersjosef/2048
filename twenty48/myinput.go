@@ -25,23 +25,31 @@ func (m *MyInput) UpdateInput(b *Board) error {
 			key_pressed := m.keys[len(m.keys)-1]
 			var board_before_change [BOARDSIZE][BOARDSIZE]int = b.board
 			// fmt.Println(key_pressed)
-			switch fmt.Sprintf("%v", key_pressed) {
-			case "D", "ArrowRight": // right@
-				b.moveRight()
-				// fmt.Println("right")
-			case "A", "ArrowLeft": // left
-				b.moveLeft()
-				// fmt.Println("left")
-			case "W", "ArrowUp":
-				b.moveUp()
-				// fmt.Println("up")
-			case "S", "ArrowDown":
-				b.moveDown()
-				// fmt.Println("down")
-			case "R": // reset button
-				b.ResetGame()
+			switch b.game.state {
+			case 1:
+				switch fmt.Sprintf("%v", key_pressed) {
+				case "D", "ArrowRight": // right@
+					b.moveRight()
+					// fmt.Println("right")
+				case "A", "ArrowLeft": // left
+					b.moveLeft()
+					// fmt.Println("left")
+				case "W", "ArrowUp":
+					b.moveUp()
+					// fmt.Println("up")
+				case "S", "ArrowDown":
+					b.moveDown()
+					// fmt.Println("down")
+				case "R": // reset button
+					b.ResetGame()
+				}
+				b.addNewRandomPieceIfBoardChanged(board_before_change)
+			case 2: // menu
+				if fmt.Sprintf("%v", key_pressed) != "" {
+
+					b.game.state = 1
+				}
 			}
-			b.addNewRandomPieceIfBoardChanged(board_before_change)
 		}
 	} else {
 		m.keyIsBeingPressed = false
@@ -53,4 +61,5 @@ func (b *Board) ResetGame() {
 	b.board = [BOARDSIZE][BOARDSIZE]int{}
 	b.game.score = 0
 	b.randomNewPiece()
+	b.game.state = 2 // swap to main menu
 }

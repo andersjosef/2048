@@ -24,7 +24,7 @@ type Game struct {
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state: 1,
+		state: 2,
 	}
 
 	var err error
@@ -43,11 +43,10 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) Update() error {
+	m.UpdateInput(g.board)
 	switch g.state {
 	case 1: //game is running loop
-		m.UpdateInput(g.board)
-		// g.GetScore()
-
+	case 2: //game is in menu
 	}
 	return nil
 }
@@ -55,9 +54,11 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(getColor(BEIGE))
 	switch g.state {
-	case 1:
+	case 1: //game is running loop
 		g.board.drawBoard(screen)
 		DrawScore(screen, g)
+	case 2: //game is in menu
+		g.DrawMenu(screen)
 
 	}
 }
@@ -77,6 +78,7 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	text.Draw(screen, score_text, myFont,
 		shadowOffsett+margin,
 		shadowOffsett+margin+text.BoundString(myFont, score_text).Dy(),
+		// font.MeasureString(myFont, score_text),
 		color.Black)
 	text.Draw(screen, score_text, myFont,
 		10,
