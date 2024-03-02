@@ -13,7 +13,7 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 	// DrawDoubleText(screen, "Press any button", SCREENWIDTH/2, int(float32(SCREENHEIGHT)/1.5), 2, mplusNormalFontSmaller)
 }
 
-func DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offsett int, fontUsed font.Face) {
+func DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face) {
 
 	var textPosX int = xpos - text.BoundString(fontUsed, message).Dx()/2
 	var textPosY int = ypos + text.BoundString(fontUsed, message).Dy()/2
@@ -23,7 +23,7 @@ func DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, of
 		textPosY,
 		color.Black)
 	text.Draw(screen, message, fontUsed,
-		textPosX-offsett,
-		textPosY-offsett,
+		textPosX-offset,
+		textPosY-offset,
 		color.White)
 }
