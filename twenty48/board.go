@@ -94,39 +94,17 @@ func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int,
 		xpos float32 = startX + float32(x)*TILESIZE
 		ypos float32 = startY + float32(y)*TILESIZE
 	)
-	// border
+
 	b.DrawBorderBackground(screen, xpos, ypos)
-	// inner
 	b.DrawInnerBackground(screen, xpos, ypos)
+
 	if value != 0 {
 		val, ok := color_map[value] // checks if num in map, if it is make the background else draw normal
 
 		if ok { // If the key exists
 			b.DrawNumberBackground(screen, startX, startY, y, x, val)
 		}
-		// draw the number to the screen
-		msg := fmt.Sprintf("%v", b.board[y][x])
-
-		fontUsed := mplusNormalFont
-		var (
-			dx float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
-			dy float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
-		)
-		if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE)+int(BORDERSIZE) {
-			fontUsed = mplusNormalFontSmaller
-			dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE))
-			dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
-		}
-
-		var (
-			xpos int = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
-			ypos int = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
-		)
-		// draw text
-		text.Draw(screen, msg, fontUsed,
-			xpos,
-			ypos,
-			color_text)
+		b.DrawText(screen, xpos, ypos, x, y)
 	}
 }
 
@@ -137,7 +115,7 @@ func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
 }
 func (b *Board) DrawInnerBackground(screen *ebiten.Image, xpos, ypos float32) {
 	vector.DrawFilledRect(screen, xpos+BORDERSIZE, ypos+BORDERSIZE,
-		float32(TILESIZE), float32(TILESIZE), b.color_backgorund_tile, false) // tiles
+		TILESIZE, TILESIZE, b.color_backgorund_tile, false) // tiles
 }
 
 func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8) {
@@ -147,6 +125,32 @@ func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float3
 	)
 	vector.DrawFilledRect(screen, xpos, ypos,
 		float32(TILESIZE), float32(TILESIZE), getColor(val), false) // tiles
+}
+
+func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int) {
+	// draw the number to the screen
+	msg := fmt.Sprintf("%v", b.board[y][x])
+
+	fontUsed := mplusNormalFont
+	var (
+		dx float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
+		dy float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
+	)
+	if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE)+int(BORDERSIZE) {
+		fontUsed = mplusNormalFontSmaller
+		dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE))
+		dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
+	}
+
+	var (
+		textPosX int = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
+		textPosY int = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
+	)
+	// draw text
+	text.Draw(screen, msg, fontUsed,
+		textPosX,
+		textPosY,
+		color_text)
 }
 
 func (b *Board) addNewRandomPieceIfBoardChanged(board_before_change [BOARDSIZE][BOARDSIZE]int) {
