@@ -34,119 +34,6 @@ func TestInitializeGame(t *testing.T) {
 	assert.Equal(t, 2, count)
 }
 
-func TestMoveLeft(t *testing.T) {
-	game, err := NewGame()
-	assert.NoError(t, err)
-
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
-		{2, 2, 0, 0},
-		{0, 2, 0, 0},
-		{0, 0, 2, 0},
-		{0, 0, 0, 2},
-	}
-	want := [4][4]int{
-		{4, 0, 0, 0},
-		{2, 0, 0, 0},
-		{2, 0, 0, 0},
-		{2, 0, 0, 0},
-	}
-
-	game.board.moveLeft()
-	assert.Equal(t, want, game.board.board)
-
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
-		{2, 2, 2, 0},
-		{0, 2, 0, 0},
-		{0, 0, 2, 0},
-		{0, 0, 0, 2},
-	}
-	want = [BOARDSIZE][BOARDSIZE]int{
-		{4, 2, 0, 0},
-		{2, 0, 0, 0},
-		{2, 0, 0, 0},
-		{2, 0, 0, 0},
-	}
-	game.board.moveLeft()
-	assert.Equal(t, want, game.board.board)
-
-}
-
-func TestMoveUp(t *testing.T) {
-	game, err := NewGame()
-
-	assert.NoError(t, err)
-
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
-		{2, 2, 0, 0},
-		{0, 2, 0, 0},
-		{0, 0, 2, 0},
-		{0, 0, 0, 2},
-	}
-	want := [4][4]int{
-		{2, 4, 2, 2},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-	}
-
-	game.board.moveUp()
-	assert.Equal(t, want, game.board.board)
-
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
-		{2, 2, 2, 0},
-		{0, 2, 0, 0},
-		{0, 2, 2, 0},
-		{0, 0, 0, 2},
-	}
-	want = [BOARDSIZE][BOARDSIZE]int{
-		{2, 4, 4, 2},
-		{0, 2, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-	}
-	game.board.moveUp()
-	assert.Equal(t, want, game.board.board)
-
-}
-
-func TestMoveRight(t *testing.T) {
-	game, err := NewGame()
-
-	assert.NoError(t, err)
-
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
-		{2, 2, 0, 0},
-		{0, 2, 0, 0},
-		{0, 0, 2, 0},
-		{0, 0, 0, 2},
-	}
-	want := [BOARDSIZE][BOARDSIZE]int{
-		{0, 0, 0, 4},
-		{0, 0, 0, 2},
-		{0, 0, 0, 2},
-		{0, 0, 0, 2},
-	}
-
-	game.board.moveRight()
-	assert.Equal(t, want, game.board.board)
-
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
-		{2, 2, 2, 0},
-		{0, 2, 0, 0},
-		{0, 2, 2, 0},
-		{0, 0, 0, 2},
-	}
-	want = [BOARDSIZE][BOARDSIZE]int{
-		{0, 0, 2, 4},
-		{0, 0, 0, 2},
-		{0, 0, 0, 4},
-		{0, 0, 0, 2},
-	}
-	game.board.moveRight()
-	assert.Equal(t, want, game.board.board)
-
-}
-
 func TestMoveDown(t *testing.T) {
 	game, err := NewGame()
 
@@ -288,4 +175,129 @@ func TestFullBoard(t *testing.T) {
 	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.board)
+}
+
+func TestMoves(t *testing.T) {
+	var tests = []struct {
+		name         string
+		initialBoard [BOARDSIZE][BOARDSIZE]int
+		want         [BOARDSIZE][BOARDSIZE]int
+		moveFunc     func(*Board)
+		wantedScore  int
+	}{
+		{
+			name: "Move Left 1",
+			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+				{2, 2, 0, 0},
+				{0, 2, 0, 0},
+				{0, 0, 2, 0},
+				{0, 0, 0, 2},
+			},
+			want: [BOARDSIZE][BOARDSIZE]int{
+				{4, 0, 0, 0},
+				{2, 0, 0, 0},
+				{2, 0, 0, 0},
+				{2, 0, 0, 0},
+			},
+			moveFunc:    func(b *Board) { b.moveLeft() },
+			wantedScore: 4,
+		},
+		{
+			name: "Move Left 2",
+			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+				{2, 2, 2, 0},
+				{0, 2, 0, 0},
+				{0, 0, 2, 0},
+				{0, 0, 0, 2},
+			},
+			want: [BOARDSIZE][BOARDSIZE]int{
+				{4, 2, 0, 0},
+				{2, 0, 0, 0},
+				{2, 0, 0, 0},
+				{2, 0, 0, 0},
+			},
+			moveFunc:    func(b *Board) { b.moveLeft() },
+			wantedScore: 4,
+		},
+		{
+			name: "Move right 1",
+			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+				{2, 2, 0, 0},
+				{0, 2, 0, 0},
+				{0, 0, 2, 0},
+				{0, 0, 0, 2},
+			},
+			want: [BOARDSIZE][BOARDSIZE]int{
+				{0, 0, 0, 4},
+				{0, 0, 0, 2},
+				{0, 0, 0, 2},
+				{0, 0, 0, 2},
+			},
+			moveFunc:    func(b *Board) { b.moveRight() },
+			wantedScore: 4,
+		},
+		{
+			name: "Move Right 2",
+			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+				{2, 2, 2, 0},
+				{0, 2, 0, 0},
+				{0, 2, 2, 0},
+				{0, 0, 0, 2},
+			},
+			want: [BOARDSIZE][BOARDSIZE]int{
+				{0, 0, 2, 4},
+				{0, 0, 0, 2},
+				{0, 0, 0, 4},
+				{0, 0, 0, 2},
+			},
+			moveFunc:    func(b *Board) { b.moveRight() },
+			wantedScore: 8,
+		},
+		{
+			name: "Move Up 1",
+			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+				{2, 2, 0, 0},
+				{0, 2, 0, 0},
+				{0, 0, 2, 0},
+				{0, 0, 0, 2},
+			},
+			want: [BOARDSIZE][BOARDSIZE]int{
+				{2, 4, 2, 2},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+			},
+			moveFunc:    func(b *Board) { b.moveUp() },
+			wantedScore: 4,
+		},
+		{
+			name: "Move Up 2",
+			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+				{2, 2, 2, 0},
+				{0, 2, 0, 0},
+				{0, 2, 2, 0},
+				{0, 0, 0, 2},
+			},
+			want: [BOARDSIZE][BOARDSIZE]int{
+				{2, 4, 4, 2},
+				{0, 2, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+			},
+			moveFunc:    func(b *Board) { b.moveUp() },
+			wantedScore: 8,
+		},
+	}
+
+	// creates a test for every entry in the list above
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			game, err := NewGame()
+			assert.NoError(t, err)
+			game.board.board = tc.initialBoard
+			tc.moveFunc(game.board)
+			assert.Equal(t, tc.want, game.board.board)
+			assert.Equal(t, tc.wantedScore, game.score)
+		})
+	}
 }
