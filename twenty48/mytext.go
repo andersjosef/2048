@@ -13,8 +13,12 @@ var (
 	mplusNormalFont        font.Face
 	mplusNormalFontSmaller font.Face
 	mplusBigFont           font.Face
-	fontSize               int = 50
-	fontSizeSmall          int = 35
+)
+
+const (
+	dpi           float64 = 72 // Try adjusting this value for high-res displays
+	fontSize      int     = 50
+	fontSizeSmall int     = 35
 )
 
 func initText() {
@@ -23,34 +27,19 @@ func initText() {
 		log.Fatal(err)
 	}
 
-	const dpi = 72 // Try adjusting this value for high-res displays
-	mplusNormalFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    float64(fontSize),
-		DPI:     dpi,
-		Hinting: font.HintingFull,
-	})
-	if err != nil {
-		log.Fatal(err)
+	initializeFont := func(size int) font.Face {
+		face, err := opentype.NewFace(tt, &opentype.FaceOptions{
+			Size:    float64(size),
+			DPI:     dpi,
+			Hinting: font.HintingFull,
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+		return face
 	}
 
-	mplusNormalFontSmaller, err = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    float64(fontSizeSmall),
-		DPI:     dpi,
-		Hinting: font.HintingFull,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	mplusBigFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    50,
-		DPI:     dpi,
-		Hinting: font.HintingFull, // Use quantization to save glyph cache images.
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Adjust the line height.
-	mplusBigFont = text.FaceWithLineHeight(mplusBigFont, 54)
+	mplusNormalFont = initializeFont(fontSize)
+	mplusNormalFontSmaller = initializeFont(fontSizeSmall)
+	mplusBigFont = text.FaceWithLineHeight(initializeFont(fontSize), 1.08)
 }
