@@ -18,9 +18,13 @@ type ActionFunc func(*Board)
 
 var keyActions = map[ebiten.Key]ActionFunc{
 	ebiten.KeyArrowRight: (*Board).moveRight,
+	ebiten.KeyD:          (*Board).moveRight,
 	ebiten.KeyArrowLeft:  (*Board).moveLeft,
+	ebiten.KeyA:          (*Board).moveLeft,
 	ebiten.KeyArrowUp:    (*Board).moveUp,
+	ebiten.KeyW:          (*Board).moveUp,
 	ebiten.KeyArrowDown:  (*Board).moveDown,
+	ebiten.KeyS:          (*Board).moveDown,
 	ebiten.KeyR:          (*Board).ResetGame,
 }
 
