@@ -89,6 +89,7 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 
 }
 
+// draws one tile of the game with everything background, number, color, etc.
 func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int, value int) {
 	var (
 		xpos float32 = startX + float32(x)*TILESIZE
@@ -115,6 +116,7 @@ func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
 		TILESIZE, TILESIZE, b.color_backgorund_tile, false) // inner
 }
 
+// background of a number, since they have colors
 func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8) {
 	var (
 		xpos float32 = startX + float32(x)*TILESIZE + BORDERSIZE
@@ -133,7 +135,9 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int) {
 		dx float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
 		dy float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
 	)
-	if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE)+int(BORDERSIZE) {
+
+	// check for text with first font is too large for it and swap
+	if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE) {
 		fontUsed = mplusNormalFontSmaller
 		dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE))
 		dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
@@ -143,13 +147,14 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int) {
 		textPosX int = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
 		textPosY int = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
 	)
-	// draw text
+
 	text.Draw(screen, msg, fontUsed,
 		textPosX,
 		textPosY,
 		color_text)
 }
 
+// the functions for adding a random piece if the board is
 func (b *Board) addNewRandomPieceIfBoardChanged(board_before_change [BOARDSIZE][BOARDSIZE]int) {
 	if board_before_change != b.board { // there will only be a new piece if it is a change
 		b.randomNewPiece()
