@@ -1,8 +1,6 @@
 package twenty48
 
 import (
-	"fmt"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -16,42 +14,38 @@ var m = &MyInput{
 	keyIsBeingPressed: false,
 }
 
+type ActionFunc func(*Board)
+
+var keyActions = map[ebiten.Key]ActionFunc{
+	ebiten.KeyArrowRight: (*Board).moveRight,
+	ebiten.KeyD:          (*Board).moveRight,
+	ebiten.KeyArrowLeft:  (*Board).moveLeft,
+	ebiten.KeyA:          (*Board).moveLeft,
+	ebiten.KeyArrowUp:    (*Board).moveUp,
+	ebiten.KeyW:          (*Board).moveUp,
+	ebiten.KeyArrowDown:  (*Board).moveDown,
+	ebiten.KeyS:          (*Board).moveDown,
+	ebiten.KeyR:          (*Board).ResetGame,
+}
+
 // this is also the game logic I guess
 func (m *MyInput) UpdateInput(b *Board) error {
 	m.keys = inpututil.AppendPressedKeys(m.keys[:0])
-	if len(m.keys) > 0 {
-		if !m.keyIsBeingPressed {
-			m.keyIsBeingPressed = true
-			key_pressed := m.keys[len(m.keys)-1]
-			b.board_before_change = b.board
-			// fmt.Println(key_pressed)
-			switch b.game.state {
-			case 1:
-				switch fmt.Sprintf("%v", key_pressed) {
-				case "D", "ArrowRight": // right@
-					b.moveRight()
-					// fmt.Println("right")
-				case "A", "ArrowLeft": // left
-					b.moveLeft()
-					// fmt.Println("left")
-				case "W", "ArrowUp":
-					b.moveUp()
-					// fmt.Println("up")
-				case "S", "ArrowDown":
-					b.moveDown()
-					// fmt.Println("down")
-				case "R": // reset button
-					b.ResetGame()
-				}
-				b.addNewRandomPieceIfBoardChanged()
-			case 2: // menu
-				if fmt.Sprintf("%v", key_pressed) != "" {
 
-					b.game.state = 1
-				}
-			}
+	if len(m.keys) > 0 && !m.keyIsBeingPressed {
+		m.keyIsBeingPressed = true
+		key_pressed := m.keys[len(m.keys)-1]
+
+		// fmt.Println(key_pressed)
+		if action, ok := keyActions[key_pressed]; ok && b.game.state == 1 { // main game
+			b.board_before_change = b.board
+			action(b)
+			b.addNewRandomPieceIfBoardChanged()
+		} else if b.game.state == 2 { // main menu
+			b.game.state = 1
 		}
-	} else {
+
+	} else if len(m.keys) == 0 {
 		m.keyIsBeingPressed = false
 	}
 	return nil
