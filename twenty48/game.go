@@ -24,7 +24,7 @@ type Game struct {
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state: 2,
+		state: 2, // 2: main menu to start
 	}
 
 	var err error

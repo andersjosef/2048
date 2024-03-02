@@ -14,14 +14,16 @@ func (g *Game) DrawMenu(screen *ebiten.Image) {
 }
 
 func DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offsett int, fontUsed font.Face) {
-	// myFont := mplusNormalFontSmaller
-	myFont := fontUsed
-	text.Draw(screen, message, myFont,
-		xpos-text.BoundString(myFont, message).Dx()/2,
-		ypos+text.BoundString(myFont, message).Dy()/2,
+
+	var textPosX int = xpos - text.BoundString(fontUsed, message).Dx()/2
+	var textPosY int = ypos + text.BoundString(fontUsed, message).Dy()/2
+
+	text.Draw(screen, message, fontUsed,
+		textPosX,
+		textPosY,
 		color.Black)
-	text.Draw(screen, message, myFont,
-		xpos-offsett-text.BoundString(myFont, message).Dx()/2,
-		ypos-offsett+text.BoundString(myFont, message).Dy()/2,
+	text.Draw(screen, message, fontUsed,
+		textPosX-offsett,
+		textPosY-offsett,
 		color.White)
 }
