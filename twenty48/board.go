@@ -39,6 +39,7 @@ type Board struct {
 	color_border          color.RGBA
 	color_backgorund_tile color.RGBA
 	game                  *Game
+	board_before_change   [BOARDSIZE][BOARDSIZE]int
 }
 
 func NewBoard() (*Board, error) {
@@ -155,8 +156,8 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int) {
 }
 
 // the functions for adding a random piece if the board is
-func (b *Board) addNewRandomPieceIfBoardChanged(board_before_change [BOARDSIZE][BOARDSIZE]int) {
-	if board_before_change != b.board { // there will only be a new piece if it is a change
+func (b *Board) addNewRandomPieceIfBoardChanged() {
+	if b.board_before_change != b.board { // there will only be a new piece if it is a change
 		b.randomNewPiece()
 	}
 }

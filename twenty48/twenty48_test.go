@@ -195,9 +195,9 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	board_before_change := game.board.board
+	game.board.board_before_change = game.board.board
 	game.board.moveDown()
-	game.board.addNewRandomPieceIfBoardChanged(board_before_change)
+	game.board.addNewRandomPieceIfBoardChanged()
 	count := 0
 	for x := 0; x < len(game.board.board); x++ {
 		for y := 0; y < len(game.board.board[0]); y++ {
@@ -214,9 +214,9 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 	}
-	board_before_change = game.board.board
+	game.board.board_before_change = game.board.board
 	game.board.moveUp()
-	game.board.addNewRandomPieceIfBoardChanged(board_before_change)
+	game.board.addNewRandomPieceIfBoardChanged()
 	count = 0
 	for x := 0; x < len(game.board.board); x++ {
 		for y := 0; y < len(game.board.board[0]); y++ {
@@ -265,27 +265,27 @@ func TestFullBoard(t *testing.T) {
 		{2, 8, 2, 8},
 		{8, 2, 8, 2},
 	}
-	early := game.board.board
+	game.board.board_before_change = game.board.board
 
 	want := game.board.board
 
 	game.board.moveDown()
-	game.board.addNewRandomPieceIfBoardChanged(early)
+	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.board)
 
 	game.board.moveUp()
-	game.board.addNewRandomPieceIfBoardChanged(early)
+	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.board)
 
 	game.board.moveLeft()
-	game.board.addNewRandomPieceIfBoardChanged(early)
+	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.board)
 
 	game.board.moveRight()
-	game.board.addNewRandomPieceIfBoardChanged(early)
+	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.board)
 }

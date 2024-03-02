@@ -23,7 +23,7 @@ func (m *MyInput) UpdateInput(b *Board) error {
 		if !m.keyIsBeingPressed {
 			m.keyIsBeingPressed = true
 			key_pressed := m.keys[len(m.keys)-1]
-			var board_before_change [BOARDSIZE][BOARDSIZE]int = b.board
+			b.board_before_change = b.board
 			// fmt.Println(key_pressed)
 			switch b.game.state {
 			case 1:
@@ -43,7 +43,7 @@ func (m *MyInput) UpdateInput(b *Board) error {
 				case "R": // reset button
 					b.ResetGame()
 				}
-				b.addNewRandomPieceIfBoardChanged(board_before_change)
+				b.addNewRandomPieceIfBoardChanged()
 			case 2: // menu
 				if fmt.Sprintf("%v", key_pressed) != "" {
 
