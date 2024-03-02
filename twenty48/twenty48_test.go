@@ -287,6 +287,40 @@ func TestMoves(t *testing.T) {
 			moveFunc:    func(b *Board) { b.moveUp() },
 			wantedScore: 8,
 		},
+		{
+			name: "Move Down 1",
+			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+				{2, 2, 0, 0},
+				{0, 2, 0, 0},
+				{0, 0, 2, 0},
+				{0, 0, 0, 2},
+			},
+			want: [BOARDSIZE][BOARDSIZE]int{
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{2, 4, 2, 2},
+			},
+			moveFunc:    func(b *Board) { b.moveDown() },
+			wantedScore: 4,
+		},
+		{
+			name: "Move Down 2",
+			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+				{2, 2, 2, 0},
+				{0, 2, 0, 0},
+				{0, 2, 2, 0},
+				{0, 0, 0, 2},
+			},
+			want: [BOARDSIZE][BOARDSIZE]int{
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 2, 0, 0},
+				{2, 4, 4, 2},
+			},
+			moveFunc:    func(b *Board) { b.moveDown() },
+			wantedScore: 8,
+		},
 	}
 
 	// creates a test for every entry in the list above
