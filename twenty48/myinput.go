@@ -36,7 +36,6 @@ func (m *MyInput) UpdateInput(b *Board) error {
 		m.keyIsBeingPressed = true
 		key_pressed := m.keys[len(m.keys)-1]
 
-		b.board_before_change = b.board
 		// fmt.Println(key_pressed)
 		if action, ok := keyActions[key_pressed]; ok && b.game.state == 1 { // main game
 			b.board_before_change = b.board
