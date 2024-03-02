@@ -29,7 +29,7 @@ var color_map = map[int][4]uint8{
 	1024:  {237, 200, 80, 255},
 	2048:  {237, 197, 63, 255},
 	4096:  {149, 189, 126, 255},
-	8192:  {87, 107, 75, 255},
+	8192:  {107, 127, 95, 255},
 	16384: {247, 104, 104, 255},
 	-1:    {255, 255, 255, 255},
 }
@@ -76,53 +76,85 @@ func (b *Board) randomNewPiece() {
 }
 
 func (b *Board) drawBoard(screen *ebiten.Image) {
-	var start_pos_x, start_pos_y float32 = float32((SCREENWIDTH / 2) - (BOARDSIZE*int(TILESIZE))/2), float32((SCREENHEIGHT / 2) - (BOARDSIZE*int(TILESIZE))/2)
+	var (
+		start_pos_x float32 = float32((SCREENWIDTH - (BOARDSIZE * int(TILESIZE))) / 2)
+		start_pos_y float32 = float32((SCREENHEIGHT - (BOARDSIZE * int(TILESIZE))) / 2)
+	)
 
 	for y := 0; y < len(b.board); y++ {
 		for x := 0; x < len(b.board[0]); x++ {
-			var xpos, ypos float32 = start_pos_x + float32(x)*TILESIZE, start_pos_y + float32(y)*TILESIZE
-			// border
-			vector.DrawFilledRect(screen, xpos, ypos,
-				float32(TILESIZE)+BORDERSIZE*2, float32(TILESIZE)+BORDERSIZE*2, b.color_border, false) //border
-			// inner
-			vector.DrawFilledRect(screen, xpos+BORDERSIZE, ypos+BORDERSIZE, // + bordersize so you can see the border size on the left
-				float32(TILESIZE), float32(TILESIZE), b.color_backgorund_tile, false) // tiles
-			if b.board[y][x] != 0 {
-				val, ok := color_map[b.board[y][x]] // checks if num in map, if it is make the background else draw normal
-				// If the key exists
-				if ok {
-					vector.DrawFilledRect(screen, start_pos_x+float32(x)*TILESIZE+BORDERSIZE, start_pos_y+float32(y)*TILESIZE+BORDERSIZE,
-						float32(TILESIZE), float32(TILESIZE), getColor(val), false) // tiles
-				}
-				// draw the number to the screen
-				msg := fmt.Sprintf("%v", b.board[y][x])
-
-				fontUsed := mplusNormalFont
-				var (
-					dx float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
-					dy float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
-				)
-				if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE)+int(BORDERSIZE) {
-					fontUsed = mplusNormalFontSmaller
-					dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE))
-					dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
-				}
-
-				var (
-					xpos int = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
-					ypos int = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
-				)
-				// draw text
-				text.Draw(screen, msg, fontUsed,
-					xpos,
-					ypos,
-					color_text)
-			}
+			b.DrawTile(screen, start_pos_x, start_pos_y, x, y, b.board[y][x])
 		}
 	}
 
 }
 
+// draws one tile of the game with everything background, number, color, etc.
+func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int, value int) {
+	var (
+		xpos float32 = startX + float32(x)*TILESIZE
+		ypos float32 = startY + float32(y)*TILESIZE
+	)
+
+	b.DrawBorderBackground(screen, xpos, ypos)
+
+	if value != 0 {
+		val, ok := color_map[value] // checks if num in map, if it is make the background else draw normal
+
+		if ok { // If the key exists draw the coresponding color background
+			b.DrawNumberBackground(screen, startX, startY, y, x, val)
+		}
+		b.DrawText(screen, xpos, ypos, x, y)
+	}
+}
+
+func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
+	var sizeBorder float32 = float32(TILESIZE) + BORDERSIZE*2
+	vector.DrawFilledRect(screen, xpos, ypos,
+		sizeBorder, sizeBorder, b.color_border, false) //outer
+	vector.DrawFilledRect(screen, xpos+BORDERSIZE, ypos+BORDERSIZE,
+		TILESIZE, TILESIZE, b.color_backgorund_tile, false) // inner
+}
+
+// background of a number, since they have colors
+func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8) {
+	var (
+		xpos float32 = startX + float32(x)*TILESIZE + BORDERSIZE
+		ypos float32 = startY + float32(y)*TILESIZE + BORDERSIZE
+	)
+	vector.DrawFilledRect(screen, xpos, ypos,
+		float32(TILESIZE), float32(TILESIZE), getColor(val), false) // tiles
+}
+
+func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int) {
+	// draw the number to the screen
+	msg := fmt.Sprintf("%v", b.board[y][x])
+	fontUsed := mplusNormalFont
+
+	var (
+		dx float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
+		dy float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
+	)
+
+	// check for text with first font is too large for it and swap
+	if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE) {
+		fontUsed = mplusNormalFontSmaller
+		dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE))
+		dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
+	}
+
+	var (
+		textPosX int = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
+		textPosY int = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
+	)
+
+	text.Draw(screen, msg, fontUsed,
+		textPosX,
+		textPosY,
+		color_text)
+}
+
+// the functions for adding a random piece if the board is
 func (b *Board) addNewRandomPieceIfBoardChanged(board_before_change [BOARDSIZE][BOARDSIZE]int) {
 	if board_before_change != b.board { // there will only be a new piece if it is a change
 		b.randomNewPiece()
