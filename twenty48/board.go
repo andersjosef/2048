@@ -29,7 +29,7 @@ var color_map = map[int][4]uint8{
 	1024:  {237, 200, 80, 255},
 	2048:  {237, 197, 63, 255},
 	4096:  {149, 189, 126, 255},
-	8192:  {87, 107, 75, 255},
+	8192:  {107, 127, 95, 255},
 	16384: {247, 104, 104, 255},
 	-1:    {255, 255, 255, 255},
 }
@@ -96,12 +96,11 @@ func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int,
 	)
 
 	b.DrawBorderBackground(screen, xpos, ypos)
-	b.DrawInnerBackground(screen, xpos, ypos)
 
 	if value != 0 {
 		val, ok := color_map[value] // checks if num in map, if it is make the background else draw normal
 
-		if ok { // If the key exists
+		if ok { // If the key exists draw the coresponding color background
 			b.DrawNumberBackground(screen, startX, startY, y, x, val)
 		}
 		b.DrawText(screen, xpos, ypos, x, y)
@@ -111,11 +110,9 @@ func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int,
 func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
 	var sizeBorder float32 = float32(TILESIZE) + BORDERSIZE*2
 	vector.DrawFilledRect(screen, xpos, ypos,
-		sizeBorder, sizeBorder, b.color_border, false) //draw border
-}
-func (b *Board) DrawInnerBackground(screen *ebiten.Image, xpos, ypos float32) {
+		sizeBorder, sizeBorder, b.color_border, false) //outer
 	vector.DrawFilledRect(screen, xpos+BORDERSIZE, ypos+BORDERSIZE,
-		TILESIZE, TILESIZE, b.color_backgorund_tile, false) // tiles
+		TILESIZE, TILESIZE, b.color_backgorund_tile, false) // inner
 }
 
 func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8) {
@@ -130,8 +127,8 @@ func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float3
 func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int) {
 	// draw the number to the screen
 	msg := fmt.Sprintf("%v", b.board[y][x])
-
 	fontUsed := mplusNormalFont
+
 	var (
 		dx float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
 		dy float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
