@@ -41,5 +41,5 @@ func initText() {
 
 	mplusNormalFont = initializeFont(fontSize)
 	mplusNormalFontSmaller = initializeFont(fontSizeSmall)
-	mplusBigFont = text.FaceWithLineHeight(initializeFont(fontSize), 1.04)
+	mplusBigFont = text.FaceWithLineHeight(initializeFont(fontSize), 1.08)
 }
