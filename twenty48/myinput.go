@@ -27,6 +27,7 @@ var keyActions = map[ebiten.Key]ActionFunc{
 	ebiten.KeyS:          (*Board).moveDown,
 	ebiten.KeyR:          (*Board).ResetGame,
 	ebiten.KeyF:          (*Board).ToggleFullScreen,
+	ebiten.KeyEscape:     (*Board).CloseGame,
 }
 
 // this is also the game logic I guess
@@ -57,4 +58,8 @@ func (b *Board) ResetGame() {
 	b.game.score = 0
 	b.randomNewPiece()
 	b.game.state = 2 // swap to main menu
+}
+
+func (b *Board) CloseGame() {
+	b.game.shouldClose = true
 }

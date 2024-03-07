@@ -19,13 +19,15 @@ type Game struct {
 	board         *Board
 	state         int //if game is in menu. running, end etc 1: running
 	score         int
+	shouldClose   bool
 	screenControl *ScreenControl
 }
 
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state: 2, // 2: main menu to start
+		state:       2,     // 2: main menu to start
+		shouldClose: false, // if yes will close the game
 	}
 	g.screenControl = InitScreenControl(g)
 
@@ -49,6 +51,10 @@ func (g *Game) Update() error {
 	switch g.state {
 	case 1: //game is running loop
 	case 2: //game is in menu
+	}
+
+	if g.shouldClose { // quit game check
+		return ebiten.Termination
 	}
 	return nil
 }
