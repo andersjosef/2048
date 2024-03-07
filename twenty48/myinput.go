@@ -26,6 +26,7 @@ var keyActions = map[ebiten.Key]ActionFunc{
 	ebiten.KeyArrowDown:  (*Board).moveDown,
 	ebiten.KeyS:          (*Board).moveDown,
 	ebiten.KeyR:          (*Board).ResetGame,
+	ebiten.KeyF:          (*Board).ToggleFullScreen,
 }
 
 // this is also the game logic I guess
