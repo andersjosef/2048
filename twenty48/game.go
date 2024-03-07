@@ -16,9 +16,10 @@ const (
 )
 
 type Game struct {
-	board *Board
-	state int //if game is in menu. running, end etc 1: running
-	score int
+	board         *Board
+	state         int //if game is in menu. running, end etc 1: running
+	score         int
+	screenControl *ScreenControl
 }
 
 func NewGame() (*Game, error) {
@@ -26,6 +27,7 @@ func NewGame() (*Game, error) {
 	g := &Game{
 		state: 2, // 2: main menu to start
 	}
+	g.screenControl = InitScreenControl(g)
 
 	var err error
 
