@@ -16,7 +16,8 @@ var m = &MyInput{
 
 type ActionFunc func(*Board)
 
-var keyActions = map[ebiten.Key]ActionFunc{
+// buttons while main game loop
+var keyActionsMainGameLoop = map[ebiten.Key]ActionFunc{
 	ebiten.KeyArrowRight: (*Board).moveRight,
 	ebiten.KeyD:          (*Board).moveRight,
 	ebiten.KeyArrowLeft:  (*Board).moveLeft,
@@ -27,6 +28,13 @@ var keyActions = map[ebiten.Key]ActionFunc{
 	ebiten.KeyS:          (*Board).moveDown,
 	ebiten.KeyR:          (*Board).ResetGame,
 	ebiten.KeyF:          (*Board).ToggleFullScreen,
+	ebiten.KeyEscape:     (*Board).CloseGame,
+}
+
+// buttons while main menu
+var keyActionsMainMenu = map[ebiten.Key]ActionFunc{
+	ebiten.KeyEscape: (*Board).CloseGame,
+	ebiten.KeyF:      (*Board).ToggleFullScreen,
 }
 
 // this is also the game logic I guess
@@ -38,12 +46,17 @@ func (m *MyInput) UpdateInput(b *Board) error {
 		key_pressed := m.keys[len(m.keys)-1]
 
 		// fmt.Println(key_pressed)
-		if action, ok := keyActions[key_pressed]; ok && b.game.state == 1 { // main game
+		if action, ok := keyActionsMainGameLoop[key_pressed]; ok && b.game.state == 1 { // main game
 			b.board_before_change = b.board
 			action(b)
 			b.addNewRandomPieceIfBoardChanged()
 		} else if b.game.state == 2 { // main menu
-			b.game.state = 1
+			action, ok = keyActionsMainMenu[key_pressed]
+			if ok { // button is in map
+				action(b)
+			} else { // button is not, default behaviour
+				b.game.state = 1
+			}
 		}
 
 	} else if len(m.keys) == 0 {
@@ -57,4 +70,8 @@ func (b *Board) ResetGame() {
 	b.game.score = 0
 	b.randomNewPiece()
 	b.game.state = 2 // swap to main menu
+}
+
+func (b *Board) CloseGame() {
+	b.game.shouldClose = true
 }
