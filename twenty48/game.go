@@ -67,7 +67,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		DrawScore(screen, g)
 	case 2: //game is in menu
 		g.DrawMenu(screen)
-
 	}
 }
 
