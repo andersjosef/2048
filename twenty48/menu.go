@@ -10,7 +10,6 @@ import (
 
 func (g *Game) DrawMenu(screen *ebiten.Image) {
 	DrawDoubleText(screen, "2048", SCREENWIDTH/2, SCREENHEIGHT/2, 2, mplusNormalFontSmaller)
-	// DrawDoubleText(screen, "Press any button", SCREENWIDTH/2, int(float32(SCREENHEIGHT)/1.5), 2, mplusNormalFontSmaller)
 }
 
 func DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face) {
