@@ -13,7 +13,11 @@ import (
 const TILESIZE float32 = 100
 const BORDERSIZE float32 = TILESIZE / 25
 
-var color_text = color.RGBA{110, 93, 71, 255}
+var (
+	color_text          = color.RGBA{110, 93, 71, 255}
+	start_pos_x float32 = float32((SCREENWIDTH - (BOARDSIZE * int(TILESIZE))) / 2)
+	start_pos_y float32 = float32((SCREENHEIGHT - (BOARDSIZE * int(TILESIZE))) / 2)
+)
 
 // colors for different numbers
 var color_map = map[int][4]uint8{
@@ -33,11 +37,6 @@ var color_map = map[int][4]uint8{
 	16384: {247, 104, 104, 255},
 	-1:    {255, 255, 255, 255},
 }
-
-var (
-	start_pos_x float32 = float32((SCREENWIDTH - (BOARDSIZE * int(TILESIZE))) / 2)
-	start_pos_y float32 = float32((SCREENHEIGHT - (BOARDSIZE * int(TILESIZE))) / 2)
-)
 
 type Board struct {
 	board                 [BOARDSIZE][BOARDSIZE]int // 2d array for the board :)
@@ -89,8 +88,10 @@ func (b *Board) randomNewPiece() {
 }
 
 func (b *Board) drawBoard(screen *ebiten.Image) {
+	// draw the backgroundimage of the game
 	screen.DrawImage(b.board_image, b.board_image_options)
 
+	// draw tiles
 	for y := 0; y < len(b.board); y++ {
 		for x := 0; x < len(b.board[0]); x++ {
 			b.DrawTile(screen, start_pos_x, start_pos_y, x, y, b.board[y][x])
