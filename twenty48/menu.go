@@ -9,7 +9,10 @@ import (
 )
 
 func (g *Game) DrawMenu(screen *ebiten.Image) {
-	DrawDoubleText(screen, "2048", SCREENWIDTH/2, SCREENHEIGHT/2, 2, mplusNormalFontSmaller)
+
+	var realWidth, realHeight int = g.GetRealWidthHeight()
+
+	DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, mplusNormalFontSmaller)
 }
 
 func DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face) {
