@@ -13,10 +13,7 @@ import (
 const (
 	SCREENWIDTH  int = 640
 	SCREENHEIGHT int = 480
-)
-
-const (
-	BOARDSIZE int = 4
+	BOARDSIZE    int = 4
 )
 
 type Game struct {
