@@ -3,6 +3,7 @@ package twenty48
 import (
 	"fmt"
 	"image/color"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
@@ -16,18 +17,22 @@ const (
 )
 
 type Game struct {
-	board         *Board
-	state         int //if game is in menu. running, end etc 1: running
-	score         int
-	shouldClose   bool
-	screenControl *ScreenControl
+	board             *Board
+	state             int //if game is in menu. running, end etc 1: running
+	score             int
+	shouldClose       bool
+	screenControl     *ScreenControl
+	scale             float64
+	screenSizeChanged bool
 }
 
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state:       2,     // 2: main menu to start
-		shouldClose: false, // if yes will close the game
+		state:             2,     // 2: main menu to start
+		shouldClose:       false, // if yes will close the game
+		scale:             ebiten.DeviceScaleFactor(),
+		screenSizeChanged: false,
 	}
 	g.screenControl = InitScreenControl(g)
 
@@ -56,6 +61,9 @@ func (g *Game) Update() error {
 	if g.shouldClose { // quit game check
 		return ebiten.Termination
 	}
+	if g.screenSizeChanged {
+		g.ChangeBoardPosition()
+	}
 	return nil
 }
 
@@ -70,8 +78,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return SCREENWIDTH, SCREENHEIGHT
+func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
+func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
+	scale := ebiten.DeviceScaleFactor()
+	canvasWidth := math.Ceil(logicWinWidth * scale)
+	canvasHeight := math.Ceil(logicWinHeight * scale)
+	return canvasWidth, canvasHeight
 }
 
 func DrawScore(screen *ebiten.Image, g *Game) {
