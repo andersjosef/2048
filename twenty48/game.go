@@ -24,6 +24,7 @@ type Game struct {
 	screenControl     *ScreenControl
 	scale             float64
 	screenSizeChanged bool
+	animation         *Animation
 }
 
 func NewGame() (*Game, error) {
@@ -34,11 +35,12 @@ func NewGame() (*Game, error) {
 		scale:             ebiten.DeviceScaleFactor(),
 		screenSizeChanged: false,
 	}
-	g.screenControl = InitScreenControl(g)
 
 	var err error
 
 	// initialize new board
+	g.animation = InitAnimation(g)
+	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard()
 	g.board.game = g
 

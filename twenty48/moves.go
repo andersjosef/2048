@@ -1,23 +1,27 @@
 package twenty48
 
+import "fmt"
+
 func (b *Board) moveLeft() {
+	b.game.animation.ResetArray()
 	for i := range b.board {
 		// Shift tiles to the left
-		compactTiles(&b.board[i])
+		compactTiles(i, b)
 		// Merge tiles and shift again if needed
 		mergeTiles(&b.board[i], b)
-		compactTiles(&b.board[i])
+		compactTiles(i, b)
 	}
+	fmt.Println(b.game.animation.arrayOfChange)
 }
 
 func (b *Board) moveUp() {
 	transpose(&b.board)
 	for i := range b.board {
 		// Shift tiles "left" (actually up, due to transposition)
-		compactTiles(&b.board[i])
+		compactTiles(i, b)
 		// Merge tiles and shift again if needed
 		mergeTiles(&b.board[i], b)
-		compactTiles(&b.board[i])
+		compactTiles(i, b)
 	}
 	transpose(&b.board) // Transpose back to the original orientation
 }
@@ -27,10 +31,10 @@ func (b *Board) moveRight() {
 		// Reverse the row to treat the right end as the left
 		reverseRow(&b.board[i])
 		// Shift tiles "left" (actually right, due to reversal)
-		compactTiles(&b.board[i])
+		compactTiles(i, b)
 		// Merge tiles and shift again if needed
 		mergeTiles(&b.board[i], b)
-		compactTiles(&b.board[i])
+		compactTiles(i, b)
 		// Reverse back to original orientation
 		reverseRow(&b.board[i])
 	}
@@ -41,10 +45,10 @@ func (b *Board) moveDown() {
 		// Reverse the row (which is actually a column due to transposition)
 		reverseRow(&b.board[i])
 		// Shift tiles "left" (actually down, due to reversal and transposition)
-		compactTiles(&b.board[i])
+		compactTiles(i, b)
 		// Merge tiles and shift again if needed
 		mergeTiles(&b.board[i], b)
-		compactTiles(&b.board[i])
+		compactTiles(i, b)
 		// Reverse back to treat the bottom as the top
 		reverseRow(&b.board[i])
 	}
@@ -58,17 +62,18 @@ func reverseRow(row *[BOARDSIZE]int) {
 }
 
 // Moves all tiles to the left
-func compactTiles(row *[BOARDSIZE]int) {
+func compactTiles(rowIndex int, b *Board) {
 	insertPos := 0
-	for _, val := range *row {
+	for i, val := range b.board[rowIndex] {
 		if val != 0 {
-			(*row)[insertPos] = val
+			b.game.animation.arrayOfChange[rowIndex][i] = (i - insertPos) // delta movement to the left
+			(b.board[rowIndex])[insertPos] = val
 			insertPos++
 		}
 	}
 	// Fill the rest with 0s
-	for i := insertPos; i < len(row); i++ {
-		row[i] = 0
+	for i := insertPos; i < len(b.board[rowIndex]); i++ {
+		b.board[rowIndex][i] = 0
 	}
 }
 

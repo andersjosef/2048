@@ -335,3 +335,39 @@ func TestMoves(t *testing.T) {
 		})
 	}
 }
+
+func TestInitAnimation(t *testing.T) {
+	g := &Game{}
+	a := InitAnimation(g)
+
+	wantArrayOfChange := [BOARDSIZE][BOARDSIZE]int{
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+		{0, 0, 0, 0},
+	}
+
+	assert.Equal(t, false, a.isAnimating)
+	assert.Equal(t, wantArrayOfChange, a.arrayOfChange)
+
+}
+
+func TestResetAnimation(t *testing.T) {
+	g := &Game{}
+	a := InitAnimation(g)
+
+	a.arrayOfChange = [BOARDSIZE][BOARDSIZE]int{
+		{0, 1, 0, 0},
+		{0, 0, 0, 3},
+		{0, 0, 2, 0},
+		{0, 0, 0, 0},
+	}
+
+	wantArrayOfChange := [BOARDSIZE][BOARDSIZE]int{}
+
+	a.ResetArray()
+
+	assert.Equal(t, false, a.isAnimating)
+	assert.Equal(t, wantArrayOfChange, a.arrayOfChange)
+
+}
