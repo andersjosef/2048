@@ -57,14 +57,12 @@ func reverseRow(row *[BOARDSIZE]int) {
 	}
 }
 
+// Moves all tiles to the left
 func compactTiles(row *[BOARDSIZE]int) {
 	insertPos := 0
 	for _, val := range *row {
 		if val != 0 {
 			(*row)[insertPos] = val
-			if insertPos != 0 { // Avoids overwriting itself
-				(*row)[insertPos] = val
-			}
 			insertPos++
 		}
 	}
@@ -85,6 +83,7 @@ func mergeTiles(row *[BOARDSIZE]int, b *Board) {
 	}
 }
 
+// Swap cols and rows
 func transpose(board *[BOARDSIZE][BOARDSIZE]int) {
 	for i := 0; i < len(*board); i++ {
 		for j := i; j < len((*board)[0]); j++ {
