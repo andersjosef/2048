@@ -1,13 +1,12 @@
 package twenty48
 
 func (b *Board) moveLeft() {
-	b.game.animation.ResetArray()
 	for i := range b.board {
 		// Shift tiles to the left
-		compactTiles(i, b)
+		compactTiles(i, b, true)
 		// Merge tiles and shift again if needed
 		mergeTiles(&b.board[i], b)
-		compactTiles(i, b)
+		compactTiles(i, b, false)
 	}
 	// fmt.Println(b.game.animation.arrayOfChange)
 	b.game.animation.ActivateAnimation("LEFT")
@@ -18,10 +17,10 @@ func (b *Board) moveUp() {
 	transpose(&b.board)
 	for i := range b.board {
 		// Shift tiles "left" (actually up, due to transposition)
-		compactTiles(i, b)
+		compactTiles(i, b, true)
 		// Merge tiles and shift again if needed
 		mergeTiles(&b.board[i], b)
-		compactTiles(i, b)
+		compactTiles(i, b, false)
 	}
 	transpose(&b.board)                        // Transpose back to the original orientation
 	transpose(&b.game.animation.arrayOfChange) // Transpose back to the original orientation
@@ -34,10 +33,10 @@ func (b *Board) moveRight() {
 		// Reverse the row to treat the right end as the left
 		reverseRow(&b.board[i])
 		// Shift tiles "left" (actually right, due to reversal)
-		compactTiles(i, b)
+		compactTiles(i, b, true)
 		// Merge tiles and shift again if needed
 		mergeTiles(&b.board[i], b)
-		compactTiles(i, b)
+		compactTiles(i, b, false)
 		// Reverse back to original orientation
 		reverseRow(&b.board[i])
 		reverseRow(&b.game.animation.arrayOfChange[i])
@@ -51,10 +50,10 @@ func (b *Board) moveDown() {
 		// Reverse the row (which is actually a column due to transposition)
 		reverseRow(&b.board[i])
 		// Shift tiles "left" (actually down, due to reversal and transposition)
-		compactTiles(i, b)
+		compactTiles(i, b, true)
 		// Merge tiles and shift again if needed
 		mergeTiles(&b.board[i], b)
-		compactTiles(i, b)
+		compactTiles(i, b, false)
 		// Reverse back to treat the bottom as the top
 		reverseRow(&b.board[i])
 		reverseRow(&b.game.animation.arrayOfChange[i])
@@ -71,7 +70,7 @@ func reverseRow(row *[BOARDSIZE]int) {
 }
 
 // Moves all tiles to the left
-func compactTiles(rowIndex int, b *Board) {
+func compactTiles(rowIndex int, b *Board, beforeMerge bool) {
 	insertPos := 0
 
 	// these two are for adding an extra move to the animation to make it pretty
@@ -82,7 +81,9 @@ func compactTiles(rowIndex int, b *Board) {
 			if val == lastVal {
 				extraMov++
 			}
-			b.game.animation.arrayOfChange[rowIndex][i] = (i - insertPos) + extraMov // delta movement to the left
+			if beforeMerge {
+				b.game.animation.arrayOfChange[rowIndex][i] = (i - insertPos) + extraMov // delta movement to the left
+			}
 			(b.board[rowIndex])[insertPos] = val
 			insertPos++
 			lastVal = val
