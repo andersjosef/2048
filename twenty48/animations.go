@@ -1,7 +1,6 @@
 package twenty48
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -36,7 +35,6 @@ func InitAnimation(g *Game) *Animation {
 }
 
 func (a *Animation) ResetArray() {
-	fmt.Println("getting reset")
 	a.arrayOfChange = [BOARDSIZE][BOARDSIZE]int{}
 }
 

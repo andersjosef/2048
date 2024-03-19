@@ -73,11 +73,20 @@ func reverseRow(row *[BOARDSIZE]int) {
 // Moves all tiles to the left
 func compactTiles(rowIndex int, b *Board) {
 	insertPos := 0
+
+	// these two are for adding an extra move to the animation to make it pretty
+	lastVal := -1
+	extraMov := 0
 	for i, val := range b.board[rowIndex] {
 		if val != 0 {
-			b.game.animation.arrayOfChange[rowIndex][i] = (i - insertPos) // delta movement to the left
+			if val == lastVal {
+				extraMov++
+			}
+			b.game.animation.arrayOfChange[rowIndex][i] = (i - insertPos) + extraMov // delta movement to the left
 			(b.board[rowIndex])[insertPos] = val
 			insertPos++
+			lastVal = val
+
 		}
 	}
 	// Fill the rest with 0s
