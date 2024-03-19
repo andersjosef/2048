@@ -40,9 +40,6 @@ func (a *Animation) ResetArray() {
 
 func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 
-	// fmt.Println("animation drawing")
-	// fmt.Printf("Current direction %s\n %v\n", a.currentDir, a.directionMap[a.currentDir])
-
 	// draw the backgroundimage of the game
 	screen.DrawImage(a.game.board.board_image, a.game.board.board_image_options)
 
@@ -50,9 +47,7 @@ func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 	for y := 0; y < len(a.game.board.board); y++ {
 		for x := 0; x < len(a.game.board.board[0]); x++ {
 			var (
-				evenFlow float32 = (float32(a.animationCounterOrig) - float32(a.animationCounter)) / (float32(a.animationCounterOrig)) // to get even increase
-				// movingDistX float32 = evenFlow * float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
-				// movingDisty float32 = evenFlow * float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
+				evenFlow    float32 = (float32(a.animationCounterOrig) - float32(a.animationCounter)) / (float32(a.animationCounterOrig)) // to get even increase
 				movingDistX float32 = evenFlow * float32(a.directionMap[a.currentDir][0]) * float32(BOARDSIZE-1)
 				movingDistY float32 = evenFlow * float32(a.directionMap[a.currentDir][1]) * float32(BOARDSIZE-1)
 			)
@@ -60,12 +55,11 @@ func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
 				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
 			}
-			// fmt.Println(a.animationCounterOrig, a.animationCounter, evenFlow)
 			a.game.board.DrawTile(screen, start_pos_x, start_pos_y, x, y, a.game.board.board_before_change[y][x], movingDistX, movingDistY)
 		}
 	}
 
-	// fmt.Println("animation over")
+	// subract 1 for each frame
 	a.animationCounter--
 	if a.animationCounter < 0 {
 		a.isAnimating = false
@@ -73,6 +67,7 @@ func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 
 }
 
+// use inside move functions to activate animations
 func (a *Animation) ActivateAnimation(direction string) {
 	a.currentDir = direction
 	a.isAnimating = true

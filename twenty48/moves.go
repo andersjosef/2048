@@ -8,7 +8,6 @@ func (b *Board) moveLeft() {
 		mergeTiles(&b.board[i], b)
 		compactTiles(i, b, false)
 	}
-	// fmt.Println(b.game.animation.arrayOfChange)
 	b.game.animation.ActivateAnimation("LEFT")
 
 }
@@ -22,8 +21,8 @@ func (b *Board) moveUp() {
 		mergeTiles(&b.board[i], b)
 		compactTiles(i, b, false)
 	}
-	transpose(&b.board)                        // Transpose back to the original orientation
-	transpose(&b.game.animation.arrayOfChange) // Transpose back to the original orientation
+	transpose(&b.board) // Transpose back to the original orientation
+	transpose(&b.game.animation.arrayOfChange)
 	b.game.animation.ActivateAnimation("UP")
 
 }
@@ -58,8 +57,8 @@ func (b *Board) moveDown() {
 		reverseRow(&b.board[i])
 		reverseRow(&b.game.animation.arrayOfChange[i])
 	}
-	transpose(&b.board)                        // Transpose back to the original orientation
-	transpose(&b.game.animation.arrayOfChange) // Transpose back to the original orientation
+	transpose(&b.board) // Transpose back to the original orientation
+	transpose(&b.game.animation.arrayOfChange)
 	b.game.animation.ActivateAnimation("DOWN")
 }
 
