@@ -2,6 +2,7 @@ package twenty48
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -23,7 +24,7 @@ func InitAnimation(g *Game) *Animation {
 		game:        g,
 	}
 
-	a.animationLength = 0.1
+	a.animationLength = 0.25
 	a.directionMap = map[string][2]int{
 		"UP":    {0, -1},
 		"DOWN":  {0, 1},
@@ -51,12 +52,18 @@ func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 	for y := 0; y < len(a.game.board.board); y++ {
 		for x := 0; x < len(a.game.board.board[0]); x++ {
 			var (
-				evenFlow    float32 = (float32(a.animationCounterOrig) - float32(a.animationCounter)) / (float32(a.animationCounterOrig)) // to get even increase
-				movingDistX float32 = evenFlow * float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
-				movingDisty float32 = evenFlow * float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
+				evenFlow float32 = (float32(a.animationCounterOrig) - float32(a.animationCounter)) / (float32(a.animationCounterOrig)) // to get even increase
+				// movingDistX float32 = evenFlow * float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
+				// movingDisty float32 = evenFlow * float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
+				movingDistX float32 = evenFlow * float32(a.directionMap[a.currentDir][0]) * float32(BOARDSIZE-1)
+				movingDistY float32 = evenFlow * float32(a.directionMap[a.currentDir][1]) * float32(BOARDSIZE-1)
 			)
+			if math.Abs(float64(movingDistX)) >= float64(a.arrayOfChange[y][x]) || math.Abs(float64(movingDistY)) >= float64(a.arrayOfChange[y][x]) {
+				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
+				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
+			}
 			// fmt.Println(a.animationCounterOrig, a.animationCounter, evenFlow)
-			a.game.board.DrawTile(screen, start_pos_x, start_pos_y, x, y, a.game.board.board_before_change[y][x], movingDistX, movingDisty)
+			a.game.board.DrawTile(screen, start_pos_x, start_pos_y, x, y, a.game.board.board_before_change[y][x], movingDistX, movingDistY)
 		}
 	}
 
