@@ -24,6 +24,7 @@ type Game struct {
 	screenControl     *ScreenControl
 	scale             float64
 	screenSizeChanged bool
+	animation         *Animation
 }
 
 func NewGame() (*Game, error) {
@@ -34,11 +35,12 @@ func NewGame() (*Game, error) {
 		scale:             ebiten.DeviceScaleFactor(),
 		screenSizeChanged: false,
 	}
-	g.screenControl = InitScreenControl(g)
 
 	var err error
 
 	// initialize new board
+	g.animation = InitAnimation(g)
+	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard()
 	g.board.game = g
 
@@ -71,7 +73,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(getColor(BEIGE))
 	switch g.state {
 	case 1: //game is running loop
-		g.board.drawBoard(screen)
+		if g.animation.isAnimating { // show animation
+			g.animation.DrawAnimation(screen)
+		} else { // draw normal borad
+			g.board.drawBoard(screen)
+		}
 		DrawScore(screen, g)
 	case 2: //game is in menu
 		g.DrawMenu(screen)
