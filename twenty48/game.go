@@ -73,7 +73,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(getColor(BEIGE))
 	switch g.state {
 	case 1: //game is running loop
-		g.board.drawBoard(screen)
+		if g.animation.isAnimating { // show animation
+			g.animation.DrawAnimation(screen)
+		} else { // draw normal borad
+			g.board.drawBoard(screen)
+		}
 		DrawScore(screen, g)
 	case 2: //game is in menu
 		g.DrawMenu(screen)

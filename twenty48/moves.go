@@ -1,7 +1,5 @@
 package twenty48
 
-import "fmt"
-
 func (b *Board) moveLeft() {
 	b.game.animation.ResetArray()
 	for i := range b.board {
@@ -11,7 +9,9 @@ func (b *Board) moveLeft() {
 		mergeTiles(&b.board[i], b)
 		compactTiles(i, b)
 	}
-	fmt.Println(b.game.animation.arrayOfChange)
+	// fmt.Println(b.game.animation.arrayOfChange)
+	b.game.animation.ActivateAnimation("LEFT")
+
 }
 
 func (b *Board) moveUp() {
@@ -23,7 +23,10 @@ func (b *Board) moveUp() {
 		mergeTiles(&b.board[i], b)
 		compactTiles(i, b)
 	}
-	transpose(&b.board) // Transpose back to the original orientation
+	transpose(&b.board)                        // Transpose back to the original orientation
+	transpose(&b.game.animation.arrayOfChange) // Transpose back to the original orientation
+	b.game.animation.ActivateAnimation("UP")
+
 }
 
 func (b *Board) moveRight() {
@@ -37,6 +40,9 @@ func (b *Board) moveRight() {
 		compactTiles(i, b)
 		// Reverse back to original orientation
 		reverseRow(&b.board[i])
+		reverseRow(&b.game.animation.arrayOfChange[i])
+
+		b.game.animation.ActivateAnimation("RIGHT")
 	}
 }
 func (b *Board) moveDown() {
@@ -51,8 +57,11 @@ func (b *Board) moveDown() {
 		compactTiles(i, b)
 		// Reverse back to treat the bottom as the top
 		reverseRow(&b.board[i])
+		reverseRow(&b.game.animation.arrayOfChange[i])
 	}
-	transpose(&b.board) // Transpose back to the original orientation
+	transpose(&b.board)                        // Transpose back to the original orientation
+	transpose(&b.game.animation.arrayOfChange) // Transpose back to the original orientation
+	b.game.animation.ActivateAnimation("DOWN")
 }
 
 func reverseRow(row *[BOARDSIZE]int) {

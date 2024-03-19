@@ -94,26 +94,26 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 	// draw tiles
 	for y := 0; y < len(b.board); y++ {
 		for x := 0; x < len(b.board[0]); x++ {
-			b.DrawTile(screen, start_pos_x, start_pos_y, x, y, b.board[y][x])
+			b.DrawTile(screen, start_pos_x, start_pos_y, x, y, b.board[y][x], 0, 0)
 		}
 	}
 
 }
 
 // draws one tile of the game with everything background, number, color, etc.
-func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int, value int) {
+func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int, value int, movDistX, movDistY float32) {
 	var (
-		xpos float32 = startX + float32(x)*TILESIZE
-		ypos float32 = startY + float32(y)*TILESIZE
+		xpos float32 = startX + float32(x)*TILESIZE + movDistX*TILESIZE
+		ypos float32 = startY + float32(y)*TILESIZE + movDistY*TILESIZE
 	)
 
 	if value != 0 {
 		val, ok := color_map[value] // checks if num in map, if it is make the background else draw normal
 
 		if ok { // If the key exists draw the coresponding color background
-			b.DrawNumberBackground(screen, startX, startY, y, x, val)
+			b.DrawNumberBackground(screen, startX, startY, y, x, val, movDistX, movDistY)
 		}
-		b.DrawText(screen, xpos, ypos, x, y)
+		b.DrawText(screen, xpos, ypos, x, y, value)
 	}
 }
 
@@ -127,19 +127,19 @@ func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
 }
 
 // background of a number, since they have colors
-func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8) {
+func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8, movDistX, movDistY float32) {
 	var (
-		xpos      float32 = startX + float32(x)*TILESIZE + BORDERSIZE
-		ypos      float32 = startY + float32(y)*TILESIZE + BORDERSIZE
+		xpos      float32 = startX + float32(x)*TILESIZE + BORDERSIZE + movDistX*TILESIZE
+		ypos      float32 = startY + float32(y)*TILESIZE + BORDERSIZE + movDistY*TILESIZE
 		size_tile float32 = float32(TILESIZE) - BORDERSIZE
 	)
 	vector.DrawFilledRect(screen, xpos, ypos,
 		size_tile, size_tile, getColor(val), false) // tiles
 }
 
-func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int) {
+func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, value int) {
 	// draw the number to the screen
-	msg := fmt.Sprintf("%v", b.board[y][x])
+	msg := fmt.Sprintf("%v", value)
 	fontUsed := mplusNormalFont
 
 	var (
