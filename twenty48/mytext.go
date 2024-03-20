@@ -21,15 +21,15 @@ const (
 	fontSizeSmall int     = 35
 )
 
-func initText() {
+func initText(g *Game) {
 	tt, err := opentype.Parse(fonts.MPlus1pRegular_ttf)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	initializeFont := func(size int) font.Face {
+	initializeFont := func(size int, g *Game) font.Face {
 		face, err := opentype.NewFace(tt, &opentype.FaceOptions{
-			Size:    float64(size),
+			Size:    float64(size) * g.scale,
 			DPI:     dpi,
 			Hinting: font.HintingFull,
 		})
@@ -39,7 +39,7 @@ func initText() {
 		return face
 	}
 
-	mplusNormalFont = initializeFont(fontSize)
-	mplusNormalFontSmaller = initializeFont(fontSizeSmall)
-	mplusBigFont = text.FaceWithLineHeight(initializeFont(fontSize), 1.08)
+	mplusNormalFont = initializeFont(fontSize, g)
+	mplusNormalFontSmaller = initializeFont(fontSizeSmall, g)
+	mplusBigFont = text.FaceWithLineHeight(initializeFont(fontSize, g), 1.08)
 }

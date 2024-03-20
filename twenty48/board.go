@@ -103,8 +103,8 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 // draws one tile of the game with everything background, number, color, etc.
 func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int, value int, movDistX, movDistY float32) {
 	var (
-		xpos float32 = startX + float32(x)*TILESIZE + movDistX*TILESIZE
-		ypos float32 = startY + float32(y)*TILESIZE + movDistY*TILESIZE
+		xpos float32 = (startX + float32(x)*TILESIZE + movDistX*TILESIZE) * float32(b.game.scale)
+		ypos float32 = (startY + float32(y)*TILESIZE + movDistY*TILESIZE) * float32(b.game.scale)
 	)
 
 	if value != 0 {
@@ -129,9 +129,9 @@ func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
 // background of a number, since they have colors
 func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8, movDistX, movDistY float32) {
 	var (
-		xpos      float32 = startX + float32(x)*TILESIZE + BORDERSIZE + movDistX*TILESIZE
-		ypos      float32 = startY + float32(y)*TILESIZE + BORDERSIZE + movDistY*TILESIZE
-		size_tile float32 = float32(TILESIZE) - BORDERSIZE
+		xpos      float32 = (startX + float32(x)*TILESIZE + BORDERSIZE + movDistX*TILESIZE) * float32(b.game.scale)
+		ypos      float32 = (startY + float32(y)*TILESIZE + BORDERSIZE + movDistY*TILESIZE) * float32(b.game.scale)
+		size_tile float32 = (float32(TILESIZE) - BORDERSIZE) * float32(b.game.scale)
 	)
 	vector.DrawFilledRect(screen, xpos, ypos,
 		size_tile, size_tile, getColor(val), false) // tiles
@@ -148,9 +148,9 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	)
 
 	// check for text with first font is too large for it and swap
-	if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE) {
+	if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE*float32(b.game.scale)) {
 		fontUsed = mplusNormalFontSmaller
-		dx = float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE))
+		dx = (float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE)))
 		dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
 	}
 
@@ -174,7 +174,7 @@ func (b *Board) addNewRandomPieceIfBoardChanged() {
 
 func (b *Board) createBoardImage() {
 	var (
-		size_x int = (BOARDSIZE * int(TILESIZE)) + int(BORDERSIZE)*2
+		size_x int = (BOARDSIZE * int(TILESIZE)) + (int(BORDERSIZE) * 2)
 		size_y     = size_x
 	)
 	b.board_image = ebiten.NewImage(size_x, size_y)

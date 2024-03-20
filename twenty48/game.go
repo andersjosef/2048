@@ -45,7 +45,10 @@ func NewGame() (*Game, error) {
 	g.board.game = g
 
 	// initialize text
-	initText()
+	initText(g)
+
+	// scale
+	g.scale = ebiten.DeviceScaleFactor()
 
 	if err != nil {
 		return nil, err
@@ -86,9 +89,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
 func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
-	scale := ebiten.DeviceScaleFactor()
-	canvasWidth := math.Ceil(logicWinWidth * scale)
-	canvasHeight := math.Ceil(logicWinHeight * scale)
+	// scale := ebiten.DeviceScaleFactor()
+	canvasWidth := math.Ceil(logicWinWidth * g.scale)
+	canvasHeight := math.Ceil(logicWinHeight * g.scale)
 	return canvasWidth, canvasHeight
 }
 
