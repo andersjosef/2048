@@ -157,8 +157,8 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	}
 
 	var (
-		textPosX int = int(xpos + BORDERSIZE/2 + TILESIZE/2 - dx/2)
-		textPosY int = int(ypos + BORDERSIZE/2 + TILESIZE/2 + dy/2)
+		textPosX int = int(xpos + (BORDERSIZE/2+TILESIZE/2)*float32(b.game.scale) - dx/2)
+		textPosY int = int(ypos + (BORDERSIZE/2+TILESIZE/2)*float32(b.game.scale) + dy/2)
 	)
 
 	text.Draw(screen, msg, fontUsed,
