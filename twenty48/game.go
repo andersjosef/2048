@@ -41,11 +41,10 @@ func NewGame() (*Game, error) {
 	// initialize new board
 	g.animation = InitAnimation(g)
 	g.screenControl = InitScreenControl(g)
-	g.board, err = NewBoard()
-	g.board.game = g
+	g.board, err = NewBoard(g)
 
 	// initialize text
-	initText()
+	initText(g)
 
 	if err != nil {
 		return nil, err
@@ -86,9 +85,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
 func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
-	scale := ebiten.DeviceScaleFactor()
-	canvasWidth := math.Ceil(logicWinWidth * scale)
-	canvasHeight := math.Ceil(logicWinHeight * scale)
+	// scale := ebiten.DeviceScaleFactor()
+	canvasWidth := math.Ceil(logicWinWidth * g.scale)
+	canvasHeight := math.Ceil(logicWinHeight * g.scale)
 	return canvasWidth, canvasHeight
 }
 
@@ -101,7 +100,7 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	var score_text string = fmt.Sprintf("%v", g.score)
 
 	text.Draw(screen, score_text, myFont,
-		shadowOffsett+margin,
+		(shadowOffsett + margin),
 		shadowOffsett+margin+text.BoundString(myFont, score_text).Dy(),
 		color.Black)
 	text.Draw(screen, score_text, myFont,
