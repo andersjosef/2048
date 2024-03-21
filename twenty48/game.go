@@ -35,20 +35,17 @@ func NewGame() (*Game, error) {
 		scale:             ebiten.DeviceScaleFactor(),
 		screenSizeChanged: false,
 	}
+	fmt.Println(g.scale)
 
 	var err error
 
 	// initialize new board
 	g.animation = InitAnimation(g)
 	g.screenControl = InitScreenControl(g)
-	g.board, err = NewBoard()
-	g.board.game = g
+	g.board, err = NewBoard(g)
 
 	// initialize text
 	initText(g)
-
-	// scale
-	g.scale = ebiten.DeviceScaleFactor()
 
 	if err != nil {
 		return nil, err

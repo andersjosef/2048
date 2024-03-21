@@ -48,14 +48,14 @@ type Board struct {
 	board_image_options   *ebiten.DrawImageOptions
 }
 
-func NewBoard() (*Board, error) {
+func NewBoard(g *Game) (*Board, error) {
 
 	b := &Board{}
 
 	// border and background colors
 	b.color_border = color.RGBA{194, 182, 169, 255}
 	b.color_backgorund_tile = color.RGBA{204, 192, 179, 255}
-
+	b.game = g
 	// add the two start pieces
 	for i := 0; i < 2; i++ {
 		b.randomNewPiece()
@@ -118,11 +118,13 @@ func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int,
 }
 
 func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
-	var sizeBorder float32 = float32(TILESIZE) + BORDERSIZE
-	var sizeInside float32 = TILESIZE - BORDERSIZE
+	xpos *= float32(b.game.scale)
+	ypos *= float32(b.game.scale)
+	var sizeBorder float32 = (float32(TILESIZE) + BORDERSIZE) * float32(b.game.scale)
+	var sizeInside float32 = (TILESIZE - BORDERSIZE) * float32(b.game.scale)
 	vector.DrawFilledRect(screen, xpos, ypos,
 		sizeBorder, sizeBorder, b.color_border, false) //outer
-	vector.DrawFilledRect(screen, xpos+BORDERSIZE, ypos+BORDERSIZE,
+	vector.DrawFilledRect(screen, xpos+BORDERSIZE*float32(b.game.scale), ypos+BORDERSIZE*float32(b.game.scale),
 		sizeInside, sizeInside, b.color_backgorund_tile, false) // inner
 }
 
@@ -174,9 +176,11 @@ func (b *Board) addNewRandomPieceIfBoardChanged() {
 
 func (b *Board) createBoardImage() {
 	var (
-		size_x int = (BOARDSIZE * int(TILESIZE)) + (int(BORDERSIZE) * 2)
-		size_y     = size_x
+		scale  float64 = b.game.scale
+		size_x int     = int(float64((BOARDSIZE*int(TILESIZE))+(int(BORDERSIZE)*2)) * scale)
+		size_y         = size_x
 	)
+	fmt.Println(b.game)
 	b.board_image = ebiten.NewImage(size_x, size_y)
 	for y := 0; y < BOARDSIZE; y++ {
 		for x := 0; x < BOARDSIZE; x++ {
@@ -185,5 +189,5 @@ func (b *Board) createBoardImage() {
 
 	}
 	b.board_image_options = &ebiten.DrawImageOptions{}
-	b.board_image_options.GeoM.Translate(float64(start_pos_x), float64(start_pos_y))
+	b.board_image_options.GeoM.Translate(float64(start_pos_x)*scale, float64(start_pos_y)*scale)
 }
