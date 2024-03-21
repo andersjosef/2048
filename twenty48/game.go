@@ -35,7 +35,6 @@ func NewGame() (*Game, error) {
 		scale:             ebiten.DeviceScaleFactor(),
 		screenSizeChanged: false,
 	}
-	fmt.Println(g.scale)
 
 	var err error
 
@@ -101,7 +100,7 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	var score_text string = fmt.Sprintf("%v", g.score)
 
 	text.Draw(screen, score_text, myFont,
-		shadowOffsett+margin,
+		(shadowOffsett + margin),
 		shadowOffsett+margin+text.BoundString(myFont, score_text).Dy(),
 		color.Black)
 	text.Draw(screen, score_text, myFont,

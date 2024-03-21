@@ -180,7 +180,6 @@ func (b *Board) createBoardImage() {
 		size_x int     = int(float64((BOARDSIZE*int(TILESIZE))+(int(BORDERSIZE)*2)) * scale)
 		size_y         = size_x
 	)
-	fmt.Println(b.game)
 	b.board_image = ebiten.NewImage(size_x, size_y)
 	for y := 0; y < BOARDSIZE; y++ {
 		for x := 0; x < BOARDSIZE; x++ {
