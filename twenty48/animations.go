@@ -47,6 +47,7 @@ func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 	for y := 0; y < len(a.game.board.board); y++ {
 		for x := 0; x < len(a.game.board.board[0]); x++ {
 			var (
+				// I know it isnt pretty
 				evenFlow    float32 = (float32(a.animationCounterOrig) - float32(a.animationCounter)) / (float32(a.animationCounterOrig)) // to get even increase
 				movingDistX float32 = evenFlow * float32(a.directionMap[a.currentDir][0]) * float32(BOARDSIZE-1)
 				movingDistY float32 = evenFlow * float32(a.directionMap[a.currentDir][1]) * float32(BOARDSIZE-1)
