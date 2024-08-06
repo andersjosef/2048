@@ -14,27 +14,6 @@ A clone of the popular 2048 game implemented in Go using the Ebitengine framewor
 - Responsive (for the most part) controls using keyboard arrows
 - Simple and clean UI
 
-
-## Installation
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/andersjosef/2048.git
-   ```
-
-2. **Navigate into the project directory:**
-
-   ```bash
-   cd 2048
-   ```
-
-4. **Run the game:**
-
-   ```bash
-   go run .
-   ```
-
 ## Usage
 
 - Press any button to start.
