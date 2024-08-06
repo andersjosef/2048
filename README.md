@@ -42,3 +42,7 @@ A clone of the popular 2048 game implemented in Go using the Ebitengine framewor
 - Combine tiles of the same number to merge them.
 - Reach the 2048 tile to win the game!
 - Esc to close.
+
+## Acknowledgments
+
+- [Ebitengine](https://ebitengine.org) for the game framework
