@@ -2,15 +2,13 @@ package main
 
 import (
 	"log"
-	"math/rand"
-	"mygame/twenty48"
-	"time"
+
+	"github.com/andersjosef/2048/twenty48"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
 	game, err := twenty48.NewGame()
 	if err != nil {
 		log.Fatal(err)

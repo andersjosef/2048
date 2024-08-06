@@ -1,6 +1,16 @@
-# 2048
-My try at the game 2048 in GO
+# 2048 Game in Go
 
-It is made with the framework Ebitengine
+A clone of the popular 2048 game implemented in Go using the Ebitengine framework. Slide and merge tiles to reach the 2048 tile!
 
-<img src="2048.gif" width="350" height="300" />
+## Features
+
+- Classic 2048 gameplay
+- Smooth (ish) animations and transitions
+- High score tracking
+- Responsive controls using keyboard arrows
+- Simple and clean UI
+
+
+## Demo
+
+![2048 Gameplay](2048.gif)
