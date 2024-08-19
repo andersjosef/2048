@@ -11,7 +11,7 @@ A clone of the popular 2048 game implemented in Go using the Ebitengine framewor
 - Classic 2048 gameplay
 - Smooth (ish) animations and transitions
 - High score tracking
-- Responsive (for the most part) controls using keyboard arrows
+- Responsive controls using keyboard arrows
 - Simple and clean UI
 
 ## Usage
