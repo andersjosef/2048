@@ -29,12 +29,14 @@ var keyActionsMainGameLoop = map[ebiten.Key]ActionFunc{
 	ebiten.KeyR:          (*Board).ResetGame,
 	ebiten.KeyF:          (*Board).ToggleFullScreen,
 	ebiten.KeyEscape:     (*Board).CloseGame,
+	ebiten.KeyQ:          (*Board).SwitchDefaultDarkMode,
 }
 
 // buttons while main menu
 var keyActionsMainMenu = map[ebiten.Key]ActionFunc{
 	ebiten.KeyEscape: (*Board).CloseGame,
 	ebiten.KeyF:      (*Board).ToggleFullScreen,
+	ebiten.KeyQ:      (*Board).SwitchDefaultDarkMode,
 }
 
 // this is also the game logic I guess

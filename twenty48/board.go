@@ -17,10 +17,20 @@ var (
 	color_text          = color.RGBA{110, 93, 71, 255}
 	start_pos_x float32 = float32((SCREENWIDTH - (BOARDSIZE * int(TILESIZE))) / 2)
 	start_pos_y float32 = float32((SCREENHEIGHT - (BOARDSIZE * int(TILESIZE))) / 2)
+
+	// DEFAULT
+	colorBorderDefault         = color.RGBA{194, 182, 169, 255}
+	colorBackgroundTileDefault = color.RGBA{204, 192, 179, 255}
+	BEIGE                      = [4]uint8{232, 220, 202, 255}
+
+	// DARK MODE
+	DARKMODE_BEIGE              = [4]uint8{0, 100, 102, 255}
+	colorBorderDarkMode         = color.RGBA{154, 142, 129, 255}
+	colorBackgroundTileDarkMode = color.RGBA{164, 152, 139, 255}
 )
 
-// colors for different numbers
-var color_map = map[int][4]uint8{
+// colors for different numbers DEFAULT/LIGHT MODE
+var colorMapDefault = map[int][4]uint8{
 	2:     {238, 228, 218, 255},
 	4:     {237, 224, 200, 255},
 	8:     {242, 177, 121, 255},
@@ -38,10 +48,29 @@ var color_map = map[int][4]uint8{
 	-1:    {255, 255, 255, 255},
 }
 
+// colors for different numbers DARK MODE
+var colorMapDarkMode = map[int][4]uint8{
+	2:     {218, 208, 198, 255},
+	4:     {217, 204, 180, 255},
+	8:     {222, 157, 101, 255},
+	16:    {225, 129, 79, 255},
+	32:    {235, 84, 49, 255},
+	64:    {226, 74, 39, 255},
+	128:   {217, 187, 94, 255},
+	256:   {217, 185, 80, 255},
+	512:   {217, 184, 77, 255},
+	1024:  {217, 180, 60, 255},
+	2048:  {217, 177, 43, 255},
+	4096:  {129, 169, 106, 255},
+	8192:  {87, 107, 75, 255},
+	16384: {227, 84, 84, 255},
+	-1:    {255, 255, 255, 255},
+}
+
 type Board struct {
 	board                 [BOARDSIZE][BOARDSIZE]int // 2d array for the board :)
 	color_border          color.RGBA
-	color_backgorund_tile color.RGBA
+	color_background_tile color.RGBA
 	game                  *Game
 	board_before_change   [BOARDSIZE][BOARDSIZE]int
 	board_image           *ebiten.Image
@@ -53,8 +82,14 @@ func NewBoard(g *Game) (*Board, error) {
 	b := &Board{}
 
 	// border and background colors
-	b.color_border = color.RGBA{194, 182, 169, 255}
-	b.color_backgorund_tile = color.RGBA{204, 192, 179, 255}
+	if g.darkMode { // INIT in DARK MODE
+		b.color_border = colorBorderDarkMode
+		b.color_background_tile = colorBackgroundTileDarkMode
+
+	} else { // INIT in DEFAULT MODE
+		b.color_border = colorBorderDefault
+		b.color_background_tile = colorBackgroundTileDefault
+	}
 	b.game = g
 	// add the two start pieces
 	for i := 0; i < 2; i++ {
@@ -108,7 +143,14 @@ func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int,
 	)
 
 	if value != 0 {
-		val, ok := color_map[value] // checks if num in map, if it is make the background else draw normal
+		// Set tile color to default color
+		colorMap := colorMapDefault
+
+		// change tile colors to dark if darkmode is activated
+		if b.game.darkMode {
+			colorMap = colorMapDarkMode
+		}
+		val, ok := colorMap[value] // checks if num in map, if it is make the background else draw normal
 
 		if ok { // If the key exists draw the coresponding color background
 			b.DrawNumberBackground(screen, startX, startY, y, x, val, movDistX, movDistY)
@@ -122,10 +164,11 @@ func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
 	ypos *= float32(b.game.scale)
 	var sizeBorder float32 = (float32(TILESIZE) + BORDERSIZE) * float32(b.game.scale)
 	var sizeInside float32 = (TILESIZE - BORDERSIZE) * float32(b.game.scale)
+
 	vector.DrawFilledRect(screen, xpos, ypos,
 		sizeBorder, sizeBorder, b.color_border, false) //outer
 	vector.DrawFilledRect(screen, xpos+BORDERSIZE*float32(b.game.scale), ypos+BORDERSIZE*float32(b.game.scale),
-		sizeInside, sizeInside, b.color_backgorund_tile, false) // inner
+		sizeInside, sizeInside, b.color_background_tile, false) // inner
 }
 
 // background of a number, since they have colors
@@ -189,4 +232,19 @@ func (b *Board) createBoardImage() {
 	}
 	b.board_image_options = &ebiten.DrawImageOptions{}
 	b.board_image_options.GeoM.Translate(float64(start_pos_x)*scale, float64(start_pos_y)*scale)
+}
+
+func (b *Board) SwitchDefaultDarkMode() {
+	b.game.darkMode = !b.game.darkMode
+
+	if b.game.darkMode { // DARK MODE
+		b.color_border = colorBorderDarkMode
+		b.color_background_tile = colorBackgroundTileDarkMode
+		b.createBoardImage()
+	} else { // DEFAULT MODE
+		b.color_border = colorBorderDefault
+		b.color_background_tile = colorBackgroundTileDefault
+		b.createBoardImage()
+
+	}
 }
