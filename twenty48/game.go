@@ -35,7 +35,7 @@ func NewGame() (*Game, error) {
 		shouldClose:       false, // if yes will close the game
 		scale:             ebiten.DeviceScaleFactor(),
 		screenSizeChanged: false,
-		darkMode:          true,
+		darkMode:          false,
 	}
 
 	var err error
