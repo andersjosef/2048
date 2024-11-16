@@ -25,6 +25,7 @@ type Game struct {
 	scale             float64
 	screenSizeChanged bool
 	animation         *Animation
+	darkMode          bool
 }
 
 func NewGame() (*Game, error) {
@@ -34,6 +35,7 @@ func NewGame() (*Game, error) {
 		shouldClose:       false, // if yes will close the game
 		scale:             ebiten.DeviceScaleFactor(),
 		screenSizeChanged: false,
+		darkMode:          true,
 	}
 
 	var err error
@@ -69,7 +71,11 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	screen.Fill(getColor(BEIGE))
+	if g.darkMode {
+		screen.Fill(getColor(DARKMODE_BEIGE))
+	} else {
+		screen.Fill(getColor(BEIGE))
+	}
 	switch g.state {
 	case 1: //game is running loop
 		if g.animation.isAnimating { // show animation
