@@ -49,7 +49,7 @@ func (m *MyInput) UpdateInput(b *Board) error {
 
 		// fmt.Println(key_pressed)
 		if action, ok := keyActionsMainGameLoop[key_pressed]; ok && b.game.state == 1 { // main game
-			b.board_before_change = b.board
+			b.boardBeforeChange = b.board
 			action(b)
 			b.addNewRandomPieceIfBoardChanged()
 		} else if b.game.state == 2 { // main menu

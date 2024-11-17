@@ -72,9 +72,9 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	if g.darkMode {
-		screen.Fill(getColor(DARKMODE_BEIGE))
+		screen.Fill(getColor(screenBackgroundColorDarkMode))
 	} else {
-		screen.Fill(getColor(BEIGE))
+		screen.Fill(getColor(screenBackgroundColorDefault))
 	}
 	switch g.state {
 	case 1: //game is running loop

@@ -82,7 +82,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	game.board.board_before_change = game.board.board
+	game.board.boardBeforeChange = game.board.board
 	game.board.moveDown()
 	game.board.addNewRandomPieceIfBoardChanged()
 	count := 0
@@ -101,7 +101,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 	}
-	game.board.board_before_change = game.board.board
+	game.board.boardBeforeChange = game.board.board
 	game.board.moveUp()
 	game.board.addNewRandomPieceIfBoardChanged()
 	count = 0
@@ -152,7 +152,7 @@ func TestFullBoard(t *testing.T) {
 		{2, 8, 2, 8},
 		{8, 2, 8, 2},
 	}
-	game.board.board_before_change = game.board.board
+	game.board.boardBeforeChange = game.board.board
 
 	want := game.board.board
 

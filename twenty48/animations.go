@@ -41,7 +41,7 @@ func (a *Animation) ResetArray() {
 func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 
 	// draw the backgroundimage of the game
-	screen.DrawImage(a.game.board.board_image, a.game.board.board_image_options)
+	screen.DrawImage(a.game.board.boardImage, a.game.board.boardImageOptions)
 
 	// draw tiles
 	for y := 0; y < len(a.game.board.board); y++ {
@@ -56,7 +56,7 @@ func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
 				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
 			}
-			a.game.board.DrawTile(screen, start_pos_x, start_pos_y, x, y, a.game.board.board_before_change[y][x], movingDistX, movingDistY)
+			a.game.board.DrawTile(screen, startPosX, startPosY, x, y, a.game.board.boardBeforeChange[y][x], movingDistX, movingDistY)
 		}
 	}
 
