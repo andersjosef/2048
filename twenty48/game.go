@@ -33,7 +33,7 @@ func NewGame() (*Game, error) {
 	g := &Game{
 		state:             2,     // 2: main menu to start
 		shouldClose:       false, // if yes will close the game
-		scale:             ebiten.DeviceScaleFactor(),
+		scale:             ebiten.Monitor().DeviceScaleFactor(),
 		screenSizeChanged: false,
 		darkMode:          false,
 	}

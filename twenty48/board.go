@@ -168,11 +168,11 @@ func (b *Board) addNewRandomPieceIfBoardChanged() {
 
 func (b *Board) createBoardImage() {
 	var (
-		scale  float64 = b.game.scale
-		size_x int     = int(float64((BOARDSIZE*int(TILESIZE))+(int(BORDERSIZE)*2)) * scale)
-		size_y         = size_x
+		scale float64 = b.game.scale
+		sizeX int     = int(float64((BOARDSIZE*int(TILESIZE))+(int(BORDERSIZE)*2)) * scale)
+		sizeY         = sizeX
 	)
-	b.boardImage = ebiten.NewImage(size_x, size_y)
+	b.boardImage = ebiten.NewImage(sizeX, sizeY)
 	for y := 0; y < BOARDSIZE; y++ {
 		for x := 0; x < BOARDSIZE; x++ {
 			b.DrawBorderBackground(b.boardImage, float32(x)*TILESIZE, float32(y)*TILESIZE)
