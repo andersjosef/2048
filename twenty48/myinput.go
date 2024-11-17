@@ -1,7 +1,6 @@
 package twenty48
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -82,24 +81,27 @@ func (m *MyInput) UpdateInput(b *Board) error {
 // Moving pieces by moving the mouse
 func (m *MyInput) MouseInput(b *Board) {
 
+	// Can left, right or wheel click
 	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) || ebiten.IsMouseButtonPressed(ebiten.MouseButton1) || ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
 
+	// Cursor movement updates
 	if pressed {
 		if b.game.state == 2 { // If in main menu click will trigger game state
 			b.game.state = 1
 		} else { // If not in menu update only end cursor coordinate
 			m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
 		}
-	} else { // If not clicking update both values
+	} else { // If not clicking: update both values
 		m.justMoved = false
 		m.startCursorPos[0], m.startCursorPos[1] = ebiten.CursorPosition()
 		m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
 	}
 
-	threshold := 100 // delta distance needed to trigger a move
+	threshold := 100 // Delta distance needed to trigger a move
 	dx := m.endCursorPos[0] - m.startCursorPos[0]
 	dy := m.endCursorPos[1] - m.startCursorPos[1]
-	fmt.Println(m.justMoved)
+
+	// Check if delta movements is large enough to trigger move
 	if (int(math.Abs(float64(dx))) > threshold || int(math.Abs(float64(dy))) > threshold) && !m.justMoved {
 		b.boardBeforeChange = b.board
 		if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
@@ -117,8 +119,6 @@ func (m *MyInput) MouseInput(b *Board) {
 		}
 		b.addNewRandomPieceIfBoardChanged()
 		m.justMoved = true
-		fmt.Printf("(x, y)= (%v, %v)\n", m.endCursorPos[0]-m.startCursorPos[0], m.endCursorPos[1]-m.startCursorPos[1])
-
 	}
 }
 
