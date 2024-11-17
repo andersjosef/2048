@@ -1,6 +1,9 @@
 package twenty48
 
 import (
+	"fmt"
+	"math"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -8,6 +11,11 @@ import (
 type MyInput struct {
 	keys              []ebiten.Key
 	keyIsBeingPressed bool
+
+	// Cursor positions
+	startCursorPos [2]int
+	endCursorPos   [2]int
+	justMoved      bool // To make sure only one move is done
 }
 
 var m = &MyInput{
@@ -43,6 +51,10 @@ var keyActionsMainMenu = map[ebiten.Key]ActionFunc{
 func (m *MyInput) UpdateInput(b *Board) error {
 	m.keys = inpututil.AppendPressedKeys(m.keys[:0])
 
+	// Mouse
+	m.MouseInput(b)
+
+	// Keyboard
 	if len(m.keys) > 0 && !m.keyIsBeingPressed {
 		m.keyIsBeingPressed = true
 		key_pressed := m.keys[len(m.keys)-1]
@@ -65,6 +77,49 @@ func (m *MyInput) UpdateInput(b *Board) error {
 		m.keyIsBeingPressed = false
 	}
 	return nil
+}
+
+// Moving pieces by moving the mouse
+func (m *MyInput) MouseInput(b *Board) {
+
+	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) || ebiten.IsMouseButtonPressed(ebiten.MouseButton1) || ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
+
+	if pressed {
+		if b.game.state == 2 { // If in main menu click will trigger game state
+			b.game.state = 1
+		} else { // If not in menu update only end cursor coordinate
+			m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
+		}
+	} else { // If not clicking update both values
+		m.justMoved = false
+		m.startCursorPos[0], m.startCursorPos[1] = ebiten.CursorPosition()
+		m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
+	}
+
+	threshold := 100 // delta distance needed to trigger a move
+	dx := m.endCursorPos[0] - m.startCursorPos[0]
+	dy := m.endCursorPos[1] - m.startCursorPos[1]
+	fmt.Println(m.justMoved)
+	if (int(math.Abs(float64(dx))) > threshold || int(math.Abs(float64(dy))) > threshold) && !m.justMoved {
+		b.boardBeforeChange = b.board
+		if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
+			if dx > 0 {
+				b.moveRight()
+			} else {
+				b.moveLeft()
+			}
+		} else { // Y-axis largest
+			if dy > 0 {
+				b.moveDown()
+			} else {
+				b.moveUp()
+			}
+		}
+		b.addNewRandomPieceIfBoardChanged()
+		m.justMoved = true
+		fmt.Printf("(x, y)= (%v, %v)\n", m.endCursorPos[0]-m.startCursorPos[0], m.endCursorPos[1]-m.startCursorPos[1])
+
+	}
 }
 
 func (b *Board) ResetGame() {
