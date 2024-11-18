@@ -10,7 +10,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-const TILESIZE float32 = 100
+const TILESIZE float32 = float32(SCREENWIDTH) / 6.4
 const BORDERSIZE float32 = TILESIZE / 25
 
 var (
