@@ -21,6 +21,8 @@ var m = &MyInput{}
 
 type ActionFunc func(*Board)
 
+const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
+
 // buttons
 var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 	StateRunning: { // Main loop
@@ -60,7 +62,7 @@ func (m *MyInput) handleKeyboardInput(b *Board) error {
 		key_pressed := m.keys[len(m.keys)-1]
 
 		// Get the appropriate action map based on the current game state
-		if actionMap, ok := keyActions[b.game.state]; ok {
+		if actionMap, ok := keyActions[b.game.state]; ok { // Check if actionmap exist for current game state
 			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
 				b.boardBeforeChange = b.board
 				action(b)
@@ -78,11 +80,11 @@ func (m *MyInput) handleKeyboardInput(b *Board) error {
 	return nil
 }
 
-// Moving pieces by moving the mouse
 func (m *MyInput) handleMouseInput(b *Board) {
-
 	// Can left, right or wheel click
-	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) || ebiten.IsMouseButtonPressed(ebiten.MouseButton1) || ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
+	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
+		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
+		ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
 
 	// Cursor movement updates
 	if pressed {
@@ -92,34 +94,50 @@ func (m *MyInput) handleMouseInput(b *Board) {
 			m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
 		}
 	} else { // If not clicking: update both values
-		m.justMoved = false
-		m.startCursorPos[0], m.startCursorPos[1] = ebiten.CursorPosition()
-		m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
+		m.resetMouseState()
 	}
 
-	threshold := 100 // Delta distance needed to trigger a move
+	// Check if delta movements is large enough to trigger move
+	if m.shoulTriggerMove() && !m.justMoved {
+		m.performMove(b)
+		m.justMoved = true
+	}
+}
+
+func (m *MyInput) shoulTriggerMove() bool {
 	dx := m.endCursorPos[0] - m.startCursorPos[0]
 	dy := m.endCursorPos[1] - m.startCursorPos[1]
 
-	// Check if delta movements is large enough to trigger move
-	if (int(math.Abs(float64(dx))) > threshold || int(math.Abs(float64(dy))) > threshold) && !m.justMoved {
-		b.boardBeforeChange = b.board
-		if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
-			if dx > 0 {
-				b.moveRight()
-			} else {
-				b.moveLeft()
-			}
-		} else { // Y-axis largest
-			if dy > 0 {
-				b.moveDown()
-			} else {
-				b.moveUp()
-			}
+	return int(math.Abs(float64(dx))) > MOVE_THRESHOLD || int(math.Abs(float64(dy))) > MOVE_THRESHOLD
+}
+
+func (m *MyInput) resetMouseState() {
+	m.justMoved = false
+	m.startCursorPos[0], m.startCursorPos[1] = ebiten.CursorPosition()
+	m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
+}
+
+func (m *MyInput) performMove(b *Board) {
+	dx := m.endCursorPos[0] - m.startCursorPos[0]
+	dy := m.endCursorPos[1] - m.startCursorPos[1]
+
+	b.boardBeforeChange = b.board
+
+	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
+		if dx > 0 {
+			b.moveRight()
+		} else {
+			b.moveLeft()
 		}
-		b.addNewRandomPieceIfBoardChanged()
-		m.justMoved = true
+	} else { // Y-axis largest
+		if dy > 0 {
+			b.moveDown()
+		} else {
+			b.moveUp()
+		}
 	}
+
+	b.addNewRandomPieceIfBoardChanged()
 }
 
 func (b *Board) ResetGame() {
