@@ -17,57 +17,59 @@ type MyInput struct {
 	justMoved      bool // To make sure only one move is done
 }
 
-var m = &MyInput{
-	keyIsBeingPressed: false,
-}
+var m = &MyInput{}
 
 type ActionFunc func(*Board)
 
-// buttons while main game loop
-var keyActionsMainGameLoop = map[ebiten.Key]ActionFunc{
-	ebiten.KeyArrowRight: (*Board).moveRight,
-	ebiten.KeyD:          (*Board).moveRight,
-	ebiten.KeyArrowLeft:  (*Board).moveLeft,
-	ebiten.KeyA:          (*Board).moveLeft,
-	ebiten.KeyArrowUp:    (*Board).moveUp,
-	ebiten.KeyW:          (*Board).moveUp,
-	ebiten.KeyArrowDown:  (*Board).moveDown,
-	ebiten.KeyS:          (*Board).moveDown,
-	ebiten.KeyR:          (*Board).ResetGame,
-	ebiten.KeyF:          (*Board).ToggleFullScreen,
-	ebiten.KeyEscape:     (*Board).CloseGame,
-	ebiten.KeyQ:          (*Board).SwitchDefaultDarkMode,
+const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
+
+// buttons
+var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
+	StateRunning: { // Main loop
+		ebiten.KeyArrowRight: (*Board).moveRight,
+		ebiten.KeyD:          (*Board).moveRight,
+		ebiten.KeyArrowLeft:  (*Board).moveLeft,
+		ebiten.KeyA:          (*Board).moveLeft,
+		ebiten.KeyArrowUp:    (*Board).moveUp,
+		ebiten.KeyW:          (*Board).moveUp,
+		ebiten.KeyArrowDown:  (*Board).moveDown,
+		ebiten.KeyS:          (*Board).moveDown,
+		ebiten.KeyR:          (*Board).ResetGame,
+		ebiten.KeyF:          (*Board).ToggleFullScreen,
+		ebiten.KeyEscape:     (*Board).CloseGame,
+		ebiten.KeyQ:          (*Board).SwitchDefaultDarkMode,
+	},
+	StateMainMenu: { // Menu
+		ebiten.KeyEscape: (*Board).CloseGame,
+		ebiten.KeyF:      (*Board).ToggleFullScreen,
+		ebiten.KeyQ:      (*Board).SwitchDefaultDarkMode,
+	},
 }
 
-// buttons while main menu
-var keyActionsMainMenu = map[ebiten.Key]ActionFunc{
-	ebiten.KeyEscape: (*Board).CloseGame,
-	ebiten.KeyF:      (*Board).ToggleFullScreen,
-	ebiten.KeyQ:      (*Board).SwitchDefaultDarkMode,
-}
-
-// this is also the game logic I guess
 func (m *MyInput) UpdateInput(b *Board) error {
+	// Keyboard and Mouse input handling
+	m.handleKeyboardInput(b)
+	m.handleMouseInput(b)
+	return nil
+}
+
+func (m *MyInput) handleKeyboardInput(b *Board) error {
 	m.keys = inpututil.AppendPressedKeys(m.keys[:0])
 
-	// Mouse
-	m.MouseInput(b)
-
-	// Keyboard
+	// Take key and prevent retriggering
 	if len(m.keys) > 0 && !m.keyIsBeingPressed {
 		m.keyIsBeingPressed = true
 		key_pressed := m.keys[len(m.keys)-1]
 
-		// fmt.Println(key_pressed)
-		if action, ok := keyActionsMainGameLoop[key_pressed]; ok && b.game.state == StateRunning { // main game
-			b.boardBeforeChange = b.board
-			action(b)
-			b.addNewRandomPieceIfBoardChanged()
-		} else if b.game.state == StateMainMenu { // main menu
-			action, ok = keyActionsMainMenu[key_pressed]
-			if ok { // button is in map
+		// Get the appropriate action map based on the current game state
+		if actionMap, ok := keyActions[b.game.state]; ok { // Check if actionmap exist for current game state
+			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
+				b.boardBeforeChange = b.board
 				action(b)
-			} else { // button is not, default behaviour
+				if b.game.state == StateRunning { // If its the main loop add a piece
+					b.addNewRandomPieceIfBoardChanged()
+				}
+			} else if b.game.state == StateMainMenu { // If button is not in map and state is main menu
 				b.game.state = StateRunning
 			}
 		}
@@ -78,11 +80,11 @@ func (m *MyInput) UpdateInput(b *Board) error {
 	return nil
 }
 
-// Moving pieces by moving the mouse
-func (m *MyInput) MouseInput(b *Board) {
-
+func (m *MyInput) handleMouseInput(b *Board) {
 	// Can left, right or wheel click
-	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) || ebiten.IsMouseButtonPressed(ebiten.MouseButton1) || ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
+	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
+		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
+		ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
 
 	// Cursor movement updates
 	if pressed {
@@ -92,34 +94,50 @@ func (m *MyInput) MouseInput(b *Board) {
 			m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
 		}
 	} else { // If not clicking: update both values
-		m.justMoved = false
-		m.startCursorPos[0], m.startCursorPos[1] = ebiten.CursorPosition()
-		m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
+		m.resetMouseState()
 	}
 
-	threshold := 100 // Delta distance needed to trigger a move
+	// Check if delta movements is large enough to trigger move
+	if m.shoulTriggerMove() && !m.justMoved {
+		m.performMove(b)
+		m.justMoved = true
+	}
+}
+
+func (m *MyInput) shoulTriggerMove() bool {
 	dx := m.endCursorPos[0] - m.startCursorPos[0]
 	dy := m.endCursorPos[1] - m.startCursorPos[1]
 
-	// Check if delta movements is large enough to trigger move
-	if (int(math.Abs(float64(dx))) > threshold || int(math.Abs(float64(dy))) > threshold) && !m.justMoved {
-		b.boardBeforeChange = b.board
-		if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
-			if dx > 0 {
-				b.moveRight()
-			} else {
-				b.moveLeft()
-			}
-		} else { // Y-axis largest
-			if dy > 0 {
-				b.moveDown()
-			} else {
-				b.moveUp()
-			}
+	return int(math.Abs(float64(dx))) > MOVE_THRESHOLD || int(math.Abs(float64(dy))) > MOVE_THRESHOLD
+}
+
+func (m *MyInput) resetMouseState() {
+	m.justMoved = false
+	m.startCursorPos[0], m.startCursorPos[1] = ebiten.CursorPosition()
+	m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
+}
+
+func (m *MyInput) performMove(b *Board) {
+	dx := m.endCursorPos[0] - m.startCursorPos[0]
+	dy := m.endCursorPos[1] - m.startCursorPos[1]
+
+	b.boardBeforeChange = b.board
+
+	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
+		if dx > 0 {
+			b.moveRight()
+		} else {
+			b.moveLeft()
 		}
-		b.addNewRandomPieceIfBoardChanged()
-		m.justMoved = true
+	} else { // Y-axis largest
+		if dy > 0 {
+			b.moveDown()
+		} else {
+			b.moveUp()
+		}
 	}
+
+	b.addNewRandomPieceIfBoardChanged()
 }
 
 func (b *Board) ResetGame() {
