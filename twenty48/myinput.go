@@ -17,57 +17,57 @@ type MyInput struct {
 	justMoved      bool // To make sure only one move is done
 }
 
-var m = &MyInput{
-	keyIsBeingPressed: false,
-}
+var m = &MyInput{}
 
 type ActionFunc func(*Board)
 
-// buttons while main game loop
-var keyActionsMainGameLoop = map[ebiten.Key]ActionFunc{
-	ebiten.KeyArrowRight: (*Board).moveRight,
-	ebiten.KeyD:          (*Board).moveRight,
-	ebiten.KeyArrowLeft:  (*Board).moveLeft,
-	ebiten.KeyA:          (*Board).moveLeft,
-	ebiten.KeyArrowUp:    (*Board).moveUp,
-	ebiten.KeyW:          (*Board).moveUp,
-	ebiten.KeyArrowDown:  (*Board).moveDown,
-	ebiten.KeyS:          (*Board).moveDown,
-	ebiten.KeyR:          (*Board).ResetGame,
-	ebiten.KeyF:          (*Board).ToggleFullScreen,
-	ebiten.KeyEscape:     (*Board).CloseGame,
-	ebiten.KeyQ:          (*Board).SwitchDefaultDarkMode,
+// buttons
+var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
+	StateRunning: { // Main loop
+		ebiten.KeyArrowRight: (*Board).moveRight,
+		ebiten.KeyD:          (*Board).moveRight,
+		ebiten.KeyArrowLeft:  (*Board).moveLeft,
+		ebiten.KeyA:          (*Board).moveLeft,
+		ebiten.KeyArrowUp:    (*Board).moveUp,
+		ebiten.KeyW:          (*Board).moveUp,
+		ebiten.KeyArrowDown:  (*Board).moveDown,
+		ebiten.KeyS:          (*Board).moveDown,
+		ebiten.KeyR:          (*Board).ResetGame,
+		ebiten.KeyF:          (*Board).ToggleFullScreen,
+		ebiten.KeyEscape:     (*Board).CloseGame,
+		ebiten.KeyQ:          (*Board).SwitchDefaultDarkMode,
+	},
+	StateMainMenu: { // Menu
+		ebiten.KeyEscape: (*Board).CloseGame,
+		ebiten.KeyF:      (*Board).ToggleFullScreen,
+		ebiten.KeyQ:      (*Board).SwitchDefaultDarkMode,
+	},
 }
 
-// buttons while main menu
-var keyActionsMainMenu = map[ebiten.Key]ActionFunc{
-	ebiten.KeyEscape: (*Board).CloseGame,
-	ebiten.KeyF:      (*Board).ToggleFullScreen,
-	ebiten.KeyQ:      (*Board).SwitchDefaultDarkMode,
-}
-
-// this is also the game logic I guess
 func (m *MyInput) UpdateInput(b *Board) error {
+	// Keyboard and Mouse input handling
+	m.handleKeyboardInput(b)
+	m.handleMouseInput(b)
+	return nil
+}
+
+func (m *MyInput) handleKeyboardInput(b *Board) error {
 	m.keys = inpututil.AppendPressedKeys(m.keys[:0])
 
-	// Mouse
-	m.MouseInput(b)
-
-	// Keyboard
+	// Take key and prevent retriggering
 	if len(m.keys) > 0 && !m.keyIsBeingPressed {
 		m.keyIsBeingPressed = true
 		key_pressed := m.keys[len(m.keys)-1]
 
-		// fmt.Println(key_pressed)
-		if action, ok := keyActionsMainGameLoop[key_pressed]; ok && b.game.state == StateRunning { // main game
-			b.boardBeforeChange = b.board
-			action(b)
-			b.addNewRandomPieceIfBoardChanged()
-		} else if b.game.state == StateMainMenu { // main menu
-			action, ok = keyActionsMainMenu[key_pressed]
-			if ok { // button is in map
+		// Get the appropriate action map based on the current game state
+		if actionMap, ok := keyActions[b.game.state]; ok {
+			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
+				b.boardBeforeChange = b.board
 				action(b)
-			} else { // button is not, default behaviour
+				if b.game.state == StateRunning { // If its the main loop add a piece
+					b.addNewRandomPieceIfBoardChanged()
+				}
+			} else if b.game.state == StateMainMenu { // If button is not in map and state is main menu
 				b.game.state = StateRunning
 			}
 		}
@@ -79,7 +79,7 @@ func (m *MyInput) UpdateInput(b *Board) error {
 }
 
 // Moving pieces by moving the mouse
-func (m *MyInput) MouseInput(b *Board) {
+func (m *MyInput) handleMouseInput(b *Board) {
 
 	// Can left, right or wheel click
 	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) || ebiten.IsMouseButtonPressed(ebiten.MouseButton1) || ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
