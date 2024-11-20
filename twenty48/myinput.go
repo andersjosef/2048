@@ -59,16 +59,16 @@ func (m *MyInput) UpdateInput(b *Board) error {
 		key_pressed := m.keys[len(m.keys)-1]
 
 		// fmt.Println(key_pressed)
-		if action, ok := keyActionsMainGameLoop[key_pressed]; ok && b.game.state == 1 { // main game
+		if action, ok := keyActionsMainGameLoop[key_pressed]; ok && b.game.state == StateRunning { // main game
 			b.boardBeforeChange = b.board
 			action(b)
 			b.addNewRandomPieceIfBoardChanged()
-		} else if b.game.state == 2 { // main menu
+		} else if b.game.state == StateMainMenu { // main menu
 			action, ok = keyActionsMainMenu[key_pressed]
 			if ok { // button is in map
 				action(b)
 			} else { // button is not, default behaviour
-				b.game.state = 1
+				b.game.state = StateRunning
 			}
 		}
 
@@ -86,8 +86,8 @@ func (m *MyInput) MouseInput(b *Board) {
 
 	// Cursor movement updates
 	if pressed {
-		if b.game.state == 2 { // If in main menu click will trigger game state
-			b.game.state = 1
+		if b.game.state == StateMainMenu { // If in main menu click will trigger game state
+			b.game.state = StateRunning
 		} else { // If not in menu update only end cursor coordinate
 			m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
 		}
@@ -126,7 +126,7 @@ func (b *Board) ResetGame() {
 	b.board = [BOARDSIZE][BOARDSIZE]int{}
 	b.game.score = 0
 	b.randomNewPiece()
-	b.game.state = 2 // swap to main menu
+	b.game.state = StateMainMenu // swap to main menu
 }
 
 func (b *Board) CloseGame() {

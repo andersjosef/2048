@@ -16,9 +16,17 @@ const (
 	BOARDSIZE    int = 4
 )
 
+// Gamestates Enum style
+type GameState int
+
+const (
+	StateRunning GameState = iota + 1
+	StateMainMenu
+)
+
 type Game struct {
 	board             *Board
-	state             int //if game is in menu. running, end etc 1: running
+	state             GameState //if game is in menu. running, end etc 1: running
 	score             int
 	shouldClose       bool
 	screenControl     *ScreenControl
@@ -31,8 +39,8 @@ type Game struct {
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state:             2,     // 2: main menu to start
-		shouldClose:       false, // if yes will close the game
+		state:             StateMainMenu, // 2: main menu to start
+		shouldClose:       false,         // if yes will close the game
 		scale:             ebiten.Monitor().DeviceScaleFactor(),
 		screenSizeChanged: false,
 		darkMode:          false,

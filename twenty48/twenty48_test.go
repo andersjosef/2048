@@ -29,7 +29,7 @@ func TestInitializeGame(t *testing.T) {
 
 	assert.Equal(t, game, game.board.game)
 
-	assert.Equal(t, 2, game.state)
+	assert.Equal(t, 2, int(game.state))
 	assert.Equal(t, 0, game.score)
 	assert.Equal(t, 2, count)
 }
