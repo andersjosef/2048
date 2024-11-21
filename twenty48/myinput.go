@@ -48,6 +48,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyEscape: (*Input).CloseGame,
 		ebiten.KeyF:      (*Input).ToggleFullScreen,
 		ebiten.KeyQ:      (*Input).SwitchDefaultDarkMode,
+		ebiten.KeyI:      (*Input).toggleInfo,
 	},
 }
 
@@ -138,6 +139,10 @@ func (m *Input) performMove(b *Board) {
 
 }
 
+////////////////////////////////////////////////
+//				Actions						  //
+////////////////////////////////////////////////
+
 func (i *Input) ResetGame() {
 	i.game.board.board = [BOARDSIZE][BOARDSIZE]int{}
 	i.game.board.game.score = 0
@@ -150,6 +155,8 @@ func (i *Input) CloseGame() {
 	i.game.board.game.shouldClose = true
 }
 
+// Main game logic action
+
 func (i *Input) moveRight() {
 	i.game.board.moveRight()
 }
@@ -161,4 +168,17 @@ func (i *Input) moveUp() {
 }
 func (i *Input) moveDown() {
 	i.game.board.moveDown()
+}
+
+// Menu Logic
+
+func (i *Input) toggleInfo() {
+	switch i.game.menu.state {
+	case MenuStateMain:
+		i.game.menu.state = MenuStateInstructions
+	case MenuStateInstructions:
+		i.game.menu.state = MenuStateMain
+
+	}
+
 }
