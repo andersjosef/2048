@@ -69,11 +69,7 @@ func (i *Input) handleKeyboardInput(b *Board) error {
 		// Get the appropriate action map based on the current game state
 		if actionMap, ok := keyActions[b.game.state]; ok { // Check if actionmap exist for current game state
 			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
-				b.boardBeforeChange = b.board
 				action(i)
-				if b.game.state == StateRunning { // If its the main loop add a piece
-					b.addNewRandomPieceIfBoardChanged()
-				}
 			} else if b.game.state == StateMainMenu { // If button is not in map and state is main menu
 				b.game.state = StateRunning
 			}
@@ -126,8 +122,6 @@ func (m *Input) performMove(b *Board) {
 	dx := m.endCursorPos[0] - m.startCursorPos[0]
 	dy := m.endCursorPos[1] - m.startCursorPos[1]
 
-	b.boardBeforeChange = b.board
-
 	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
 		if dx > 0 {
 			b.moveRight()
@@ -142,7 +136,6 @@ func (m *Input) performMove(b *Board) {
 		}
 	}
 
-	b.addNewRandomPieceIfBoardChanged()
 }
 
 func (i *Input) ResetGame() {

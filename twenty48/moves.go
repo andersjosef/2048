@@ -1,6 +1,11 @@
 package twenty48
 
+func (b *Board) updateBoardBeforeChange() {
+	b.boardBeforeChange = b.board
+}
+
 func (b *Board) moveLeft() {
+	b.updateBoardBeforeChange()
 	for i := range b.board {
 		// Shift tiles to the left
 		compactTiles(i, b, true)
@@ -10,9 +15,11 @@ func (b *Board) moveLeft() {
 	}
 	b.game.animation.ActivateAnimation("LEFT")
 
+	b.addNewRandomPieceIfBoardChanged()
 }
 
 func (b *Board) moveUp() {
+	b.updateBoardBeforeChange()
 	transpose(&b.board)
 	for i := range b.board {
 		// Shift tiles "left" (actually up, due to transposition)
@@ -25,9 +32,11 @@ func (b *Board) moveUp() {
 	transpose(&b.game.animation.arrayOfChange)
 	b.game.animation.ActivateAnimation("UP")
 
+	b.addNewRandomPieceIfBoardChanged()
 }
 
 func (b *Board) moveRight() {
+	b.updateBoardBeforeChange()
 	for i := range b.board {
 		// Reverse the row to treat the right end as the left
 		reverseRow(&b.board[i])
@@ -42,8 +51,11 @@ func (b *Board) moveRight() {
 
 		b.game.animation.ActivateAnimation("RIGHT")
 	}
+
+	b.addNewRandomPieceIfBoardChanged()
 }
 func (b *Board) moveDown() {
+	b.updateBoardBeforeChange()
 	transpose(&b.board)
 	for i := range b.board {
 		// Reverse the row (which is actually a column due to transposition)
@@ -60,6 +72,8 @@ func (b *Board) moveDown() {
 	transpose(&b.board) // Transpose back to the original orientation
 	transpose(&b.game.animation.arrayOfChange)
 	b.game.animation.ActivateAnimation("DOWN")
+
+	b.addNewRandomPieceIfBoardChanged()
 }
 
 func reverseRow(row *[BOARDSIZE]int) {

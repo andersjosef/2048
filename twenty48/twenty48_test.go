@@ -3,6 +3,8 @@ package twenty48
 import (
 	"testing"
 
+	"math/rand"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,6 +37,7 @@ func TestInitializeGame(t *testing.T) {
 }
 
 func TestMoveDown(t *testing.T) {
+	rand.Seed(42)
 	game, err := NewGame()
 
 	assert.NoError(t, err)
@@ -47,7 +50,7 @@ func TestMoveDown(t *testing.T) {
 	}
 	want := [BOARDSIZE][BOARDSIZE]int{
 		{0, 0, 0, 0},
-		{0, 0, 0, 0},
+		{2, 0, 0, 0},
 		{0, 0, 0, 0},
 		{2, 4, 2, 2},
 	}
@@ -62,7 +65,7 @@ func TestMoveDown(t *testing.T) {
 		{0, 0, 0, 2},
 	}
 	want = [BOARDSIZE][BOARDSIZE]int{
-		{0, 0, 0, 0},
+		{2, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 2, 0, 0},
 		{2, 4, 4, 2},
@@ -82,9 +85,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	game.board.boardBeforeChange = game.board.board
 	game.board.moveDown()
-	game.board.addNewRandomPieceIfBoardChanged()
 	count := 0
 	for x := 0; x < len(game.board.board); x++ {
 		for y := 0; y < len(game.board.board[0]); y++ {
@@ -178,6 +179,7 @@ func TestFullBoard(t *testing.T) {
 }
 
 func TestMoves(t *testing.T) {
+	rand.Seed(42)
 	var tests = []struct {
 		name         string
 		initialBoard [BOARDSIZE][BOARDSIZE]int
@@ -194,7 +196,7 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 2},
 			},
 			want: [BOARDSIZE][BOARDSIZE]int{
-				{4, 0, 0, 0},
+				{4, 0, 0, 2},
 				{2, 0, 0, 0},
 				{2, 0, 0, 0},
 				{2, 0, 0, 0},
@@ -212,7 +214,7 @@ func TestMoves(t *testing.T) {
 			},
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{4, 2, 0, 0},
-				{2, 0, 0, 0},
+				{2, 0, 0, 2},
 				{2, 0, 0, 0},
 				{2, 0, 0, 0},
 			},
@@ -230,7 +232,7 @@ func TestMoves(t *testing.T) {
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{0, 0, 0, 4},
 				{0, 0, 0, 2},
-				{0, 0, 0, 2},
+				{0, 0, 2, 2},
 				{0, 0, 0, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveRight() },
@@ -248,7 +250,7 @@ func TestMoves(t *testing.T) {
 				{0, 0, 2, 4},
 				{0, 0, 0, 2},
 				{0, 0, 0, 4},
-				{0, 0, 0, 2},
+				{4, 0, 0, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveRight() },
 			wantedScore: 8,
@@ -264,7 +266,7 @@ func TestMoves(t *testing.T) {
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{2, 4, 2, 2},
 				{0, 0, 0, 0},
-				{0, 0, 0, 0},
+				{2, 0, 0, 0},
 				{0, 0, 0, 0},
 			},
 			moveFunc:    func(b *Board) { b.moveUp() },
@@ -282,7 +284,7 @@ func TestMoves(t *testing.T) {
 				{2, 4, 4, 2},
 				{0, 2, 0, 0},
 				{0, 0, 0, 0},
-				{0, 0, 0, 0},
+				{2, 0, 0, 0},
 			},
 			moveFunc:    func(b *Board) { b.moveUp() },
 			wantedScore: 8,
@@ -298,7 +300,7 @@ func TestMoves(t *testing.T) {
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
-				{0, 0, 0, 0},
+				{0, 0, 0, 2},
 				{2, 4, 2, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveDown() },
@@ -315,7 +317,7 @@ func TestMoves(t *testing.T) {
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
-				{0, 2, 0, 0},
+				{0, 2, 0, 2},
 				{2, 4, 4, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveDown() },
