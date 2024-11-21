@@ -142,6 +142,7 @@ func (i *Input) ResetGame() {
 	i.game.board.board = [BOARDSIZE][BOARDSIZE]int{}
 	i.game.board.game.score = 0
 	i.game.board.randomNewPiece()
+	i.game.board.randomNewPiece()
 	i.game.board.game.state = StateMainMenu // swap to main menu
 }
 
