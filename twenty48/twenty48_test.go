@@ -120,7 +120,7 @@ func TestReset(t *testing.T) {
 	assert.NoError(t, err)
 	game.board.randomNewPiece()
 	game.board.randomNewPiece()
-	game.board.ResetGame()
+	game.input.ResetGame()
 
 	assert.Equal(t, 0, game.score)
 }
