@@ -12,6 +12,7 @@ import (
 var (
 	mplusNormalFont        font.Face
 	mplusNormalFontSmaller font.Face
+	mplusNormalFontMini    font.Face
 	mplusBigFont           font.Face
 )
 
@@ -19,6 +20,7 @@ const (
 	dpi           float64 = 72 // Try adjusting this value for high-res displays
 	fontSize      int     = 50
 	fontSizeSmall int     = 35
+	fontSizeMini  int     = 25
 )
 
 func initText(g *Game) {
@@ -41,5 +43,6 @@ func initText(g *Game) {
 
 	mplusNormalFont = initializeFont(fontSize, g)
 	mplusNormalFontSmaller = initializeFont(fontSizeSmall, g)
+	mplusNormalFontMini = initializeFont(fontSizeMini, g)
 	mplusBigFont = text.FaceWithLineHeight(initializeFont(fontSize, g), 1.08)
 }

@@ -9,7 +9,7 @@ var (
 	// DEFAULT
 	colorBorderDefault           = color.RGBA{194, 182, 169, 255}
 	colorBackgroundTileDefault   = color.RGBA{204, 192, 179, 255}
-	screenBackgroundColorDefault = [4]uint8{232, 220, 202, 255}
+	screenBackgroundColorDefault = [4]uint8{212, 200, 182, 255}
 
 	// DARK MODE
 	screenBackgroundColorDarkMode = [4]uint8{0, 100, 102, 255}

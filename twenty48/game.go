@@ -26,13 +26,15 @@ const (
 
 type Game struct {
 	board             *Board
+	screenControl     *ScreenControl
+	animation         *Animation
+	menu              *Menu
+	input             *Input
 	state             GameState //if game is in menu. running, end etc 1: running
 	score             int
 	shouldClose       bool
-	screenControl     *ScreenControl
 	scale             float64
 	screenSizeChanged bool
-	animation         *Animation
 	darkMode          bool
 }
 
@@ -52,6 +54,8 @@ func NewGame() (*Game, error) {
 	g.animation = InitAnimation(g)
 	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard(g)
+	g.menu = NewMenu(g)
+	g.input = InitInput(g)
 
 	// initialize text
 	initText(g)
@@ -63,7 +67,7 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) Update() error {
-	m.UpdateInput(g.board)
+	g.input.UpdateInput(g.board)
 	switch g.state {
 	case 1: //game is running loop
 	case 2: //game is in menu
@@ -93,7 +97,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 		DrawScore(screen, g)
 	case 2: //game is in menu
-		g.DrawMenu(screen)
+		g.menu.DrawMenu(screen)
 	}
 }
 

@@ -16,15 +16,15 @@ func InitScreenControl(g *Game) *ScreenControl {
 	return sc
 }
 
-func (b *Board) ToggleFullScreen() {
-	if b.game.screenControl.fullscreen {
+func (i *Input) ToggleFullScreen() {
+	if i.game.screenControl.fullscreen {
 		ebiten.SetFullscreen(false)
-		b.game.screenControl.fullscreen = false
+		i.game.screenControl.fullscreen = false
 	} else {
 		ebiten.SetFullscreen(true)
-		b.game.screenControl.fullscreen = true
+		i.game.screenControl.fullscreen = true
 	}
-	b.game.screenSizeChanged = true
+	i.game.screenSizeChanged = true
 }
 
 func (g *Game) ChangeBoardPosition() {
