@@ -148,7 +148,8 @@ func (i *Input) ResetGame() {
 	i.game.board.game.score = 0
 	i.game.board.randomNewPiece()
 	i.game.board.randomNewPiece()
-	i.game.board.game.state = StateMainMenu // swap to main menu
+	i.game.menu.state = MenuStateMain       // Main menu screen in menu
+	i.game.board.game.state = StateMainMenu // Swap to main menu
 }
 
 func (i *Input) CloseGame() {
