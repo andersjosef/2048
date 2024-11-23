@@ -30,6 +30,7 @@ type Game struct {
 	animation         *Animation
 	menu              *Menu
 	input             *Input
+	buttonManager     *ButtonManager
 	state             GameState //if game is in menu. running, end etc 1: running
 	score             int
 	shouldClose       bool
@@ -50,15 +51,16 @@ func NewGame() (*Game, error) {
 
 	var err error
 
+	// initialize text
+	initText(g)
+
 	// initialize new board
+	g.buttonManager = InitButtonManager(g)
 	g.animation = InitAnimation(g)
 	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard(g)
 	g.menu = NewMenu(g)
 	g.input = InitInput(g)
-
-	// initialize text
-	initText(g)
 
 	if err != nil {
 		return nil, err
@@ -99,6 +101,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	case 2: //game is in menu
 		g.menu.DrawMenu(screen)
 	}
+	g.buttonManager.drawButtons(screen)
 }
 
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }

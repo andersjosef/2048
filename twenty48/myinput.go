@@ -1,6 +1,7 @@
 package twenty48
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -54,6 +55,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 
 func (m *Input) UpdateInput(b *Board) error {
 	// Keyboard and Mouse input handling
+	m.game.buttonManager.checkButtons()
 	m.handleKeyboardInput(b)
 	m.handleMouseInput(b)
 	return nil
@@ -182,4 +184,8 @@ func (i *Input) toggleInfo() {
 
 	}
 
+}
+
+func testForButtonAction(i *Input) {
+	fmt.Println("Button pressed!!!! and action triggered")
 }
