@@ -3,6 +3,7 @@ package twenty48
 import (
 	"fmt"
 	"image/color"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
@@ -84,8 +85,12 @@ func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font
 	}
 
 	// tmp
-	var textLengt int = text.BoundString(font, buttonText).Dx() / 2
-	var textWidth int = text.BoundString(font, buttonText).Dy() / 2
+	dx, dy, err := newButton.getDimentions()
+	if err != nil {
+		log.Fatal(err)
+	}
+	var textLengt int = dx / 2
+	var textWidth int = dy / 2
 
 	newButton.startPos = [2]int{
 		startPos[0] - textLengt,
@@ -123,7 +128,7 @@ func (bu *Button) cursorWithin(curX, curY int) bool {
 
 func (b *Button) getDimentions() (int, int, error) {
 	if b.font == nil {
-		return -1, -1, fmt.Errorf("Cant get dimentions, font is not set")
+		return -1, -1, fmt.Errorf("cant get dimentions, font is not set")
 	}
 	var x int = text.BoundString(b.font, b.text).Dx()
 	var y int = text.BoundString(b.font, b.text).Dy()
