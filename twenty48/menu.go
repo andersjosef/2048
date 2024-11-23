@@ -51,10 +51,10 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	var realWidth, realHeight int = m.game.GetRealWidthHeight()
 
 	// Title
-	m.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, mplusBigFont)
+	m.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, mplusBigFont, true)
 
 	// Instruction key info
-	m.DrawDoubleText(screen, "I: Instructions", realWidth/2, (realHeight/2)+realHeight/10, 1, mplusNormalFontMini)
+	m.DrawDoubleText(screen, "I: Instructions", realWidth/2, (realHeight/2)+realHeight/10, 1, mplusNormalFontMini, true)
 
 }
 
@@ -62,7 +62,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	var realWidth, realHeight int = m.game.GetRealWidthHeight()
 
 	// Title
-	m.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, mplusBigFont)
+	m.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, mplusBigFont, true)
 
 	// Instructions messages
 	instructions := []string{
@@ -78,17 +78,22 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	for i, line := range instructions {
 		// Adjust Y-position dynamically based on line index
 		lineYPos := (realHeight / 5) + i*(realHeight/18)
-		m.DrawDoubleText(screen, line, realWidth/2, lineYPos, 1, mplusNormalFontMini)
+		m.DrawDoubleText(screen, line, realWidth/2, lineYPos, 1, mplusNormalFontMini, true)
 	}
 
 	// Add a back button
-	m.DrawDoubleText(screen, "Press I to return to Main Menu", realWidth/2, realHeight-realHeight/10, 1, mplusNormalFontMini)
+	m.DrawDoubleText(screen, "Press I to return to Main Menu", realWidth/2, realHeight-realHeight/10, 1, mplusNormalFontMini, true)
 }
 
-func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face) {
+func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face, isCentered bool) {
 
-	var textPosX int = xpos*int(m.game.scale) - text.BoundString(fontUsed, message).Dx()/2
-	var textPosY int = ypos*int(m.game.scale) + text.BoundString(fontUsed, message).Dy()/2
+	var textPosX int = xpos * int(m.game.scale)
+	var textPosY int = ypos*int(m.game.scale) + text.BoundString(fontUsed, message).Dy()
+
+	if isCentered {
+		textPosX = xpos*int(m.game.scale) - text.BoundString(fontUsed, message).Dx()/2
+		textPosY = ypos*int(m.game.scale) + text.BoundString(fontUsed, message).Dy()/2
+	}
 
 	text.Draw(screen, message, fontUsed,
 		textPosX,
@@ -106,7 +111,7 @@ func (m *Menu) InitMenuButtons() {
 	m.game.buttonManager.AddButton(
 		"Test Button!",
 		[2]int{200, 200},
-		mplusBigFont,
+		mplusNormalFontMini,
 		testForButtonAction,
 		StateMainMenu,
 	)

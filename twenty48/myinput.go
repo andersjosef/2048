@@ -55,7 +55,9 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 
 func (m *Input) UpdateInput(b *Board) error {
 	// Keyboard and Mouse input handling
-	m.game.buttonManager.checkButtons()
+	if m.game.buttonManager.checkButtons() {
+		return nil
+	}
 	m.handleKeyboardInput(b)
 	m.handleMouseInput(b)
 	return nil

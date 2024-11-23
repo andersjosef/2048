@@ -1,9 +1,11 @@
 package twenty48
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"golang.org/x/image/font"
 )
@@ -27,22 +29,22 @@ func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {
 
 	for _, button := range bm.buttonArrayMap[bm.game.state] {
 		startX, startY := button.startPos[0], button.startPos[1]
-		height, width := startX-button.endPos[0], startY-button.endPos[1]
+		width, height := button.endPos[0]-startX, button.endPos[1]-startY
 
 		// Button background
 		vector.DrawFilledRect(screen,
 			float32(startX), float32(startY),
 			float32(width), float32(height),
-			color.Black, false)
+			color.RGBA{0, 0, 0, 0}, false)
 
 		bm.game.menu.DrawDoubleText(screen,
 			button.text,
-			startX, startY, 2, button.font)
+			startX, startY, 2, button.font, false)
 
 	}
 }
 
-func (bm *ButtonManager) checkButtons() {
+func (bm *ButtonManager) checkButtons() bool {
 	// On mouse click loop over every button in array
 	// If cursor is within range of some button do the buttons action
 
@@ -52,7 +54,7 @@ func (bm *ButtonManager) checkButtons() {
 		ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
 
 	if !pressed {
-		return
+		return false
 	}
 
 	curX, curY := ebiten.CursorPosition()
@@ -61,24 +63,38 @@ func (bm *ButtonManager) checkButtons() {
 	for _, button := range buttonArray {
 		if button.cursorWithin(curX, curY) {
 			button.onTrigger()
+			fmt.Print("Cursor pos: ")
+			fmt.Println(ebiten.CursorPosition())
+			fmt.Print("boundaries: ")
+			fmt.Println(button.startPos)
+			fmt.Println(button.endPos)
+			return true
 		}
 	}
+	return false
 }
 
-func (bm *ButtonManager) AddButton(text string, startPos [2]int, font font.Face, actionFunction ActionFunc, state GameState) {
+func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font.Face, actionFunction ActionFunc, state GameState) {
 	// Create new button obj
 	newButton := &Button{
 		game:           bm.game,
-		startPos:       startPos,
-		text:           text,
+		text:           buttonText,
 		font:           font,
 		actionFunction: actionFunction,
 	}
 
 	// tmp
+	var textLengt int = text.BoundString(font, buttonText).Dx() / 2
+	var textWidth int = text.BoundString(font, buttonText).Dy() / 2
+
+	newButton.startPos = [2]int{
+		startPos[0] - textLengt,
+		startPos[1] - textWidth,
+	}
 	newButton.endPos = [2]int{
-		newButton.startPos[0] + 90,
-		newButton.startPos[0] + 90}
+		startPos[0] + textLengt,
+		startPos[1] + textWidth,
+	}
 
 	// Append to list
 	bm.buttonArrayMap[state] = append(bm.buttonArrayMap[state], newButton)
@@ -103,6 +119,16 @@ func (bu *Button) cursorWithin(curX, curY int) bool {
 		}
 	}
 	return false
+}
+
+func (b *Button) getDimentions() (int, int, error) {
+	if b.font == nil {
+		return -1, -1, fmt.Errorf("Cant get dimentions, font is not set")
+	}
+	var x int = text.BoundString(b.font, b.text).Dx()
+	var y int = text.BoundString(b.font, b.text).Dy()
+
+	return x, y, nil
 }
 
 func (bu *Button) onTrigger() {
