@@ -2,7 +2,6 @@ package twenty48
 
 import (
 	"fmt"
-	"image/color"
 	"math/rand"
 
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -20,22 +19,16 @@ var (
 )
 
 type Board struct {
-	board               [BOARDSIZE][BOARDSIZE]int // 2d array for the board :)
-	colorBorder         color.RGBA
-	colorBackgroundTile color.RGBA
-	game                *Game
-	boardBeforeChange   [BOARDSIZE][BOARDSIZE]int
-	boardImage          *ebiten.Image
-	boardImageOptions   *ebiten.DrawImageOptions
+	board             [BOARDSIZE][BOARDSIZE]int // 2d array for the board :)
+	game              *Game
+	boardBeforeChange [BOARDSIZE][BOARDSIZE]int
+	boardImage        *ebiten.Image
+	boardImageOptions *ebiten.DrawImageOptions
 }
 
 func NewBoard(g *Game) (*Board, error) {
 
 	b := &Board{}
-
-	// border and background colors
-	b.colorBorder = g.currentTheme.ColorBorder
-	b.colorBackgroundTile = g.currentTheme.ColorBackgroundTile
 
 	b.game = g
 	// add the two start pieces
@@ -107,9 +100,9 @@ func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
 	var sizeInside float32 = (TILESIZE - BORDERSIZE) * float32(b.game.scale)
 
 	vector.DrawFilledRect(screen, xpos, ypos,
-		sizeBorder, sizeBorder, b.colorBorder, false) //outer
+		sizeBorder, sizeBorder, b.game.currentTheme.ColorBorder, false) //outer
 	vector.DrawFilledRect(screen, xpos+BORDERSIZE*float32(b.game.scale), ypos+BORDERSIZE*float32(b.game.scale),
-		sizeInside, sizeInside, b.colorBackgroundTile, false) // inner
+		sizeInside, sizeInside, b.game.currentTheme.ColorBackgroundTile, false) // inner
 }
 
 // background of a number, since they have colors

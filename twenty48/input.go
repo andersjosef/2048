@@ -188,8 +188,6 @@ func SwitchDefaultDarkMode(i *Input) {
 		i.game.currentTheme = theme.DefaultTheme
 
 	}
-	i.game.board.colorBorder = i.game.currentTheme.ColorBorder
-	i.game.board.colorBackgroundTile = i.game.currentTheme.ColorBackgroundTile
 	i.game.board.createBoardImage()
 	i.game.menu.UpdateDynamicText()
 }
