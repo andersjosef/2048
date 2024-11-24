@@ -14,19 +14,22 @@ type Button struct {
 	game           *Game
 	startPos       [2]int
 	endPos         [2]int
+	identifier     string
 	text           string
 	font           font.Face
 	actionFunction ActionFunc
 }
 
+// Use when wanting to move a button
 func (bu *Button) UpdatePos(posX, posY int) {
-	dx, dy, err := bu.getDimentions()
+	dx, dy, err := bu.GetDimentions()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	scale := bu.game.scale
 
+	// Scale delta down since they use actual size
 	var textLengt int = (dx / 2) / int(scale)
 	var textWidth int = (dy / 2) / int(scale)
 
@@ -39,10 +42,15 @@ func (bu *Button) UpdatePos(posX, posY int) {
 		posY + textWidth,
 	}
 
-	fmt.Printf("Button bounds - startPos: %v, endPos: %v\n", bu.startPos, bu.endPos)
 }
 
-func (bu *Button) cursorWithin(curX, curY int) bool {
+// For making the buttons text dynamic, should be called before update pos
+func (bu *Button) UpdateText(newText string) {
+	bu.text = newText
+
+}
+
+func (bu *Button) CursorWithin(curX, curY int) bool {
 	scale := ebiten.Monitor().DeviceScaleFactor()
 	curX = int(float64(curX) / scale)
 	curY = int(float64(curY) / scale)
@@ -55,16 +63,16 @@ func (bu *Button) cursorWithin(curX, curY int) bool {
 	return false
 }
 
-func (b *Button) getDimentions() (int, int, error) {
-	if b.font == nil {
+func (bu *Button) GetDimentions() (int, int, error) {
+	if bu.font == nil {
 		return -1, -1, fmt.Errorf("cant get dimentions, font is not set")
 	}
-	var x int = text.BoundString(b.font, b.text).Dx()
-	var y int = text.BoundString(b.font, b.text).Dy()
+	var x int = text.BoundString(bu.font, bu.text).Dx()
+	var y int = text.BoundString(bu.font, bu.text).Dy()
 
 	return x, y, nil
 }
 
-func (bu *Button) onTrigger() {
+func (bu *Button) OnTrigger() {
 	bu.actionFunction(bu.game.input)
 }

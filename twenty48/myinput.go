@@ -204,6 +204,7 @@ func ToggleFullScreen(i *Input) {
 		ebiten.SetFullscreen(true)
 		i.game.screenControl.fullscreen = true
 	}
+	i.game.menu.UpdateDynamicText()
 	i.game.screenSizeChanged = true
 }
 
@@ -220,4 +221,5 @@ func SwitchDefaultDarkMode(i *Input) {
 		i.game.board.createBoardImage()
 
 	}
+	i.game.menu.UpdateDynamicText()
 }

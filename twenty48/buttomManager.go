@@ -111,8 +111,8 @@ func (bm *ButtonManager) checkButtons() bool {
 
 	buttonArray := bm.buttonArrayMap[bm.game.state]
 	for _, button := range buttonArray {
-		if button.cursorWithin(curX, curY) {
-			button.onTrigger()
+		if button.CursorWithin(curX, curY) {
+			button.OnTrigger()
 			bm.buttonPressed = true
 			return true
 		}
@@ -124,6 +124,7 @@ func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font
 	// Create new button obj
 	newButton := &Button{
 		game:           bm.game,
+		identifier:     buttonText,
 		text:           buttonText,
 		font:           font,
 		actionFunction: actionFunction,
@@ -136,5 +137,5 @@ func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font
 	bm.buttonArrayMap[state] = append(bm.buttonArrayMap[state], newButton)
 
 	// Store text as key for access other places in the code
-	bm.buttonKeyMap[newButton.text] = newButton
+	bm.buttonKeyMap[newButton.identifier] = newButton
 }

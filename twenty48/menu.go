@@ -11,13 +11,19 @@ import (
 )
 
 type Menu struct {
-	game *Game
+	game        *Game
+	dynamicText map[string]string
 }
 
 // Initialize menu
 func NewMenu(g *Game) *Menu {
 	var m *Menu = &Menu{
 		game: g,
+	}
+
+	m.dynamicText = map[string]string{
+		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
+		"Press Q to toggle dark mode":  fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode),
 	}
 
 	return m
@@ -74,10 +80,14 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 		lineYPos := (realHeight / 5) + i*(realHeight/18)
 
 		if button, ok := m.game.buttonManager.buttonKeyMap[line]; ok {
+			if newText, ok := m.dynamicText[button.identifier]; ok {
+				button.text = newText
+			}
 			button.UpdatePos(rowXPos, lineYPos)
+		} else {
+			m.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, mplusNormalFontMini, true)
 		}
 
-		m.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, mplusNormalFontMini, true)
 	}
 
 	// Add a back button
@@ -122,4 +132,9 @@ func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 		textPosX-int(float64(offset)*scale),
 		textPosY-int(float64(offset)*scale),
 		color.White)
+}
+
+func (m *Menu) UpdateDynamicText() {
+	m.dynamicText["Press F to toggle Fullscreen"] = fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen)
+	m.dynamicText["Press Q to toggle dark mode"] = fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode)
 }
