@@ -103,8 +103,6 @@ func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 	textWidth := text.BoundString(fontUsed, message).Dx()
 	textHeight := text.BoundString(fontUsed, message).Dy()
 
-	fmt.Printf("Text: %s, Width: %d, Height: %d\n", message, textWidth, textHeight)
-
 	// Scale the position
 	textPosX := int(scale) * xpos
 	textPosY := int(scale) * ypos
@@ -114,13 +112,8 @@ func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 		textPosX -= textWidth / 2  // Center horizontally
 		textPosY += textHeight / 2 // Center vertically
 	} else {
-		// textPosX += textWidth  // Center horizontally
-		textPosY += textHeight // Center vertically
+		textPosY += textHeight // This works best :S
 	}
-
-	// Display the text
-	// vector.DrawFilledRect(screen, float32(textPosX), float32(textPosY-textHeight),
-	// 	float32(textWidth), float32(textHeight), color.RGBA{255, 0, 0, 255}, false)
 
 	// Draw shadow (black text)
 	text.Draw(screen, message, fontUsed,

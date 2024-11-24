@@ -152,6 +152,8 @@ func (m *Input) performMove(b *Board) {
 //				Actions						  //
 ////////////////////////////////////////////////
 
+///// Utilities //////
+
 func ResetGame(i *Input) {
 	i.game.board.board = [BOARDSIZE][BOARDSIZE]int{}
 	i.game.board.game.score = 0
@@ -163,38 +165,6 @@ func ResetGame(i *Input) {
 func (i *Input) CloseGame() {
 	i.game.board.game.shouldClose = true
 }
-
-// Main game logic action
-
-func (i *Input) moveRight() {
-	i.game.board.moveRight()
-}
-func (i *Input) moveLeft() {
-	i.game.board.moveLeft()
-}
-func (i *Input) moveUp() {
-	i.game.board.moveUp()
-}
-func (i *Input) moveDown() {
-	i.game.board.moveDown()
-}
-
-// Menu Logic
-
-func toggleInfo(i *Input) {
-	switch i.game.state {
-	case StateMainMenu:
-		i.game.state = StateInstructions
-	case StateInstructions:
-		i.game.state = StateMainMenu
-
-	}
-
-}
-
-// func testForButtonAction(i *Input) {
-// 	fmt.Println("Button pressed!!!! and action triggered")
-// }
 
 func ToggleFullScreen(i *Input) {
 	if i.game.screenControl.fullscreen {
@@ -222,4 +192,32 @@ func SwitchDefaultDarkMode(i *Input) {
 
 	}
 	i.game.menu.UpdateDynamicText()
+}
+
+///// Main game logic action /////
+
+func (i *Input) moveRight() {
+	i.game.board.moveRight()
+}
+func (i *Input) moveLeft() {
+	i.game.board.moveLeft()
+}
+func (i *Input) moveUp() {
+	i.game.board.moveUp()
+}
+func (i *Input) moveDown() {
+	i.game.board.moveDown()
+}
+
+///// Menu Logic /////
+
+func toggleInfo(i *Input) {
+	switch i.game.state {
+	case StateMainMenu:
+		i.game.state = StateInstructions
+	case StateInstructions:
+		i.game.state = StateMainMenu
+
+	}
+
 }
