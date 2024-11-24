@@ -10,24 +10,14 @@ import (
 	"golang.org/x/image/font"
 )
 
-// Controlling which part of the menu all within the gamestate MainMenu
-type MenuState int
-
-const (
-	MenuStateMain MenuState = iota + 1
-	MenuStateInstructions
-)
-
 type Menu struct {
-	game  *Game
-	state MenuState
+	game *Game
 }
 
 // Initialize menu
 func NewMenu(g *Game) *Menu {
 	var m *Menu = &Menu{
-		game:  g,
-		state: MenuStateMain,
+		game: g,
 	}
 
 	m.InitMenuButtons()
@@ -37,10 +27,10 @@ func NewMenu(g *Game) *Menu {
 
 func (m *Menu) DrawMenu(screen *ebiten.Image) {
 
-	switch m.state {
-	case MenuStateMain:
+	switch m.game.state {
+	case StateMainMenu:
 		m.DrawMainMenu(screen)
-	case MenuStateInstructions:
+	case StateInstructions:
 		m.DrawInstructions(screen)
 	default:
 		ebitenutil.DebugPrint(screen, "Undefined Menu State")

@@ -22,6 +22,7 @@ type GameState int
 const (
 	StateRunning GameState = iota + 1
 	StateMainMenu
+	StateInstructions
 )
 
 type Game struct {
@@ -91,14 +92,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		screen.Fill(getColor(screenBackgroundColorDefault))
 	}
 	switch g.state {
-	case 1: //game is running loop
+	case StateRunning: //game is running loop
 		if g.animation.isAnimating { // show animation
 			g.animation.DrawAnimation(screen)
 		} else { // draw normal borad
 			g.board.drawBoard(screen)
 		}
 		DrawScore(screen, g)
-	case 2: //game is in menu
+	case StateMainMenu, StateInstructions: //game is in menu
 		g.menu.DrawMenu(screen)
 	}
 	g.buttonManager.drawButtons(screen)

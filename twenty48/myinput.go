@@ -51,6 +51,12 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyQ:      (*Input).SwitchDefaultDarkMode,
 		ebiten.KeyI:      (*Input).toggleInfo,
 	},
+	StateInstructions: { // Menu
+		ebiten.KeyEscape: (*Input).CloseGame,
+		ebiten.KeyF:      (*Input).ToggleFullScreen,
+		ebiten.KeyQ:      (*Input).SwitchDefaultDarkMode,
+		ebiten.KeyI:      (*Input).toggleInfo,
+	},
 }
 
 func (m *Input) UpdateInput(b *Board) error {
@@ -152,7 +158,6 @@ func (i *Input) ResetGame() {
 	i.game.board.game.score = 0
 	i.game.board.randomNewPiece()
 	i.game.board.randomNewPiece()
-	i.game.menu.state = MenuStateMain       // Main menu screen in menu
 	i.game.board.game.state = StateMainMenu // Swap to main menu
 }
 
@@ -178,11 +183,11 @@ func (i *Input) moveDown() {
 // Menu Logic
 
 func (i *Input) toggleInfo() {
-	switch i.game.menu.state {
-	case MenuStateMain:
-		i.game.menu.state = MenuStateInstructions
-	case MenuStateInstructions:
-		i.game.menu.state = MenuStateMain
+	switch i.game.state {
+	case StateMainMenu:
+		i.game.state = StateInstructions
+	case StateInstructions:
+		i.game.state = StateMainMenu
 
 	}
 
