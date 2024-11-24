@@ -78,20 +78,40 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 
 func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face, isCentered bool) {
 
-	var textPosX int = xpos * int(m.game.scale)
-	var textPosY int = ypos*int(m.game.scale) + text.BoundString(fontUsed, message).Dy()
+	scale := m.game.scale
 
+	// Calculate text dimensions
+	textWidth := text.BoundString(fontUsed, message).Dx()
+	textHeight := text.BoundString(fontUsed, message).Dy()
+
+	fmt.Printf("Text: %s, Width: %d, Height: %d\n", message, textWidth, textHeight)
+
+	// Scale the position
+	textPosX := int(scale) * xpos
+	textPosY := int(scale) * ypos
+
+	// Adjust for centering
 	if isCentered {
-		textPosX = xpos*int(m.game.scale) - text.BoundString(fontUsed, message).Dx()/2
-		textPosY = ypos*int(m.game.scale) + text.BoundString(fontUsed, message).Dy()/2
+		textPosX -= textWidth / 2  // Center horizontally
+		textPosY += textHeight / 2 // Center vertically
+	} else {
+		// textPosX += textWidth  // Center horizontally
+		textPosY += textHeight // Center vertically
 	}
 
+	// Display the text
+	// vector.DrawFilledRect(screen, float32(textPosX), float32(textPosY-textHeight),
+	// 	float32(textWidth), float32(textHeight), color.RGBA{255, 0, 0, 255}, false)
+
+	// Draw shadow (black text)
 	text.Draw(screen, message, fontUsed,
 		textPosX,
 		textPosY,
 		color.Black)
+
+	// Draw main text (white text) with offset
 	text.Draw(screen, message, fontUsed,
-		textPosX-(offset)*int(m.game.scale),
-		textPosY-(offset)*int(m.game.scale),
+		textPosX-int(float64(offset)*scale),
+		textPosY-int(float64(offset)*scale),
 		color.White)
 }

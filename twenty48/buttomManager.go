@@ -32,6 +32,7 @@ func InitButtonManager(g *Game) *ButtonManager {
 	return bm
 }
 
+// Initiaze buttons here with Addbutton
 func (bm *ButtonManager) initButtons() {
 
 	// Testbutton
@@ -115,22 +116,24 @@ func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font
 		actionFunction: actionFunction,
 	}
 
-	// tmp
-	dx, dy, err := newButton.getDimentions()
-	if err != nil {
-		log.Fatal(err)
-	}
-	var textLengt int = dx / 2
-	var textWidth int = dy / 2
+	// Get dimentions of text with certain font
+	// dx, dy, err := newButton.getDimentions()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// var textLengt int = dx / 2
+	// var textWidth int = dy / 2
 
-	newButton.startPos = [2]int{
-		startPos[0] - textLengt,
-		startPos[1] - textWidth,
-	}
-	newButton.endPos = [2]int{
-		startPos[0] + textLengt,
-		startPos[1] + textWidth,
-	}
+	// newButton.startPos = [2]int{
+	// 	startPos[0] - textLengt,
+	// 	startPos[1] - textWidth,
+	// }
+	// newButton.endPos = [2]int{
+	// 	startPos[0] + textLengt,
+	// 	startPos[1] + textWidth,
+	// }
+
+	newButton.UpdatePos(startPos[0], startPos[1])
 
 	// Append to list
 	bm.buttonArrayMap[state] = append(bm.buttonArrayMap[state], newButton)
@@ -147,7 +150,6 @@ type Button struct {
 	text           string
 	font           font.Face
 	actionFunction ActionFunc
-	// TODO: Need limits and init method bound to button manager
 }
 
 func (bu *Button) UpdatePos(posX, posY int) {
@@ -155,8 +157,11 @@ func (bu *Button) UpdatePos(posX, posY int) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var textLengt int = dx / 2
-	var textWidth int = dy / 2
+
+	scale := bu.game.scale
+
+	var textLengt int = (dx / 2) / int(scale)
+	var textWidth int = (dy / 2) / int(scale)
 
 	bu.startPos = [2]int{
 		posX - textLengt,
@@ -167,6 +172,7 @@ func (bu *Button) UpdatePos(posX, posY int) {
 		posY + textWidth,
 	}
 
+	fmt.Printf("Button bounds - startPos: %v, endPos: %v\n", bu.startPos, bu.endPos)
 }
 
 func (bu *Button) cursorWithin(curX, curY int) bool {
