@@ -64,11 +64,6 @@ func (bm *ButtonManager) checkButtons() bool {
 	for _, button := range buttonArray {
 		if button.cursorWithin(curX, curY) {
 			button.onTrigger()
-			fmt.Print("Cursor pos: ")
-			fmt.Println(ebiten.CursorPosition())
-			fmt.Print("boundaries: ")
-			fmt.Println(button.startPos)
-			fmt.Println(button.endPos)
 			return true
 		}
 	}
@@ -118,6 +113,10 @@ type Button struct {
 }
 
 func (bu *Button) cursorWithin(curX, curY int) bool {
+	scale := ebiten.Monitor().DeviceScaleFactor()
+	curX = int(float64(curX) / scale)
+	curY = int(float64(curY) / scale)
+
 	if curX >= bu.startPos[0] && curX <= bu.endPos[0] {
 		if curY >= bu.startPos[1] && curY <= bu.endPos[1] {
 			return true
