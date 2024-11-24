@@ -15,6 +15,7 @@ import (
 type ButtonManager struct {
 	game           *Game
 	buttonArrayMap map[GameState][]*Button
+	buttonKeyMap   map[string]*Button
 	buttonPressed  bool
 }
 
@@ -22,9 +23,26 @@ func InitButtonManager(g *Game) *ButtonManager {
 	var bm *ButtonManager = &ButtonManager{
 		game:           g,
 		buttonArrayMap: make(map[GameState][]*Button),
+		buttonKeyMap:   make(map[string]*Button),
 	}
 
+	// Initialize all buttons
+	bm.initButtons()
+
 	return bm
+}
+
+func (bm *ButtonManager) initButtons() {
+
+	// testbutton
+	bm.AddButton(
+		"Test Button!",
+		[2]int{200, 200},
+		mplusNormalFontMini,
+		testForButtonAction,
+		StateMainMenu,
+	)
+
 }
 
 func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {
@@ -66,14 +84,13 @@ func (bm *ButtonManager) checkButtons() bool {
 		return true
 	}
 
-	bm.buttonPressed = true
-
 	curX, curY := ebiten.CursorPosition()
 
 	buttonArray := bm.buttonArrayMap[bm.game.state]
 	for _, button := range buttonArray {
 		if button.cursorWithin(curX, curY) {
 			button.onTrigger()
+			bm.buttonPressed = true
 			return true
 		}
 	}
@@ -109,6 +126,8 @@ func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font
 	// Append to list
 	bm.buttonArrayMap[state] = append(bm.buttonArrayMap[state], newButton)
 
+	// Store text as key for access other places in the code
+	bm.buttonKeyMap[newButton.text] = newButton
 }
 
 // // Button ////

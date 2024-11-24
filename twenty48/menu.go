@@ -20,8 +20,6 @@ func NewMenu(g *Game) *Menu {
 		game: g,
 	}
 
-	m.InitMenuButtons()
-
 	return m
 }
 
@@ -93,16 +91,4 @@ func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 		textPosX-(offset)*int(m.game.scale),
 		textPosY-(offset)*int(m.game.scale),
 		color.White)
-}
-
-func (m *Menu) InitMenuButtons() {
-
-	// testbutton
-	m.game.buttonManager.AddButton(
-		"Test Button!",
-		[2]int{200, 200},
-		mplusNormalFontMini,
-		testForButtonAction,
-		StateMainMenu,
-	)
 }
