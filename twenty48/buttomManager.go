@@ -15,6 +15,7 @@ import (
 type ButtonManager struct {
 	game           *Game
 	buttonArrayMap map[GameState][]*Button
+	buttonPressed  bool
 }
 
 func InitButtonManager(g *Game) *ButtonManager {
@@ -54,9 +55,18 @@ func (bm *ButtonManager) checkButtons() bool {
 		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
 		ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
 
+	// Dont check if button isnt pressed
 	if !pressed {
+		bm.buttonPressed = false
 		return false
 	}
+
+	// Check to make sure action is only triggered once
+	if bm.buttonPressed {
+		return true
+	}
+
+	bm.buttonPressed = true
 
 	curX, curY := ebiten.CursorPosition()
 
