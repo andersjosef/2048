@@ -3,6 +3,7 @@ package twenty48
 import (
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -182,15 +183,12 @@ func SwitchDefaultDarkMode(i *Input) {
 	i.game.darkMode = !i.game.darkMode
 
 	if i.game.darkMode { // DARK MODE
-		i.game.board.colorBorder = colorBorderDarkMode
-		i.game.board.colorBackgroundTile = colorBackgroundTileDarkMode
-		i.game.board.createBoardImage()
+		i.game.currentTheme = theme.DarkTheme
 	} else { // DEFAULT MODE
-		i.game.board.colorBorder = colorBorderDefault
-		i.game.board.colorBackgroundTile = colorBackgroundTileDefault
-		i.game.board.createBoardImage()
+		i.game.currentTheme = theme.DefaultTheme
 
 	}
+	i.game.board.createBoardImage()
 	i.game.menu.UpdateDynamicText()
 }
 

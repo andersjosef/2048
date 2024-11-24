@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
@@ -38,6 +39,7 @@ type Game struct {
 	scale             float64
 	screenSizeChanged bool
 	darkMode          bool
+	currentTheme      theme.Theme
 }
 
 func NewGame() (*Game, error) {
@@ -48,6 +50,13 @@ func NewGame() (*Game, error) {
 		scale:             ebiten.Monitor().DeviceScaleFactor(),
 		screenSizeChanged: false,
 		darkMode:          false,
+	}
+
+	if g.darkMode {
+		g.currentTheme = theme.DarkTheme
+	} else {
+		g.currentTheme = theme.DefaultTheme
+
 	}
 
 	var err error
@@ -86,11 +95,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	if g.darkMode {
-		screen.Fill(getColor(screenBackgroundColorDarkMode))
-	} else {
-		screen.Fill(getColor(screenBackgroundColorDefault))
-	}
+	screen.Fill(g.currentTheme.ColorScreenBackground)
 	switch g.state {
 	case StateRunning: //game is running loop
 		if g.animation.isAnimating { // show animation
