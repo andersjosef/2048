@@ -1,7 +1,6 @@
 package twenty48
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -40,21 +39,21 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyW:          (*Input).moveUp,
 		ebiten.KeyArrowDown:  (*Input).moveDown,
 		ebiten.KeyS:          (*Input).moveDown,
-		ebiten.KeyR:          (*Input).ResetGame,
-		ebiten.KeyF:          (*Input).ToggleFullScreen,
+		ebiten.KeyR:          ResetGame,
+		ebiten.KeyF:          ToggleFullScreen,
 		ebiten.KeyEscape:     (*Input).CloseGame,
-		ebiten.KeyQ:          (*Input).SwitchDefaultDarkMode,
+		ebiten.KeyQ:          SwitchDefaultDarkMode,
 	},
 	StateMainMenu: { // Menu
 		ebiten.KeyEscape: (*Input).CloseGame,
-		ebiten.KeyF:      (*Input).ToggleFullScreen,
-		ebiten.KeyQ:      (*Input).SwitchDefaultDarkMode,
+		ebiten.KeyF:      ToggleFullScreen,
+		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
 	},
 	StateInstructions: { // Instructions
 		ebiten.KeyEscape: (*Input).CloseGame,
-		ebiten.KeyF:      (*Input).ToggleFullScreen,
-		ebiten.KeyQ:      (*Input).SwitchDefaultDarkMode,
+		ebiten.KeyF:      ToggleFullScreen,
+		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
 	},
 }
@@ -153,7 +152,7 @@ func (m *Input) performMove(b *Board) {
 //				Actions						  //
 ////////////////////////////////////////////////
 
-func (i *Input) ResetGame() {
+func ResetGame(i *Input) {
 	i.game.board.board = [BOARDSIZE][BOARDSIZE]int{}
 	i.game.board.game.score = 0
 	i.game.board.randomNewPiece()
@@ -193,6 +192,32 @@ func toggleInfo(i *Input) {
 
 }
 
-func testForButtonAction(i *Input) {
-	fmt.Println("Button pressed!!!! and action triggered")
+// func testForButtonAction(i *Input) {
+// 	fmt.Println("Button pressed!!!! and action triggered")
+// }
+
+func ToggleFullScreen(i *Input) {
+	if i.game.screenControl.fullscreen {
+		ebiten.SetFullscreen(false)
+		i.game.screenControl.fullscreen = false
+	} else {
+		ebiten.SetFullscreen(true)
+		i.game.screenControl.fullscreen = true
+	}
+	i.game.screenSizeChanged = true
+}
+
+func SwitchDefaultDarkMode(i *Input) {
+	i.game.darkMode = !i.game.darkMode
+
+	if i.game.darkMode { // DARK MODE
+		i.game.board.colorBorder = colorBorderDarkMode
+		i.game.board.colorBackgroundTile = colorBackgroundTileDarkMode
+		i.game.board.createBoardImage()
+	} else { // DEFAULT MODE
+		i.game.board.colorBorder = colorBorderDefault
+		i.game.board.colorBackgroundTile = colorBackgroundTileDefault
+		i.game.board.createBoardImage()
+
+	}
 }

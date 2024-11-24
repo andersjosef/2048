@@ -68,8 +68,12 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	// Render each instruction line
 	for i, line := range instructions {
 		// Adjust Y-position dynamically based on line index
+		rowXPos := realWidth / 2
 		lineYPos := (realHeight / 5) + i*(realHeight/18)
-		m.DrawDoubleText(screen, line, realWidth/2, lineYPos, 1, mplusNormalFontMini, true)
+		if button, ok := m.game.buttonManager.buttonKeyMap[line]; ok {
+			button.UpdatePos(rowXPos, lineYPos)
+		}
+		m.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, mplusNormalFontMini, true)
 	}
 
 	// Add a back button

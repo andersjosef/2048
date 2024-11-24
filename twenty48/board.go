@@ -182,18 +182,3 @@ func (b *Board) createBoardImage() {
 	b.boardImageOptions = &ebiten.DrawImageOptions{}
 	b.boardImageOptions.GeoM.Translate(float64(startPosX)*scale, float64(startPosY)*scale)
 }
-
-func (i *Input) SwitchDefaultDarkMode() {
-	i.game.darkMode = !i.game.darkMode
-
-	if i.game.darkMode { // DARK MODE
-		i.game.board.colorBorder = colorBorderDarkMode
-		i.game.board.colorBackgroundTile = colorBackgroundTileDarkMode
-		i.game.board.createBoardImage()
-	} else { // DEFAULT MODE
-		i.game.board.colorBorder = colorBorderDefault
-		i.game.board.colorBackgroundTile = colorBackgroundTileDefault
-		i.game.board.createBoardImage()
-
-	}
-}

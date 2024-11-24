@@ -36,13 +36,13 @@ func InitButtonManager(g *Game) *ButtonManager {
 func (bm *ButtonManager) initButtons() {
 
 	// Testbutton
-	bm.AddButton(
-		"Test Button!",
-		[2]int{200, 200},
-		mplusNormalFontMini,
-		testForButtonAction,
-		StateMainMenu,
-	)
+	// bm.AddButton(
+	// 	"Test Button!",
+	// 	[2]int{200, 200},
+	// 	mplusNormalFontMini,
+	// 	testForButtonAction,
+	// 	StateMainMenu,
+	// )
 
 	// Main Menu
 	bm.AddButton(
@@ -51,6 +51,31 @@ func (bm *ButtonManager) initButtons() {
 		mplusNormalFontMini,
 		toggleInfo,
 		StateMainMenu,
+	)
+
+	// Instructions
+	bm.AddButton(
+		"Press R to restart",
+		[2]int{0, 0},
+		mplusNormalFontMini,
+		ResetGame,
+		StateInstructions,
+	)
+
+	bm.AddButton(
+		fmt.Sprintf("Press F to toggle Fullscreen: %v", bm.game.screenControl.fullscreen),
+		[2]int{0, 0},
+		mplusNormalFontMini,
+		ToggleFullScreen,
+		StateInstructions,
+	)
+
+	bm.AddButton(
+		fmt.Sprintf("Press Q to toggle dark mode: %v", bm.game.darkMode),
+		[2]int{0, 0},
+		mplusNormalFontMini,
+		SwitchDefaultDarkMode,
+		StateInstructions,
 	)
 
 }
@@ -116,23 +141,7 @@ func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font
 		actionFunction: actionFunction,
 	}
 
-	// Get dimentions of text with certain font
-	// dx, dy, err := newButton.getDimentions()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// var textLengt int = dx / 2
-	// var textWidth int = dy / 2
-
-	// newButton.startPos = [2]int{
-	// 	startPos[0] - textLengt,
-	// 	startPos[1] - textWidth,
-	// }
-	// newButton.endPos = [2]int{
-	// 	startPos[0] + textLengt,
-	// 	startPos[1] + textWidth,
-	// }
-
+	// Set position of button
 	newButton.UpdatePos(startPos[0], startPos[1])
 
 	// Append to list

@@ -56,12 +56,12 @@ func NewGame() (*Game, error) {
 	initText(g)
 
 	// initialize new board
-	g.buttonManager = InitButtonManager(g)
 	g.animation = InitAnimation(g)
 	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard(g)
 	g.menu = NewMenu(g)
 	g.input = InitInput(g)
+	g.buttonManager = InitButtonManager(g)
 
 	if err != nil {
 		return nil, err
