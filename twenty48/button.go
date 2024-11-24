@@ -17,6 +17,7 @@ type Button struct {
 	identifier     string
 	text           string
 	font           font.Face
+	offset         int
 	actionFunction ActionFunc
 }
 

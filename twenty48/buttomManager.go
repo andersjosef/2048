@@ -32,10 +32,13 @@ func InitButtonManager(g *Game) *ButtonManager {
 // Initiaze buttons here with Addbutton
 func (bm *ButtonManager) initButtons() {
 
+	smallOffsett := 1
+
 	// Main Menu
 	bm.AddButton(
 		"I: Instructions",
 		[2]int{0, 0},
+		smallOffsett,
 		mplusNormalFontMini,
 		toggleInfo,
 		StateMainMenu,
@@ -45,6 +48,7 @@ func (bm *ButtonManager) initButtons() {
 	bm.AddButton(
 		"Press R to restart",
 		[2]int{0, 0},
+		smallOffsett,
 		mplusNormalFontMini,
 		ResetGame,
 		StateInstructions,
@@ -53,6 +57,7 @@ func (bm *ButtonManager) initButtons() {
 	bm.AddButton(
 		"Press F to toggle Fullscreen",
 		[2]int{0, 0},
+		smallOffsett,
 		mplusNormalFontMini,
 		ToggleFullScreen,
 		StateInstructions,
@@ -61,8 +66,18 @@ func (bm *ButtonManager) initButtons() {
 	bm.AddButton(
 		"Press Q to toggle dark mode",
 		[2]int{0, 0},
+		smallOffsett,
 		mplusNormalFontMini,
 		SwitchDefaultDarkMode,
+		StateInstructions,
+	)
+
+	bm.AddButton(
+		"Press I to return to Main Menu",
+		[2]int{0, 0},
+		smallOffsett,
+		mplusNormalFontMini,
+		toggleInfo,
 		StateInstructions,
 	)
 
@@ -82,7 +97,7 @@ func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {
 
 		bm.game.menu.DrawDoubleText(screen,
 			button.text,
-			startX, startY, 2, button.font, false)
+			startX, startY, button.offset, button.font, false)
 
 	}
 }
@@ -120,7 +135,7 @@ func (bm *ButtonManager) checkButtons() bool {
 	return false
 }
 
-func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font.Face, actionFunction ActionFunc, state GameState) {
+func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset int, font font.Face, actionFunction ActionFunc, state GameState) {
 	// Create new button obj
 	newButton := &Button{
 		game:           bm.game,
@@ -128,6 +143,7 @@ func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, font font
 		text:           buttonText,
 		font:           font,
 		actionFunction: actionFunction,
+		offset:         offset,
 	}
 
 	// Set position of button

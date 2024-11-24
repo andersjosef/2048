@@ -91,7 +91,8 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	}
 
 	// Add a back button
-	m.DrawDoubleText(screen, "Press I to return to Main Menu", realWidth/2, realHeight-realHeight/10, 1, mplusNormalFontMini, true)
+	// m.DrawDoubleText(screen, "Press I to return to Main Menu", realWidth/2, realHeight-realHeight/10, 1, mplusNormalFontMini, true)
+	m.game.buttonManager.buttonKeyMap["Press I to return to Main Menu"].UpdatePos(realWidth/2, realHeight-realHeight/10)
 }
 
 func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face, isCentered bool) {
