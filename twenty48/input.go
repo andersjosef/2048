@@ -39,21 +39,30 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyW:          (*Input).moveUp,
 		ebiten.KeyArrowDown:  (*Input).moveDown,
 		ebiten.KeyS:          (*Input).moveDown,
-		ebiten.KeyR:          (*Input).ResetGame,
-		ebiten.KeyF:          (*Input).ToggleFullScreen,
+		ebiten.KeyR:          ResetGame,
+		ebiten.KeyF:          ToggleFullScreen,
 		ebiten.KeyEscape:     (*Input).CloseGame,
-		ebiten.KeyQ:          (*Input).SwitchDefaultDarkMode,
+		ebiten.KeyQ:          SwitchDefaultDarkMode,
 	},
 	StateMainMenu: { // Menu
 		ebiten.KeyEscape: (*Input).CloseGame,
-		ebiten.KeyF:      (*Input).ToggleFullScreen,
-		ebiten.KeyQ:      (*Input).SwitchDefaultDarkMode,
-		ebiten.KeyI:      (*Input).toggleInfo,
+		ebiten.KeyF:      ToggleFullScreen,
+		ebiten.KeyQ:      SwitchDefaultDarkMode,
+		ebiten.KeyI:      toggleInfo,
+	},
+	StateInstructions: { // Instructions
+		ebiten.KeyEscape: (*Input).CloseGame,
+		ebiten.KeyF:      ToggleFullScreen,
+		ebiten.KeyQ:      SwitchDefaultDarkMode,
+		ebiten.KeyI:      toggleInfo,
 	},
 }
 
 func (m *Input) UpdateInput(b *Board) error {
 	// Keyboard and Mouse input handling
+	if m.game.buttonManager.checkButtons() {
+		return nil
+	}
 	m.handleKeyboardInput(b)
 	m.handleMouseInput(b)
 	return nil
@@ -143,12 +152,13 @@ func (m *Input) performMove(b *Board) {
 //				Actions						  //
 ////////////////////////////////////////////////
 
-func (i *Input) ResetGame() {
+///// Utilities //////
+
+func ResetGame(i *Input) {
 	i.game.board.board = [BOARDSIZE][BOARDSIZE]int{}
 	i.game.board.game.score = 0
 	i.game.board.randomNewPiece()
 	i.game.board.randomNewPiece()
-	i.game.menu.state = MenuStateMain       // Main menu screen in menu
 	i.game.board.game.state = StateMainMenu // Swap to main menu
 }
 
@@ -156,7 +166,35 @@ func (i *Input) CloseGame() {
 	i.game.board.game.shouldClose = true
 }
 
-// Main game logic action
+func ToggleFullScreen(i *Input) {
+	if i.game.screenControl.fullscreen {
+		ebiten.SetFullscreen(false)
+		i.game.screenControl.fullscreen = false
+	} else {
+		ebiten.SetFullscreen(true)
+		i.game.screenControl.fullscreen = true
+	}
+	i.game.menu.UpdateDynamicText()
+	i.game.screenSizeChanged = true
+}
+
+func SwitchDefaultDarkMode(i *Input) {
+	i.game.darkMode = !i.game.darkMode
+
+	if i.game.darkMode { // DARK MODE
+		i.game.board.colorBorder = colorBorderDarkMode
+		i.game.board.colorBackgroundTile = colorBackgroundTileDarkMode
+		i.game.board.createBoardImage()
+	} else { // DEFAULT MODE
+		i.game.board.colorBorder = colorBorderDefault
+		i.game.board.colorBackgroundTile = colorBackgroundTileDefault
+		i.game.board.createBoardImage()
+
+	}
+	i.game.menu.UpdateDynamicText()
+}
+
+///// Main game logic action /////
 
 func (i *Input) moveRight() {
 	i.game.board.moveRight()
@@ -171,14 +209,14 @@ func (i *Input) moveDown() {
 	i.game.board.moveDown()
 }
 
-// Menu Logic
+///// Menu Logic /////
 
-func (i *Input) toggleInfo() {
-	switch i.game.menu.state {
-	case MenuStateMain:
-		i.game.menu.state = MenuStateInstructions
-	case MenuStateInstructions:
-		i.game.menu.state = MenuStateMain
+func toggleInfo(i *Input) {
+	switch i.game.state {
+	case StateMainMenu:
+		i.game.state = StateInstructions
+	case StateInstructions:
+		i.game.state = StateMainMenu
 
 	}
 

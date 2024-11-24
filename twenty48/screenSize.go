@@ -16,17 +16,6 @@ func InitScreenControl(g *Game) *ScreenControl {
 	return sc
 }
 
-func (i *Input) ToggleFullScreen() {
-	if i.game.screenControl.fullscreen {
-		ebiten.SetFullscreen(false)
-		i.game.screenControl.fullscreen = false
-	} else {
-		ebiten.SetFullscreen(true)
-		i.game.screenControl.fullscreen = true
-	}
-	i.game.screenSizeChanged = true
-}
-
 func (g *Game) ChangeBoardPosition() {
 	var newWidth, newHeight int = g.GetRealWidthHeight()
 	startPosX = float32((newWidth - (BOARDSIZE * int(TILESIZE))) / 2)
