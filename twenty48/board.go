@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math/rand"
 
+	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -33,14 +34,9 @@ func NewBoard(g *Game) (*Board, error) {
 	b := &Board{}
 
 	// border and background colors
-	if g.darkMode { // INIT in DARK MODE
-		b.colorBorder = colorBorderDarkMode
-		b.colorBackgroundTile = colorBackgroundTileDarkMode
+	b.colorBorder = g.currentTheme.ColorBorder
+	b.colorBackgroundTile = g.currentTheme.ColorBackgroundTile
 
-	} else { // INIT in DEFAULT MODE
-		b.colorBorder = colorBorderDefault
-		b.colorBackgroundTile = colorBackgroundTileDefault
-	}
 	b.game = g
 	// add the two start pieces
 	for i := 0; i < 2; i++ {
@@ -93,12 +89,8 @@ func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int,
 
 	if value != 0 {
 		// Set tile color to default color
-		colorMap := colorMapDefault
+		colorMap := b.game.currentTheme.ColorMap
 
-		// change tile colors to dark if darkmode is activated
-		if b.game.darkMode {
-			colorMap = colorMapDarkMode
-		}
 		val, ok := colorMap[value] // checks if num in map, if it is make the background else draw normal
 
 		if ok { // If the key exists draw the coresponding color background
@@ -128,7 +120,7 @@ func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float3
 		size_tile float32 = (float32(TILESIZE) - BORDERSIZE) * float32(b.game.scale)
 	)
 	vector.DrawFilledRect(screen, xpos, ypos,
-		size_tile, size_tile, getColor(val), false) // tiles
+		size_tile, size_tile, theme.GetColor(val), false) // tiles
 }
 
 func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, value int) {
@@ -156,7 +148,7 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	text.Draw(screen, msg, fontUsed,
 		textPosX,
 		textPosY,
-		colorText)
+		b.game.currentTheme.ColorText)
 }
 
 // the functions for adding a random piece if the board is
