@@ -34,12 +34,21 @@ func InitButtonManager(g *Game) *ButtonManager {
 
 func (bm *ButtonManager) initButtons() {
 
-	// testbutton
+	// Testbutton
 	bm.AddButton(
 		"Test Button!",
 		[2]int{200, 200},
 		mplusNormalFontMini,
 		testForButtonAction,
+		StateMainMenu,
+	)
+
+	// Main Menu
+	bm.AddButton(
+		"I: Instructions",
+		[2]int{0, 0},
+		mplusNormalFontMini,
+		toggleInfo,
 		StateMainMenu,
 	)
 
@@ -139,6 +148,25 @@ type Button struct {
 	font           font.Face
 	actionFunction ActionFunc
 	// TODO: Need limits and init method bound to button manager
+}
+
+func (bu *Button) UpdatePos(posX, posY int) {
+	dx, dy, err := bu.getDimentions()
+	if err != nil {
+		log.Fatal(err)
+	}
+	var textLengt int = dx / 2
+	var textWidth int = dy / 2
+
+	bu.startPos = [2]int{
+		posX - textLengt,
+		posY - textWidth,
+	}
+	bu.endPos = [2]int{
+		posX + textLengt,
+		posY + textWidth,
+	}
+
 }
 
 func (bu *Button) cursorWithin(curX, curY int) bool {

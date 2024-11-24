@@ -49,13 +49,13 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyEscape: (*Input).CloseGame,
 		ebiten.KeyF:      (*Input).ToggleFullScreen,
 		ebiten.KeyQ:      (*Input).SwitchDefaultDarkMode,
-		ebiten.KeyI:      (*Input).toggleInfo,
+		ebiten.KeyI:      toggleInfo,
 	},
-	StateInstructions: { // Menu
+	StateInstructions: { // Instructions
 		ebiten.KeyEscape: (*Input).CloseGame,
 		ebiten.KeyF:      (*Input).ToggleFullScreen,
 		ebiten.KeyQ:      (*Input).SwitchDefaultDarkMode,
-		ebiten.KeyI:      (*Input).toggleInfo,
+		ebiten.KeyI:      toggleInfo,
 	},
 }
 
@@ -182,7 +182,7 @@ func (i *Input) moveDown() {
 
 // Menu Logic
 
-func (i *Input) toggleInfo() {
+func toggleInfo(i *Input) {
 	switch i.game.state {
 	case StateMainMenu:
 		i.game.state = StateInstructions

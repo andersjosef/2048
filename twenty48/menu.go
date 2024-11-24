@@ -42,7 +42,10 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	m.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, mplusBigFont, true)
 
 	// Instruction key info
-	m.DrawDoubleText(screen, "I: Instructions", realWidth/2, (realHeight/2)+realHeight/10, 1, mplusNormalFontMini, true)
+	insX := realWidth / 2
+	insY := (realHeight / 2) + realHeight/10
+	m.game.buttonManager.buttonKeyMap["I: Instructions"].UpdatePos(insX, insY)
+	// m.DrawDoubleText(screen, "I: Instructions", insX, insY, 1, mplusNormalFontMini, true)
 
 }
 
