@@ -50,7 +50,13 @@ func NewGame() (*Game, error) {
 		scale:             ebiten.Monitor().DeviceScaleFactor(),
 		screenSizeChanged: false,
 		darkMode:          false,
-		currentTheme:      theme.DefaultTheme,
+	}
+
+	if g.darkMode {
+		g.currentTheme = theme.DarkTheme
+	} else {
+		g.currentTheme = theme.DefaultTheme
+
 	}
 
 	var err error
