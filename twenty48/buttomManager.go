@@ -63,7 +63,7 @@ func (bm *ButtonManager) initButtons() {
 	)
 
 	bm.AddButton(
-		fmt.Sprintf("Press F to toggle Fullscreen: %v", bm.game.screenControl.fullscreen),
+		"Press F to toggle Fullscreen",
 		[2]int{0, 0},
 		mplusNormalFontMini,
 		ToggleFullScreen,
@@ -71,7 +71,7 @@ func (bm *ButtonManager) initButtons() {
 	)
 
 	bm.AddButton(
-		fmt.Sprintf("Press Q to toggle dark mode: %v", bm.game.darkMode),
+		"Press Q to toggle dark mode",
 		[2]int{0, 0},
 		mplusNormalFontMini,
 		SwitchDefaultDarkMode,

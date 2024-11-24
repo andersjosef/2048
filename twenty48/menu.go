@@ -61,8 +61,10 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 		"Combine tiles with the same number",
 		"Reach 2048 to win the game!",
 		"Press R to restart",
-		fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
-		fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode),
+		// fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
+		// fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode),
+		"Press F to toggle Fullscreen",
+		"Press Q to toggle dark mode",
 	}
 
 	// Render each instruction line
@@ -70,9 +72,11 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 		// Adjust Y-position dynamically based on line index
 		rowXPos := realWidth / 2
 		lineYPos := (realHeight / 5) + i*(realHeight/18)
+
 		if button, ok := m.game.buttonManager.buttonKeyMap[line]; ok {
 			button.UpdatePos(rowXPos, lineYPos)
 		}
+
 		m.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, mplusNormalFontMini, true)
 	}
 
