@@ -129,10 +129,10 @@ func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 
 	// Draw main text (white text) with offset
 	mainOpt := &text.DrawOptions{}
-	shadowOpt.GeoM.Translate(
+	mainOpt.GeoM.Translate(
 		float64(textPosX-int(float64(offset)*scale)),
 		float64(textPosY-int(float64(offset)*scale)))
-	shadowOpt.ColorScale.ScaleWithColor(color.White)
+	mainOpt.ColorScale.ScaleWithColor(color.White)
 
 	text.Draw(screen, message, fontUsed,
 		mainOpt)

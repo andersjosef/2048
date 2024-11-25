@@ -7,7 +7,7 @@ import (
 
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 /* variables and constants */
@@ -127,11 +127,14 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	margin := 10
 	var shadowOffsett int = 2
 	var score_text string = fmt.Sprintf("%v", g.score)
+	textHeight := myFont.Metrics().VAscent + myFont.Metrics().VDescent
 
-	text.Draw(screen, score_text, myFont,
-		(shadowOffsett + margin),
-		shadowOffsett+margin+text.BoundString(myFont, score_text).Dy(),
-		color.Black)
+	shadowOpt := &text.DrawOptions{}
+
+	shadowOpt.GeoM.Translate(float64((shadowOffsett + margin)), float64(shadowOffsett+margin+int(textHeight)))
+	shadowOpt.ColorScale.ScaleWithColor(color.Black)
+
+	text.Draw(screen, score_text, myFont, shadowOpt)
 	text.Draw(screen, score_text, myFont,
 		margin,
 		margin+text.BoundString(myFont, score_text).Dy(),
