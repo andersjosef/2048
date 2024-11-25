@@ -122,8 +122,8 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	msg := fmt.Sprintf("%v", value)
 	// fontUsed := mplusNormalFont
 	fontUsed := fontSet.Normal
+	textHeight := -(fontSet.Normal.Metrics().VAscent + fontSet.Normal.Metrics().VDescent)
 
-	textHeight := fontSet.Big.Metrics().VAscent + fontSet.Big.Metrics().VDescent
 	var (
 		dx float32 = float32(text.Advance(msg, fontSet.Big))
 		dy float32 = float32(textHeight)
@@ -133,7 +133,7 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	if int(text.Advance(msg, fontSet.Big)) > int(TILESIZE*float32(b.game.scale)) {
 		// fontUsed = mplusNormalFontSmaller
 		fontUsed = fontSet.Smaller
-		textHeight = fontSet.Smaller.Metrics().VAscent + fontSet.Smaller.Metrics().VDescent
+		textHeight = -(fontSet.Smaller.Metrics().VAscent + fontSet.Smaller.Metrics().VDescent)
 		dx = (float32(int(text.Advance(msg, fontSet.Smaller)) + int(BORDERSIZE)))
 		dy = float32(textHeight)
 	}
