@@ -4,8 +4,8 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"golang.org/x/image/font"
 )
 
 // // Button Manager ////
@@ -145,7 +145,7 @@ func (bm *ButtonManager) checkButtons() bool {
 	return false
 }
 
-func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset int, font font.Face, actionFunction ActionFunc, state GameState) {
+func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset int, font *text.GoTextFace, actionFunction ActionFunc, state GameState) {
 	// Create new button obj
 	newButton := &Button{
 		game:           bm.game,

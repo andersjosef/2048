@@ -5,8 +5,7 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
-	"golang.org/x/image/font"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 // // Button ////
@@ -16,7 +15,7 @@ type Button struct {
 	endPos         [2]int
 	identifier     string
 	text           string
-	font           font.Face
+	font           *text.GoTextFace
 	offset         int
 	actionFunction ActionFunc
 }
@@ -68,8 +67,9 @@ func (bu *Button) GetDimentions() (int, int, error) {
 	if bu.font == nil {
 		return -1, -1, fmt.Errorf("cant get dimentions, font is not set")
 	}
-	var x int = text.BoundString(bu.font, bu.text).Dx()
-	var y int = text.BoundString(bu.font, bu.text).Dy()
+	var x int = int(text.Advance(bu.text, bu.font))
+	textHeight := bu.font.Metrics().VAscent + bu.font.Metrics().VDescent
+	var y int = int(textHeight)
 
 	return x, y, nil
 }

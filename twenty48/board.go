@@ -6,7 +6,7 @@ import (
 
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
@@ -122,18 +122,20 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	msg := fmt.Sprintf("%v", value)
 	// fontUsed := mplusNormalFont
 	fontUsed := fontSet.Normal
+	textHeight := -(fontSet.Normal.Metrics().VAscent + fontSet.Normal.Metrics().VDescent)
 
 	var (
-		dx float32 = float32(text.BoundString(fontSet.Big, msg).Dx())
-		dy float32 = float32(text.BoundString(fontSet.Big, msg).Dy())
+		dx float32 = float32(text.Advance(msg, fontSet.Big))
+		dy float32 = float32(textHeight)
 	)
 
 	// check for text with first font is too large for it and swap
-	if text.BoundString(fontSet.Big, msg).Dx() > int(TILESIZE*float32(b.game.scale)) {
+	if int(text.Advance(msg, fontSet.Big)) > int(TILESIZE*float32(b.game.scale)) {
 		// fontUsed = mplusNormalFontSmaller
 		fontUsed = fontSet.Smaller
-		dx = (float32(text.BoundString(fontSet.Smaller, msg).Dx() + int(BORDERSIZE)))
-		dy = float32(text.BoundString(fontSet.Smaller, msg).Dy())
+		textHeight = -(fontSet.Smaller.Metrics().VAscent + fontSet.Smaller.Metrics().VDescent)
+		dx = (float32(int(text.Advance(msg, fontSet.Smaller)) + int(BORDERSIZE)))
+		dy = float32(textHeight)
 	}
 
 	var (
@@ -141,10 +143,10 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 		textPosY int = int(ypos + (BORDERSIZE/2+TILESIZE/2)*float32(b.game.scale) + dy/2)
 	)
 
-	text.Draw(screen, msg, fontUsed,
-		textPosX,
-		textPosY,
-		b.game.currentTheme.ColorText)
+	op := &text.DrawOptions{}
+	op.GeoM.Translate(float64(textPosX), float64(textPosY))
+	op.ColorScale.ScaleWithColor(b.game.currentTheme.ColorText)
+	text.Draw(screen, msg, fontUsed, op)
 }
 
 // the functions for adding a random piece if the board is
