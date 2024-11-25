@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -34,6 +35,7 @@ type Game struct {
 	input             *Input
 	buttonManager     *ButtonManager
 	fontSet           *theme.FontSet
+	renderer          *renderer.Renderer
 	state             GameState //if game is in menu, running, etc
 	previousState     GameState
 	score             int
@@ -74,6 +76,7 @@ func NewGame() (*Game, error) {
 	g.animation = InitAnimation(g)
 	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard(g)
+	g.renderer = renderer.InitRenderer(g.fontSet, g.scale)
 	g.menu = NewMenu(g)
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)

@@ -105,7 +105,7 @@ func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {
 			float32(width), float32(height),
 			color.RGBA{0, 0, 0, 0}, false)
 
-		bm.game.menu.DrawDoubleText(screen,
+		bm.game.renderer.DrawDoubleText(screen,
 			button.text,
 			startX, startY, button.offset, button.font, false)
 
