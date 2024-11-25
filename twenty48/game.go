@@ -33,7 +33,8 @@ type Game struct {
 	menu              *Menu
 	input             *Input
 	buttonManager     *ButtonManager
-	state             GameState //if game is in menu. running, end etc 1: running
+	state             GameState //if game is in menu, running, etc
+	previousState     GameState
 	score             int
 	shouldClose       bool
 	scale             float64
@@ -45,8 +46,9 @@ type Game struct {
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state:             StateMainMenu, // 2: main menu to start
-		shouldClose:       false,         // if yes will close the game
+		state:             StateMainMenu,
+		previousState:     StateMainMenu,
+		shouldClose:       false, // if yes will close the game
 		scale:             ebiten.Monitor().DeviceScaleFactor(),
 		screenSizeChanged: false,
 		darkMode:          false,
@@ -80,10 +82,6 @@ func NewGame() (*Game, error) {
 
 func (g *Game) Update() error {
 	g.input.UpdateInput(g.board)
-	switch g.state {
-	case 1: //game is running loop
-	case 2: //game is in menu
-	}
 
 	if g.shouldClose { // quit game check
 		return ebiten.Termination

@@ -73,12 +73,22 @@ func (bm *ButtonManager) initButtons() {
 	)
 
 	bm.AddButton(
-		"Press I to return to Main Menu",
+		"Press I to return",
 		[2]int{0, 0},
 		smallOffsett,
 		mplusNormalFontMini,
 		toggleInfo,
 		StateInstructions,
+	)
+
+	// Running loop
+	bm.AddButton(
+		"II",
+		[2]int{SCREENWIDTH - 20, 20},
+		smallOffsett,
+		mplusNormalFontMini,
+		toggleInfo,
+		StateRunning,
 	)
 
 }
