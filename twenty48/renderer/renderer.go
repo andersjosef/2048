@@ -20,7 +20,7 @@ func InitRenderer(fontSet *theme.FontSet, scale float64) *Renderer {
 	return r
 }
 
-func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed *text.GoTextFace, isCentered bool) {
+func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
 
 	scale := r.scale
 
@@ -48,8 +48,8 @@ func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int
 	// Set options for main text
 	mainOpt := &text.DrawOptions{}
 	mainOpt.GeoM.Translate(
-		baseX-float64(offset)*scale,
-		baseY-float64(offset)*scale)
+		baseX-offset*scale,
+		baseY-offset*scale)
 	mainOpt.ColorScale.ScaleWithColor(color.White)
 
 	// Draw shadow and main text

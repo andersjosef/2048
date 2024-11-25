@@ -32,7 +32,7 @@ func InitButtonManager(g *Game) *ButtonManager {
 // Initiaze buttons here with Addbutton
 func (bm *ButtonManager) initButtons() {
 
-	smallOffsett := 1
+	smallOffsett := 1.0
 
 	// Main Menu
 	bm.AddButton(
@@ -145,7 +145,7 @@ func (bm *ButtonManager) checkButtons() bool {
 	return false
 }
 
-func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset int, font *text.GoTextFace, actionFunction ActionFunc, state GameState) {
+func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, actionFunction ActionFunc, state GameState) {
 	// Create new button obj
 	newButton := &Button{
 		game:           bm.game,
