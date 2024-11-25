@@ -6,7 +6,7 @@ import (
 
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
@@ -124,8 +124,8 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	fontUsed := fontSet.Normal
 
 	var (
-		dx float32 = float32(text.BoundString(fontSet.Big, msg).Dx())
-		dy float32 = float32(text.BoundString(fontSet.Big, msg).Dy())
+		dx float32 = float32(text.Advance(msg, fontSet.Big))
+		dy float32 = float32(fontSet.Big.Metrics().Ascent)
 	)
 
 	// check for text with first font is too large for it and swap

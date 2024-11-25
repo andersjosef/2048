@@ -9,10 +9,10 @@ import (
 )
 
 type FontSet struct {
-	Normal  text.GoTextFace
-	Smaller text.GoTextFace
-	Mini    text.GoTextFace
-	Big     text.GoTextFace
+	Normal  *text.GoTextFace
+	Smaller *text.GoTextFace
+	Mini    *text.GoTextFace
+	Big     *text.GoTextFace
 }
 
 const (
@@ -29,8 +29,8 @@ func InitFonts(scale float64) (*FontSet, error) {
 		log.Fatal(err)
 	}
 
-	initializeFont := func(size int) text.GoTextFace {
-		face := text.GoTextFace{
+	initializeFont := func(size int) *text.GoTextFace {
+		face := &text.GoTextFace{
 			Source: mplusFaceSource,
 			Size:   float64(size) * scale,
 		}
