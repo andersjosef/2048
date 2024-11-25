@@ -44,6 +44,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyF:          ToggleFullScreen,
 		ebiten.KeyEscape:     (*Input).CloseGame,
 		ebiten.KeyQ:          SwitchDefaultDarkMode,
+		ebiten.KeyI:          toggleInfo,
 	},
 	StateMainMenu: { // Menu
 		ebiten.KeyEscape: (*Input).CloseGame,
@@ -170,9 +171,12 @@ func (i *Input) CloseGame() {
 func ToggleFullScreen(i *Input) {
 	if i.game.screenControl.fullscreen {
 		ebiten.SetFullscreen(false)
+		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(SCREENWIDTH-20, 20)
 		i.game.screenControl.fullscreen = false
 	} else {
 		ebiten.SetFullscreen(true)
+		newScreenLength, _ := ebiten.Monitor().Size()
+		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(newScreenLength-20, 20)
 		i.game.screenControl.fullscreen = true
 	}
 	i.game.menu.UpdateDynamicText()
@@ -210,12 +214,16 @@ func (i *Input) moveDown() {
 ///// Menu Logic /////
 
 func toggleInfo(i *Input) {
+
 	switch i.game.state {
 	case StateMainMenu:
 		i.game.state = StateInstructions
+		i.game.previousState = StateMainMenu
+	case StateRunning:
+		i.game.state = StateInstructions
+		i.game.previousState = StateRunning
 	case StateInstructions:
-		i.game.state = StateMainMenu
-
+		i.game.state = i.game.previousState
 	}
 
 }

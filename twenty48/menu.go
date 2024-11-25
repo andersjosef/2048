@@ -81,7 +81,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 
 		if button, ok := m.game.buttonManager.buttonKeyMap[line]; ok {
 			if newText, ok := m.dynamicText[button.identifier]; ok {
-				button.text = newText
+				button.UpdateText(newText)
 			}
 			button.UpdatePos(rowXPos, lineYPos)
 		} else {
@@ -91,8 +91,14 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	}
 
 	// Add a back button
-	// m.DrawDoubleText(screen, "Press I to return to Main Menu", realWidth/2, realHeight-realHeight/10, 1, mplusNormalFontMini, true)
-	m.game.buttonManager.buttonKeyMap["Press I to return to Main Menu"].UpdatePos(realWidth/2, realHeight-realHeight/10)
+	returnButtonText := "Press I to return"
+	if m.game.previousState == StateMainMenu {
+		returnButtonText += " to Main Menu"
+	} else if m.game.previousState == StateRunning {
+		returnButtonText += " to Game"
+	}
+	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdateText(returnButtonText)
+	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(realWidth/2, realHeight-realHeight/10)
 }
 
 func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face, isCentered bool) {
