@@ -39,7 +39,7 @@ func (m *Menu) DrawMenu(screen *ebiten.Image) {
 }
 
 func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
-	var realWidth, realHeight int = m.game.GetRealWidthHeight()
+	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
 
 	// Title
 	m.game.renderer.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
@@ -53,7 +53,7 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 }
 
 func (m *Menu) DrawInstructions(screen *ebiten.Image) {
-	var realWidth, realHeight int = m.game.GetRealWidthHeight()
+	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
 
 	// Title
 	m.game.renderer.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, m.game.fontSet.Big, true)

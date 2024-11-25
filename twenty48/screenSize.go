@@ -16,18 +16,18 @@ func InitScreenControl(g *Game) *ScreenControl {
 	return sc
 }
 
-func (g *Game) ChangeBoardPosition() {
-	var newWidth, newHeight int = g.GetRealWidthHeight()
+func (s *ScreenControl) ChangeBoardPosition() {
+	var newWidth, newHeight int = s.GetRealWidthHeight()
 	startPosX = float32((newWidth - (BOARDSIZE * int(TILESIZE))) / 2)
 	startPosY = float32((newHeight - (BOARDSIZE * int(TILESIZE))) / 2)
-	g.board.createBoardImage()
-	g.screenSizeChanged = false
+	s.game.board.createBoardImage()
+	s.game.screenSizeChanged = false
 }
 
-func (g *Game) GetRealWidthHeight() (int, int) {
+func (s *ScreenControl) GetRealWidthHeight() (int, int) {
 	var newWidth, newHeight int
-	if g.screenControl.fullscreen { // changing to full screen
-		newWidth, newHeight = ebiten.ScreenSizeInFullscreen()
+	if s.fullscreen { // changing to full screen
+		newWidth, newHeight = ebiten.Monitor().Size()
 	} else { // changing to small
 		newWidth, newHeight = SCREENWIDTH, SCREENHEIGHT
 	}

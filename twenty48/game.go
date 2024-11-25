@@ -94,7 +94,7 @@ func (g *Game) Update() error {
 		return ebiten.Termination
 	}
 	if g.screenSizeChanged {
-		g.ChangeBoardPosition()
+		g.screenControl.ChangeBoardPosition()
 	}
 	return nil
 }
