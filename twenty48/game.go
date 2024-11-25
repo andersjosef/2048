@@ -127,13 +127,12 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	margin := 10
 	var shadowOffsett int = 2
 	var score_text string = fmt.Sprintf("%v", g.score)
-	// textHeight := myFont.Metrics().VAscent + myFont.Metrics().VDescent
 
 	shadowOpt := &text.DrawOptions{}
 
 	shadowOpt.GeoM.Translate(
 		float64((shadowOffsett + margin)),
-		0.0)
+		0)
 	shadowOpt.ColorScale.ScaleWithColor(color.Black)
 
 	text.Draw(screen, score_text, myFont, shadowOpt)
@@ -141,7 +140,7 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	mainOpt := &text.DrawOptions{}
 	mainOpt.GeoM.Translate(
 		float64(margin),
-		0.0)
+		0)
 	mainOpt.ColorScale.ScaleWithColor(color.White)
 
 	text.Draw(screen, score_text, myFont,
