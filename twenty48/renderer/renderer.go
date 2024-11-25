@@ -25,35 +25,34 @@ func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int
 	scale := r.scale
 
 	// Calculate text dimensions
-	textWidth := int(text.Advance(message, fontUsed))
-	textHeight := -int(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
+	textWidth := text.Advance(message, fontUsed)
+	textHeight := -(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
 
 	// Scale the position
-	textPosX := int(scale) * xpos
-	textPosY := int(scale) * ypos
+	baseX := scale * float64(xpos)
+	baseY := scale * float64(ypos)
 
 	// Adjust for centering
 	if isCentered {
-		textPosX -= textWidth / 2  // Center horizontally
-		textPosY += textHeight / 2 // Center vertically
+		baseX -= textWidth / 2  // Center horizontally
+		baseY += textHeight / 2 // Center vertically
 	} else {
-		textPosY -= textHeight / 4 // Center vertically
+		baseY -= textHeight / 4 // Center vertically
 	}
 
-	// Draw shadow (black text)
+	// Set options for shadow text
 	shadowOpt := &text.DrawOptions{}
-	shadowOpt.GeoM.Translate(float64(textPosX), float64(textPosY))
+	shadowOpt.GeoM.Translate(baseX, baseY)
 	shadowOpt.ColorScale.ScaleWithColor(color.Black)
 
-	text.Draw(screen, message, fontUsed, shadowOpt)
-
-	// Draw main text (white text) with offset
+	// Set options for main text
 	mainOpt := &text.DrawOptions{}
 	mainOpt.GeoM.Translate(
-		float64(textPosX-int(float64(offset)*scale)),
-		float64(textPosY-int(float64(offset)*scale)))
+		baseX-float64(offset)*scale,
+		baseY-float64(offset)*scale)
 	mainOpt.ColorScale.ScaleWithColor(color.White)
 
-	text.Draw(screen, message, fontUsed,
-		mainOpt)
+	// Draw shadow and main text
+	text.Draw(screen, message, fontUsed, shadowOpt)
+	text.Draw(screen, message, fontUsed, mainOpt)
 }
