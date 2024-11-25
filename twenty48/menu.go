@@ -106,7 +106,7 @@ func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 
 	// Calculate text dimensions
 	textWidth := int(text.Advance(message, fontUsed))
-	textHeight := int(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
+	textHeight := -int(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
 
 	// Scale the position
 	textPosX := int(scale) * xpos
@@ -117,7 +117,7 @@ func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 		textPosX -= textWidth / 2  // Center horizontally
 		textPosY += textHeight / 2 // Center vertically
 	} else {
-		textPosY += textHeight // This works best :S
+		textPosY -= textHeight / 4 // Center vertically
 	}
 
 	// Draw shadow (black text)
