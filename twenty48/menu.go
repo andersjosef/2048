@@ -2,11 +2,9 @@ package twenty48
 
 import (
 	"fmt"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 type Menu struct {
@@ -44,7 +42,7 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	var realWidth, realHeight int = m.game.GetRealWidthHeight()
 
 	// Title
-	m.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
+	m.game.renderer.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
 
 	// Instruction key info
 	insX := realWidth / 2
@@ -58,7 +56,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	var realWidth, realHeight int = m.game.GetRealWidthHeight()
 
 	// Title
-	m.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, m.game.fontSet.Big, true)
+	m.game.renderer.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, m.game.fontSet.Big, true)
 
 	// Instructions messages
 	instructions := []string{
@@ -84,7 +82,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 			}
 			button.UpdatePos(rowXPos, lineYPos)
 		} else {
-			m.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, m.game.fontSet.Mini, true)
+			m.game.renderer.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, m.game.fontSet.Mini, true)
 		}
 
 	}
@@ -98,44 +96,6 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	}
 	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdateText(returnButtonText)
 	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(realWidth/2, realHeight-realHeight/10)
-}
-
-func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed *text.GoTextFace, isCentered bool) {
-
-	scale := m.game.scale
-
-	// Calculate text dimensions
-	textWidth := int(text.Advance(message, fontUsed))
-	textHeight := -int(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
-
-	// Scale the position
-	textPosX := int(scale) * xpos
-	textPosY := int(scale) * ypos
-
-	// Adjust for centering
-	if isCentered {
-		textPosX -= textWidth / 2  // Center horizontally
-		textPosY += textHeight / 2 // Center vertically
-	} else {
-		textPosY -= textHeight / 4 // Center vertically
-	}
-
-	// Draw shadow (black text)
-	shadowOpt := &text.DrawOptions{}
-	shadowOpt.GeoM.Translate(float64(textPosX), float64(textPosY))
-	shadowOpt.ColorScale.ScaleWithColor(color.Black)
-
-	text.Draw(screen, message, fontUsed, shadowOpt)
-
-	// Draw main text (white text) with offset
-	mainOpt := &text.DrawOptions{}
-	mainOpt.GeoM.Translate(
-		float64(textPosX-int(float64(offset)*scale)),
-		float64(textPosY-int(float64(offset)*scale)))
-	mainOpt.ColorScale.ScaleWithColor(color.White)
-
-	text.Draw(screen, message, fontUsed,
-		mainOpt)
 }
 
 func (m *Menu) UpdateDynamicText() {
