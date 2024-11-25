@@ -6,8 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/hajimehoshi/ebiten/v2/text"
-	"golang.org/x/image/font"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 type Menu struct {
@@ -101,13 +100,13 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(realWidth/2, realHeight-realHeight/10)
 }
 
-func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed font.Face, isCentered bool) {
+func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset int, fontUsed *text.GoTextFace, isCentered bool) {
 
 	scale := m.game.scale
 
 	// Calculate text dimensions
-	textWidth := text.BoundString(fontUsed, message).Dx()
-	textHeight := text.BoundString(fontUsed, message).Dy()
+	textWidth := int(text.Advance(message, fontUsed))
+	textHeight := int(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
 
 	// Scale the position
 	textPosX := int(scale) * xpos
@@ -122,16 +121,21 @@ func (m *Menu) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 	}
 
 	// Draw shadow (black text)
-	text.Draw(screen, message, fontUsed,
-		textPosX,
-		textPosY,
-		color.Black)
+	shadowOpt := &text.DrawOptions{}
+	shadowOpt.GeoM.Translate(float64(textPosX), float64(textPosY))
+	shadowOpt.ColorScale.ScaleWithColor(color.Black)
+
+	text.Draw(screen, message, fontUsed, shadowOpt)
 
 	// Draw main text (white text) with offset
+	mainOpt := &text.DrawOptions{}
+	shadowOpt.GeoM.Translate(
+		float64(textPosX-int(float64(offset)*scale)),
+		float64(textPosY-int(float64(offset)*scale)))
+	shadowOpt.ColorScale.ScaleWithColor(color.White)
+
 	text.Draw(screen, message, fontUsed,
-		textPosX-int(float64(offset)*scale),
-		textPosY-int(float64(offset)*scale),
-		color.White)
+		mainOpt)
 }
 
 func (m *Menu) UpdateDynamicText() {
