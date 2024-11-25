@@ -66,6 +66,9 @@ func NewGame() (*Game, error) {
 
 	// initialize text
 	g.fontSet, err = theme.InitFonts(g.scale)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize fonts: %v", err)
+	}
 
 	// initialize new board
 	g.animation = InitAnimation(g)
