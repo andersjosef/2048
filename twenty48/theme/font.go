@@ -1,18 +1,18 @@
 package theme
 
 import (
+	"bytes"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/opentype"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 type FontSet struct {
-	Normal  font.Face
-	Smaller font.Face
-	Mini    font.Face
-	Big     font.Face
+	Normal  text.GoTextFace
+	Smaller text.GoTextFace
+	Mini    text.GoTextFace
+	Big     text.GoTextFace
 }
 
 const (
@@ -24,17 +24,16 @@ const (
 )
 
 func InitFonts(scale float64) (*FontSet, error) {
-	tt, err := opentype.Parse(fonts.MPlus1pRegular_ttf)
+	mplusFaceSource, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.MPlus1pRegular_ttf))
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
 
-	initializeFont := func(size int) font.Face {
-		face, err := opentype.NewFace(tt, &opentype.FaceOptions{
-			Size:    float64(size) * scale,
-			DPI:     dpi,
-			Hinting: font.HintingFull,
-		})
+	initializeFont := func(size int) text.GoTextFace {
+		face := text.GoTextFace{
+			Source: mplusFaceSource,
+			Size:   float64(size) * scale,
+		}
 		if err != nil {
 			log.Fatal(err)
 		}
