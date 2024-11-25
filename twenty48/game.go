@@ -33,6 +33,7 @@ type Game struct {
 	menu              *Menu
 	input             *Input
 	buttonManager     *ButtonManager
+	fontSet           *theme.FontSet
 	state             GameState //if game is in menu, running, etc
 	previousState     GameState
 	score             int
@@ -64,7 +65,7 @@ func NewGame() (*Game, error) {
 	var err error
 
 	// initialize text
-	initText(g)
+	g.fontSet, err = theme.InitFonts(g.scale)
 
 	// initialize new board
 	g.animation = InitAnimation(g)
@@ -117,7 +118,7 @@ func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64)
 }
 
 func DrawScore(screen *ebiten.Image, g *Game) {
-	myFont := mplusNormalFontSmaller
+	myFont := g.fontSet.Smaller
 
 	//TODO make more dynamig IG
 	margin := 10
