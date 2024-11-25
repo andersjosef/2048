@@ -45,7 +45,7 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	var realWidth, realHeight int = m.game.GetRealWidthHeight()
 
 	// Title
-	m.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, mplusBigFont, true)
+	m.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
 
 	// Instruction key info
 	insX := realWidth / 2
@@ -59,7 +59,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	var realWidth, realHeight int = m.game.GetRealWidthHeight()
 
 	// Title
-	m.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, mplusBigFont, true)
+	m.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, m.game.fontSet.Big, true)
 
 	// Instructions messages
 	instructions := []string{
@@ -85,7 +85,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 			}
 			button.UpdatePos(rowXPos, lineYPos)
 		} else {
-			m.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, mplusNormalFontMini, true)
+			m.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, m.game.fontSet.Mini, true)
 		}
 
 	}

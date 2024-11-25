@@ -39,7 +39,7 @@ func (bm *ButtonManager) initButtons() {
 		"I: Instructions",
 		[2]int{0, 0},
 		smallOffsett,
-		mplusNormalFontMini,
+		bm.game.fontSet.Mini,
 		toggleInfo,
 		StateMainMenu,
 	)
@@ -49,7 +49,7 @@ func (bm *ButtonManager) initButtons() {
 		"Press R to restart",
 		[2]int{0, 0},
 		smallOffsett,
-		mplusNormalFontMini,
+		bm.game.fontSet.Mini,
 		ResetGame,
 		StateInstructions,
 	)
@@ -58,7 +58,7 @@ func (bm *ButtonManager) initButtons() {
 		"Press F to toggle Fullscreen",
 		[2]int{0, 0},
 		smallOffsett,
-		mplusNormalFontMini,
+		bm.game.fontSet.Mini,
 		ToggleFullScreen,
 		StateInstructions,
 	)
@@ -67,7 +67,7 @@ func (bm *ButtonManager) initButtons() {
 		"Press Q to toggle dark mode",
 		[2]int{0, 0},
 		smallOffsett,
-		mplusNormalFontMini,
+		bm.game.fontSet.Mini,
 		SwitchDefaultDarkMode,
 		StateInstructions,
 	)
@@ -76,7 +76,7 @@ func (bm *ButtonManager) initButtons() {
 		"Press I to return",
 		[2]int{0, 0},
 		smallOffsett,
-		mplusNormalFontMini,
+		bm.game.fontSet.Mini,
 		toggleInfo,
 		StateInstructions,
 	)
@@ -86,7 +86,7 @@ func (bm *ButtonManager) initButtons() {
 		"II",
 		[2]int{SCREENWIDTH - 20, 20},
 		smallOffsett,
-		mplusNormalFontMini,
+		bm.game.fontSet.Mini,
 		toggleInfo,
 		StateRunning,
 	)

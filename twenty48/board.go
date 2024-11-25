@@ -118,19 +118,22 @@ func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float3
 
 func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, value int) {
 	// draw the number to the screen
+	fontSet := b.game.fontSet
 	msg := fmt.Sprintf("%v", value)
-	fontUsed := mplusNormalFont
+	// fontUsed := mplusNormalFont
+	fontUsed := fontSet.Normal
 
 	var (
-		dx float32 = float32(text.BoundString(mplusBigFont, msg).Dx())
-		dy float32 = float32(text.BoundString(mplusBigFont, msg).Dy())
+		dx float32 = float32(text.BoundString(fontSet.Big, msg).Dx())
+		dy float32 = float32(text.BoundString(fontSet.Big, msg).Dy())
 	)
 
 	// check for text with first font is too large for it and swap
-	if text.BoundString(mplusBigFont, msg).Dx() > int(TILESIZE*float32(b.game.scale)) {
-		fontUsed = mplusNormalFontSmaller
-		dx = (float32(text.BoundString(mplusNormalFontSmaller, msg).Dx() + int(BORDERSIZE)))
-		dy = float32(text.BoundString(mplusNormalFontSmaller, msg).Dy())
+	if text.BoundString(fontSet.Big, msg).Dx() > int(TILESIZE*float32(b.game.scale)) {
+		// fontUsed = mplusNormalFontSmaller
+		fontUsed = fontSet.Smaller
+		dx = (float32(text.BoundString(fontSet.Smaller, msg).Dx() + int(BORDERSIZE)))
+		dy = float32(text.BoundString(fontSet.Smaller, msg).Dy())
 	}
 
 	var (
