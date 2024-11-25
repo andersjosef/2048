@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
-	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 )
@@ -18,6 +17,7 @@ type FontSet struct {
 
 const (
 	dpi           float64 = 72
+	fontSizeBig   int     = 54
 	fontSize      int     = 50
 	fontSizeSmall int     = 35
 	fontSizeMini  int     = 25
@@ -44,6 +44,6 @@ func InitFonts(scale float64) (*FontSet, error) {
 		Normal:  initializeFont(fontSize),
 		Smaller: initializeFont(fontSizeSmall),
 		Mini:    initializeFont(fontSizeMini),
-		Big:     text.FaceWithLineHeight(initializeFont(fontSize), 1.08),
+		Big:     initializeFont(fontSizeBig),
 	}, nil
 }
