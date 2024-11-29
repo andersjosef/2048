@@ -48,7 +48,6 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	insX := realWidth / 2
 	insY := (realHeight / 2) + realHeight/10
 	m.game.buttonManager.buttonKeyMap["I: Instructions"].UpdatePos(insX, insY)
-	// m.DrawDoubleText(screen, "I: Instructions", insX, insY, 1, mplusNormalFontMini, true)
 
 }
 
@@ -64,8 +63,6 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 		"Combine tiles with the same number",
 		"Reach 2048 to win the game!",
 		"Press R to restart",
-		// fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
-		// fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode),
 		"Press F to toggle Fullscreen",
 		"Press Q to toggle dark mode",
 	}
