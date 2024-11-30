@@ -3,6 +3,7 @@ package twenty48
 import (
 	"fmt"
 
+	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
@@ -10,12 +11,16 @@ import (
 type Menu struct {
 	game        *Game
 	dynamicText map[string]string
+
+	titleImage      *ebiten.Image
+	titleInFullView bool
 }
 
 // Initialize menu
 func NewMenu(g *Game) *Menu {
 	var m *Menu = &Menu{
-		game: g,
+		game:       g,
+		titleImage: ebiten.NewImage(SCREENWIDTH, SCREENHEIGHT),
 	}
 
 	m.dynamicText = map[string]string{
@@ -42,7 +47,7 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
 
 	// Title
-	m.game.renderer.DrawDoubleText(screen, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
+	m.drawTitle(screen, realWidth, realHeight)
 
 	// Instruction key info
 	insX := realWidth / 2
@@ -98,4 +103,22 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 func (m *Menu) UpdateDynamicText() {
 	m.dynamicText["Press F to toggle Fullscreen"] = fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen)
 	m.dynamicText["Press Q to toggle dark mode"] = fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode)
+}
+
+// Drawing the title
+func (m *Menu) drawTitle(screen *ebiten.Image, realWidth, realHeight int) {
+	m.game.renderer.DrawDoubleText(m.titleImage, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
+
+	if !m.titleInFullView {
+		shaderImage, isDone := shadertools.GetImageFadeIn(m.titleImage)
+		if isDone {
+			m.titleInFullView = true
+		}
+		screen.DrawImage(shaderImage, &ebiten.DrawImageOptions{})
+
+	} else {
+		screen.DrawImage(m.titleImage, &ebiten.DrawImageOptions{})
+
+	}
+
 }
