@@ -373,3 +373,72 @@ func TestResetAnimation(t *testing.T) {
 	assert.Equal(t, wantArrayOfChange, a.arrayOfChange)
 
 }
+
+func TestIsGameOver(t *testing.T) {
+	var tests = []struct {
+		name  string
+		board [BOARDSIZE][BOARDSIZE]int
+		want  bool
+	}{
+		{
+			name: "Empty",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+			},
+			want: false,
+		},
+		{
+			name: "Full",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+			},
+			want: true,
+		},
+		{
+			name: "Only UP/DOWN",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{8, 4, 2, 4},
+				{8, 2, 4, 2},
+			},
+			want: false,
+		},
+		{
+			name: "Only RIGHT/LEFT",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{2048, 2048, 2, 4},
+				{4, 2, 4, 2},
+			},
+			want: false,
+		},
+		{
+			name: "X",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{2, 0, 0, 4},
+				{0, 2, 4, 0},
+				{0, 4, 2, 0},
+				{4, 0, 0, 2},
+			},
+			want: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			game, err := NewGame()
+			assert.NoError(t, err)
+
+			game.board.board = tc.board
+			assert.Equal(t, tc.want, game.board.isGameOver())
+		})
+	}
+}

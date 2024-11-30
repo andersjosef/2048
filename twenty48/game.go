@@ -45,6 +45,7 @@ type Game struct {
 	screenSizeChanged bool
 	darkMode          bool
 	currentTheme      theme.Theme
+	gameOver          bool
 }
 
 func NewGame() (*Game, error) {

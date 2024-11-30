@@ -172,3 +172,35 @@ func (b *Board) createBoardImage() {
 	b.boardImageOptions = &ebiten.DrawImageOptions{}
 	b.boardImageOptions.GeoM.Translate(float64(startPosX)*scale, float64(startPosY)*scale)
 }
+
+// Check if its gameOver
+func (b *Board) isGameOver() bool {
+	// Check if there are any empty spaces left, meaning its possible to play
+	for i := 0; i < BOARDSIZE; i++ {
+		for j := 0; j < BOARDSIZE; j++ {
+			if b.board[i][j] == 0 {
+				return false
+			}
+		}
+	}
+
+	// Check for vertical merges
+	for i := 0; i < BOARDSIZE-1; i++ {
+		for j := 0; j < BOARDSIZE; j++ {
+			if b.board[i][j] == b.board[i+1][j] {
+				return false
+			}
+		}
+	}
+
+	// Check for horisontal merges
+	for i := 0; i < BOARDSIZE; i++ {
+		for j := 0; j < BOARDSIZE-1; j++ {
+			if b.board[i][j] == b.board[i][j+1] {
+				return false
+			}
+		}
+	}
+	return true
+
+}
