@@ -3,6 +3,7 @@ package twenty48
 import (
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -42,18 +43,18 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyS:          (*Input).moveDown,
 		ebiten.KeyR:          ResetGame,
 		ebiten.KeyF:          ToggleFullScreen,
-		ebiten.KeyEscape:     (*Input).CloseGame,
+		ebiten.KeyEscape:     CloseGame,
 		ebiten.KeyQ:          SwitchDefaultDarkMode,
 		ebiten.KeyI:          toggleInfo,
 	},
 	StateMainMenu: { // Menu
-		ebiten.KeyEscape: (*Input).CloseGame,
+		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
 	},
 	StateInstructions: { // Instructions
-		ebiten.KeyEscape: (*Input).CloseGame,
+		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
@@ -162,24 +163,29 @@ func ResetGame(i *Input) {
 	i.game.board.randomNewPiece()
 	i.game.board.randomNewPiece()
 	i.game.board.game.state = StateMainMenu // Swap to main menu
+	shadertools.ResetTimesMapsDissolve()
+	i.game.menu.titleInFullView = false
 }
 
-func (i *Input) CloseGame() {
+func CloseGame(i *Input) {
 	i.game.board.game.shouldClose = true
 }
 
 func ToggleFullScreen(i *Input) {
 	if i.game.screenControl.fullscreen {
 		ebiten.SetFullscreen(false)
+		shadertools.UpdateNoiseImage(50, 50)
 		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(SCREENWIDTH-20, 20)
 		i.game.screenControl.fullscreen = false
 	} else {
 		ebiten.SetFullscreen(true)
+		shadertools.UpdateNoiseImage(100, 100)
 		newScreenLength, _ := ebiten.Monitor().Size()
 		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(newScreenLength-20, 20)
 		i.game.screenControl.fullscreen = true
 	}
 	i.game.menu.UpdateDynamicText()
+	i.game.menu.titleImage = i.game.menu.initTitle()
 	i.game.screenSizeChanged = true
 }
 

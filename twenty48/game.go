@@ -6,6 +6,7 @@ import (
 	"math"
 
 	"github.com/andersjosef/2048/twenty48/renderer"
+	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -96,6 +97,7 @@ func (g *Game) Update() error {
 	if g.screenSizeChanged {
 		g.screenControl.ChangeBoardPosition()
 	}
+	shadertools.Update()
 	return nil
 }
 
