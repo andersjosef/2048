@@ -63,9 +63,10 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 
 	// Instructions messages
 	instructions := []string{
-		"Use Arrow Keys or WASD to move tiles",
+		"Use Arrow Keys, WASD or the mouse to move tiles",
 		"Combine tiles with the same number",
 		"Reach 2048 to win the game!",
+		"Press Escape to quit",
 		"Press R to restart",
 		"Press F to toggle Fullscreen",
 		"Press Q to toggle dark mode",

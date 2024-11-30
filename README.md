@@ -9,15 +9,15 @@ A clone of the popular 2048 game implemented in Go using the Ebitengine framewor
 ## Features
 
 - Classic 2048 gameplay
-- Smooth (ish) animations and transitions
+- Smooth animations and transitions
 - High score tracking
-- Responsive controls using keyboard arrows
+- Responsive controls using keyboard arrows, WASD or mouse
 - Simple and clean UI
 
 ## Usage
 
 - Press any button to start.
-- Use the arrow keys or WASD to move tiles.
+- Use the arrow keys, WASD or the mouse to move tiles.
 - Combine tiles of the same number to merge them.
 - Reach the 2048 tile to win the game!
 - Esc to close.

@@ -43,18 +43,18 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyS:          (*Input).moveDown,
 		ebiten.KeyR:          ResetGame,
 		ebiten.KeyF:          ToggleFullScreen,
-		ebiten.KeyEscape:     (*Input).CloseGame,
+		ebiten.KeyEscape:     CloseGame,
 		ebiten.KeyQ:          SwitchDefaultDarkMode,
 		ebiten.KeyI:          toggleInfo,
 	},
 	StateMainMenu: { // Menu
-		ebiten.KeyEscape: (*Input).CloseGame,
+		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
 	},
 	StateInstructions: { // Instructions
-		ebiten.KeyEscape: (*Input).CloseGame,
+		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
@@ -167,7 +167,7 @@ func ResetGame(i *Input) {
 	i.game.menu.titleInFullView = false
 }
 
-func (i *Input) CloseGame() {
+func CloseGame(i *Input) {
 	i.game.board.game.shouldClose = true
 }
 

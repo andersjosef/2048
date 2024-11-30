@@ -73,6 +73,15 @@ func (bm *ButtonManager) initButtons() {
 	)
 
 	bm.AddButton(
+		"Press Escape to quit",
+		[2]int{0, 0},
+		smallOffsett,
+		bm.game.fontSet.Mini,
+		CloseGame,
+		StateInstructions,
+	)
+
+	bm.AddButton(
 		"Press I to return",
 		[2]int{0, 0},
 		smallOffsett,
