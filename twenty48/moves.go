@@ -16,6 +16,8 @@ func (b *Board) moveLeft() {
 	b.game.animation.ActivateAnimation("LEFT")
 
 	b.addNewRandomPieceIfBoardChanged()
+
+	b.game.gameOver = b.isGameOver()
 }
 
 func (b *Board) moveUp() {
@@ -33,6 +35,8 @@ func (b *Board) moveUp() {
 	b.game.animation.ActivateAnimation("UP")
 
 	b.addNewRandomPieceIfBoardChanged()
+
+	b.game.gameOver = b.isGameOver()
 }
 
 func (b *Board) moveRight() {
@@ -53,6 +57,8 @@ func (b *Board) moveRight() {
 	}
 
 	b.addNewRandomPieceIfBoardChanged()
+
+	b.game.gameOver = b.isGameOver()
 }
 func (b *Board) moveDown() {
 	b.updateBoardBeforeChange()
@@ -74,6 +80,8 @@ func (b *Board) moveDown() {
 	b.game.animation.ActivateAnimation("DOWN")
 
 	b.addNewRandomPieceIfBoardChanged()
+
+	b.game.gameOver = b.isGameOver()
 }
 
 func reverseRow(row *[BOARDSIZE]int) {

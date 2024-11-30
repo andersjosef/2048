@@ -1,7 +1,6 @@
 package twenty48
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/andersjosef/2048/twenty48/shadertools"
@@ -166,6 +165,7 @@ func ResetGame(i *Input) {
 	i.game.board.game.state = StateMainMenu // Swap to main menu
 	shadertools.ResetTimesMapsDissolve()
 	i.game.menu.titleInFullView = false
+	i.game.gameOver = false
 }
 
 func CloseGame(i *Input) {
@@ -207,19 +207,15 @@ func SwitchDefaultDarkMode(i *Input) {
 
 func (i *Input) moveRight() {
 	i.game.board.moveRight()
-	fmt.Println(i.game.board.isGameOver())
 }
 func (i *Input) moveLeft() {
 	i.game.board.moveLeft()
-	fmt.Println(i.game.board.isGameOver())
 }
 func (i *Input) moveUp() {
 	i.game.board.moveUp()
-	fmt.Println(i.game.board.isGameOver())
 }
 func (i *Input) moveDown() {
 	i.game.board.moveDown()
-	fmt.Println(i.game.board.isGameOver())
 }
 
 ///// Menu Logic /////
