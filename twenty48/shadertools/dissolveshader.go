@@ -77,6 +77,8 @@ func ResetTimesMapsDissolve() {
 	timesFadeIn = make(map[int]float32)
 	timesFadeOut = make(map[int]float32)
 	noiseCache = make(map[[2]int]*ebiten.Image)
+	idCounter = 0
+	imageToId = make(map[*ebiten.Image]int)
 }
 
 func getResizedNoiseImage(w, h int) *ebiten.Image {

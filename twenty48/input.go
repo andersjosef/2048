@@ -3,6 +3,7 @@ package twenty48
 import (
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -162,6 +163,8 @@ func ResetGame(i *Input) {
 	i.game.board.randomNewPiece()
 	i.game.board.randomNewPiece()
 	i.game.board.game.state = StateMainMenu // Swap to main menu
+	shadertools.ResetTimesMapsDissolve()
+	i.game.menu.titleInFullView = false
 }
 
 func (i *Input) CloseGame() {
