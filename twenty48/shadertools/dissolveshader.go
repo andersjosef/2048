@@ -54,7 +54,7 @@ func init() {
 	// Initialize times maps
 	ResetTimesMapsDissolve()
 
-	noiseImage = generateNoiseImage()
+	noiseImage = generateNoiseImage(50, 50)
 
 	// Counter ID
 	imageToId = make(map[*ebiten.Image]int)

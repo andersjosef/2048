@@ -19,13 +19,9 @@ type Menu struct {
 // Initialize menu
 func NewMenu(g *Game) *Menu {
 	var m *Menu = &Menu{
-		game:       g,
-		titleImage: ebiten.NewImage(SCREENWIDTH, SCREENHEIGHT),
+		game: g,
 	}
-
-	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
-	m.game.renderer.DrawDoubleText(m.titleImage, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
-
+	m.titleImage = m.initTitle()
 	m.dynamicText = map[string]string{
 		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
 		"Press Q to toggle dark mode":  fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode),
@@ -106,6 +102,15 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 func (m *Menu) UpdateDynamicText() {
 	m.dynamicText["Press F to toggle Fullscreen"] = fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen)
 	m.dynamicText["Press Q to toggle dark mode"] = fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode)
+}
+
+func (m *Menu) initTitle() *ebiten.Image {
+	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
+	newImage := ebiten.NewImage(realWidth, realHeight)
+	m.game.renderer.DrawDoubleText(newImage, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
+
+	return newImage
+
 }
 
 // Drawing the title

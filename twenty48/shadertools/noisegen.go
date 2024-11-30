@@ -7,8 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func generateNoiseImage() *ebiten.Image {
-	width, height := 50, 50
+func generateNoiseImage(width, height int) *ebiten.Image {
 	img := ebiten.NewImage(width, height)
 	var (
 		alpha       = 2.0 // Frequency
@@ -34,4 +33,8 @@ func generateNoiseImage() *ebiten.Image {
 	}
 
 	return img
+}
+
+func UpdateNoiseImage(newWidth, newHeight int) {
+	noiseImage = generateNoiseImage(newWidth, newHeight)
 }
