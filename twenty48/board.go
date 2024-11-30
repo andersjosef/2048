@@ -61,9 +61,9 @@ func (b *Board) randomNewPiece() {
 	// Will start at a random position, then check every available spot after
 	// until all tiles are checked
 	var count int = rand.Intn(x * y)
-	for ; count < count+x*y; count++ {
+	for ; count < count+x*y-1; count++ {
 		var posX int = count % x
-		var posY int = count / y
+		var posY int = (count / y) % y
 		if b.board[posX][posY] == 0 {
 			if rand.Float32() > 0.16 {
 				b.board[posX][posY] = 2 // 84%
