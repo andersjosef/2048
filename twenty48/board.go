@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -24,6 +25,8 @@ type Board struct {
 	boardBeforeChange [BOARDSIZE][BOARDSIZE]int
 	boardImage        *ebiten.Image
 	boardImageOptions *ebiten.DrawImageOptions
+
+	boardForEndScreen *ebiten.Image
 }
 
 func NewBoard(g *Game) (*Board, error) {
@@ -31,6 +34,9 @@ func NewBoard(g *Game) (*Board, error) {
 	b := &Board{}
 
 	b.game = g
+
+	b.initBoardForEndScreen()
+
 	// add the two start pieces
 	for i := 0; i < 2; i++ {
 		b.randomNewPiece()
@@ -43,12 +49,21 @@ func NewBoard(g *Game) (*Board, error) {
 
 }
 
+func (b *Board) initBoardForEndScreen() {
+	realW, realH := b.game.screenControl.GetRealWidthHeight()
+	b.boardForEndScreen = ebiten.NewImage(realW, realH)
+}
+
 func (b *Board) randomNewPiece() {
 
 	var x, y int = len(b.board), len(b.board[0])
 
-	for count := 0; count < x*y; count++ {
-		var posX, posY int = rand.Intn(x), rand.Intn(y)
+	// Will start at a random position, then check every available spot after
+	// until all tiles are checked
+	var count int = rand.Intn(x * y)
+	for ; count < count+x*y; count++ {
+		var posX int = count % x
+		var posY int = count / y
 		if b.board[posX][posY] == 0 {
 			if rand.Float32() > 0.16 {
 				b.board[posX][posY] = 2 // 84%
@@ -62,15 +77,25 @@ func (b *Board) randomNewPiece() {
 
 func (b *Board) drawBoard(screen *ebiten.Image) {
 	// draw the backgroundimage of the game
-	screen.DrawImage(b.boardImage, b.boardImageOptions)
+	b.boardForEndScreen.DrawImage(b.boardImage, b.boardImageOptions)
 
 	// draw tiles
 	for y := 0; y < len(b.board); y++ {
 		for x := 0; x < len(b.board[0]); x++ {
-			b.DrawTile(screen, startPosX, startPosY, x, y, b.board[y][x], 0, 0)
+			b.DrawTile(b.boardForEndScreen, startPosX, startPosY, x, y, b.board[y][x], 0, 0)
 		}
 	}
+	if !b.game.gameOver {
+		screen.DrawImage(b.boardForEndScreen, &ebiten.DrawImageOptions{})
 
+	} else {
+		newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
+		if isDone {
+			// After animation go to game over state
+			b.game.state = StateGameOver
+		}
+		screen.DrawImage(newImage, &ebiten.DrawImageOptions{})
+	}
 }
 
 // draws one tile of the game with everything background, number, color, etc.
