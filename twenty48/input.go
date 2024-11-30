@@ -59,6 +59,13 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
 	},
+	StateGameOver: { // Game Over
+		ebiten.KeyEscape: CloseGame,
+		ebiten.KeyF:      ToggleFullScreen,
+		ebiten.KeyQ:      SwitchDefaultDarkMode,
+		ebiten.KeyI:      toggleInfo,
+		ebiten.KeyR:      ResetGame,
+	},
 }
 
 func (m *Input) UpdateInput(b *Board) error {

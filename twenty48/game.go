@@ -115,6 +115,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		DrawScore(screen, g)
 	case StateMainMenu, StateInstructions: //game is in menu
 		g.menu.DrawMenu(screen)
+
+	case StateGameOver:
+		g.DrawGameOverScreen(screen)
+
 	}
 	g.buttonManager.drawButtons(screen)
 }
