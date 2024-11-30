@@ -23,6 +23,9 @@ func NewMenu(g *Game) *Menu {
 		titleImage: ebiten.NewImage(SCREENWIDTH, SCREENHEIGHT),
 	}
 
+	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
+	m.game.renderer.DrawDoubleText(m.titleImage, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
+
 	m.dynamicText = map[string]string{
 		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
 		"Press Q to toggle dark mode":  fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode),
@@ -47,7 +50,7 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
 
 	// Title
-	m.drawTitle(screen, realWidth, realHeight)
+	m.drawTitle(screen)
 
 	// Instruction key info
 	insX := realWidth / 2
@@ -106,8 +109,7 @@ func (m *Menu) UpdateDynamicText() {
 }
 
 // Drawing the title
-func (m *Menu) drawTitle(screen *ebiten.Image, realWidth, realHeight int) {
-	m.game.renderer.DrawDoubleText(m.titleImage, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
+func (m *Menu) drawTitle(screen *ebiten.Image) {
 
 	if !m.titleInFullView {
 		shaderImage, isDone := shadertools.GetImageFadeIn(m.titleImage)
