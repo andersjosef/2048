@@ -107,7 +107,7 @@ func (m *Menu) UpdateDynamicText() {
 
 func (m *Menu) initTitle() *ebiten.Image {
 	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
-	newImage := ebiten.NewImage(realWidth, realHeight)
+	newImage := ebiten.NewImage(realWidth*int(m.game.scale), realHeight*int(m.game.scale))
 	m.game.renderer.DrawDoubleText(newImage, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
 
 	return newImage

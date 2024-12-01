@@ -51,7 +51,8 @@ func NewBoard(g *Game) (*Board, error) {
 
 func (b *Board) initBoardForEndScreen() {
 	realW, realH := b.game.screenControl.GetRealWidthHeight()
-	b.boardForEndScreen = ebiten.NewImage(realW, realH)
+	scale := int(b.game.scale)
+	b.boardForEndScreen = ebiten.NewImage(realW*scale, realH*scale)
 }
 
 func (b *Board) randomNewPiece() {
