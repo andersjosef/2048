@@ -59,6 +59,13 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
 	},
+	StateGameOver: { // Game Over
+		ebiten.KeyEscape: CloseGame,
+		ebiten.KeyF:      ToggleFullScreen,
+		ebiten.KeyQ:      SwitchDefaultDarkMode,
+		ebiten.KeyI:      toggleInfo,
+		ebiten.KeyR:      ResetGame,
+	},
 }
 
 func (m *Input) UpdateInput(b *Board) error {
@@ -94,7 +101,7 @@ func (i *Input) handleKeyboardInput(b *Board) error {
 	return nil
 }
 
-func (m *Input) handleMouseInput(b *Board) {
+func (i *Input) handleMouseInput(b *Board) {
 	// Can left, right or wheel click
 	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
 		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
@@ -105,16 +112,16 @@ func (m *Input) handleMouseInput(b *Board) {
 		if b.game.state == StateMainMenu { // If in main menu click will trigger game state
 			b.game.state = StateRunning
 		} else { // If not in menu update only end cursor coordinate
-			m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
+			i.endCursorPos[0], i.endCursorPos[1] = ebiten.CursorPosition()
 		}
 	} else { // If not clicking: update both values
-		m.resetMouseState()
+		i.resetMouseState()
 	}
 
 	// Check if delta movements is large enough to trigger move
-	if m.shoulTriggerMove() && !m.justMoved {
-		m.performMove(b)
-		m.justMoved = true
+	if i.shoulTriggerMove() && !i.justMoved {
+		i.performMove()
+		i.justMoved = true
 	}
 }
 
@@ -131,21 +138,24 @@ func (m *Input) resetMouseState() {
 	m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
 }
 
-func (m *Input) performMove(b *Board) {
-	dx := m.endCursorPos[0] - m.startCursorPos[0]
-	dy := m.endCursorPos[1] - m.startCursorPos[1]
+func (i *Input) performMove() {
+	dx := i.endCursorPos[0] - i.startCursorPos[0]
+	dy := i.endCursorPos[1] - i.startCursorPos[1]
+	if i.game.gameOver {
+		return
+	}
 
 	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
 		if dx > 0 {
-			b.moveRight()
+			i.moveRight()
 		} else {
-			b.moveLeft()
+			i.moveLeft()
 		}
 	} else { // Y-axis largest
 		if dy > 0 {
-			b.moveDown()
+			i.moveDown()
 		} else {
-			b.moveUp()
+			i.moveUp()
 		}
 	}
 
@@ -165,6 +175,7 @@ func ResetGame(i *Input) {
 	i.game.board.game.state = StateMainMenu // Swap to main menu
 	shadertools.ResetTimesMapsDissolve()
 	i.game.menu.titleInFullView = false
+	i.game.gameOver = false
 }
 
 func CloseGame(i *Input) {
@@ -186,6 +197,7 @@ func ToggleFullScreen(i *Input) {
 	}
 	i.game.menu.UpdateDynamicText()
 	i.game.menu.titleImage = i.game.menu.initTitle()
+	i.game.board.initBoardForEndScreen()
 	i.game.screenSizeChanged = true
 }
 
@@ -205,15 +217,27 @@ func SwitchDefaultDarkMode(i *Input) {
 ///// Main game logic action /////
 
 func (i *Input) moveRight() {
+	if i.game.gameOver {
+		return
+	}
 	i.game.board.moveRight()
 }
 func (i *Input) moveLeft() {
+	if i.game.gameOver {
+		return
+	}
 	i.game.board.moveLeft()
 }
 func (i *Input) moveUp() {
+	if i.game.gameOver {
+		return
+	}
 	i.game.board.moveUp()
 }
 func (i *Input) moveDown() {
+	if i.game.gameOver {
+		return
+	}
 	i.game.board.moveDown()
 }
 

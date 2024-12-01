@@ -49,8 +49,8 @@ func TestMoveDown(t *testing.T) {
 		{0, 0, 0, 2},
 	}
 	want := [BOARDSIZE][BOARDSIZE]int{
-		{0, 0, 0, 0},
 		{2, 0, 0, 0},
+		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{2, 4, 2, 2},
 	}
@@ -65,8 +65,8 @@ func TestMoveDown(t *testing.T) {
 		{0, 0, 0, 2},
 	}
 	want = [BOARDSIZE][BOARDSIZE]int{
-		{2, 0, 0, 0},
 		{0, 0, 0, 0},
+		{0, 2, 0, 0},
 		{0, 2, 0, 0},
 		{2, 4, 4, 2},
 	}
@@ -196,10 +196,10 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 2},
 			},
 			want: [BOARDSIZE][BOARDSIZE]int{
-				{4, 0, 0, 2},
+				{4, 0, 0, 0},
 				{2, 0, 0, 0},
 				{2, 0, 0, 0},
-				{2, 0, 0, 0},
+				{2, 0, 0, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveLeft() },
 			wantedScore: 4,
@@ -214,7 +214,7 @@ func TestMoves(t *testing.T) {
 			},
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{4, 2, 0, 0},
-				{2, 0, 0, 2},
+				{2, 0, 2, 0},
 				{2, 0, 0, 0},
 				{2, 0, 0, 0},
 			},
@@ -230,9 +230,9 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 2},
 			},
 			want: [BOARDSIZE][BOARDSIZE]int{
-				{0, 0, 0, 4},
+				{0, 2, 0, 4},
 				{0, 0, 0, 2},
-				{0, 0, 2, 2},
+				{0, 0, 0, 2},
 				{0, 0, 0, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveRight() },
@@ -247,10 +247,10 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 2},
 			},
 			want: [BOARDSIZE][BOARDSIZE]int{
-				{0, 0, 2, 4},
+				{0, 2, 2, 4},
 				{0, 0, 0, 2},
 				{0, 0, 0, 4},
-				{4, 0, 0, 2},
+				{0, 0, 0, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveRight() },
 			wantedScore: 8,
@@ -266,8 +266,8 @@ func TestMoves(t *testing.T) {
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{2, 4, 2, 2},
 				{0, 0, 0, 0},
-				{2, 0, 0, 0},
 				{0, 0, 0, 0},
+				{0, 0, 2, 0},
 			},
 			moveFunc:    func(b *Board) { b.moveUp() },
 			wantedScore: 4,
@@ -282,9 +282,9 @@ func TestMoves(t *testing.T) {
 			},
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{2, 4, 4, 2},
-				{0, 2, 0, 0},
+				{0, 2, 0, 2},
 				{0, 0, 0, 0},
-				{2, 0, 0, 0},
+				{0, 0, 0, 0},
 			},
 			moveFunc:    func(b *Board) { b.moveUp() },
 			wantedScore: 8,
@@ -298,9 +298,9 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 2},
 			},
 			want: [BOARDSIZE][BOARDSIZE]int{
-				{0, 0, 0, 0},
-				{0, 0, 0, 0},
 				{0, 0, 0, 2},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
 				{2, 4, 2, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveDown() },
@@ -317,7 +317,7 @@ func TestMoves(t *testing.T) {
 			want: [BOARDSIZE][BOARDSIZE]int{
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
-				{0, 2, 0, 2},
+				{2, 2, 0, 0},
 				{2, 4, 4, 2},
 			},
 			moveFunc:    func(b *Board) { b.moveDown() },
@@ -372,4 +372,73 @@ func TestResetAnimation(t *testing.T) {
 	assert.Equal(t, false, a.isAnimating)
 	assert.Equal(t, wantArrayOfChange, a.arrayOfChange)
 
+}
+
+func TestIsGameOver(t *testing.T) {
+	var tests = []struct {
+		name  string
+		board [BOARDSIZE][BOARDSIZE]int
+		want  bool
+	}{
+		{
+			name: "Empty",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+			},
+			want: false,
+		},
+		{
+			name: "Full",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+			},
+			want: true,
+		},
+		{
+			name: "Only UP/DOWN",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{8, 4, 2, 4},
+				{8, 2, 4, 2},
+			},
+			want: false,
+		},
+		{
+			name: "Only RIGHT/LEFT",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{2048, 2048, 2, 4},
+				{4, 2, 4, 2},
+			},
+			want: false,
+		},
+		{
+			name: "X",
+			board: [BOARDSIZE][BOARDSIZE]int{
+				{2, 0, 0, 4},
+				{0, 2, 4, 0},
+				{0, 4, 2, 0},
+				{4, 0, 0, 2},
+			},
+			want: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			game, err := NewGame()
+			assert.NoError(t, err)
+
+			game.board.board = tc.board
+			assert.Equal(t, tc.want, game.board.isGameOver())
+		})
+	}
 }

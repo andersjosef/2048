@@ -26,6 +26,7 @@ const (
 	StateRunning GameState = iota + 1
 	StateMainMenu
 	StateInstructions
+	StateGameOver
 )
 
 type Game struct {
@@ -37,14 +38,15 @@ type Game struct {
 	buttonManager     *ButtonManager
 	fontSet           *theme.FontSet
 	renderer          *renderer.Renderer
-	state             GameState //if game is in menu, running, etc
+	state             GameState // Game is in menu, running, etc
 	previousState     GameState
 	score             int
-	shouldClose       bool
+	shouldClose       bool // If yes will close the game
 	scale             float64
 	screenSizeChanged bool
 	darkMode          bool
 	currentTheme      theme.Theme
+	gameOver          bool
 }
 
 func NewGame() (*Game, error) {
@@ -52,7 +54,7 @@ func NewGame() (*Game, error) {
 	g := &Game{
 		state:             StateMainMenu,
 		previousState:     StateMainMenu,
-		shouldClose:       false, // if yes will close the game
+		shouldClose:       false,
 		scale:             ebiten.Monitor().DeviceScaleFactor(),
 		screenSizeChanged: false,
 		darkMode:          true,
@@ -113,6 +115,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		DrawScore(screen, g)
 	case StateMainMenu, StateInstructions: //game is in menu
 		g.menu.DrawMenu(screen)
+
+	case StateGameOver:
+		g.DrawGameOverScreen(screen)
+
 	}
 	g.buttonManager.drawButtons(screen)
 }

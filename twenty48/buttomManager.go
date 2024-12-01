@@ -100,6 +100,17 @@ func (bm *ButtonManager) initButtons() {
 		StateRunning,
 	)
 
+	// Game Over
+
+	bm.AddButton(
+		"R: Play again",
+		[2]int{0, 0},
+		smallOffsett,
+		bm.game.fontSet.Mini,
+		ResetGame,
+		StateGameOver,
+	)
+
 }
 
 func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {

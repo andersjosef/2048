@@ -114,7 +114,7 @@ func (m *Menu) initTitle() *ebiten.Image {
 
 }
 
-// Drawing the title
+// Drawing the title and using shader when animating
 func (m *Menu) drawTitle(screen *ebiten.Image) {
 
 	if !m.titleInFullView {
