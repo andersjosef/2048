@@ -38,7 +38,6 @@ func (a *Animation) ResetArray() {
 }
 
 func (a *Animation) DrawAnimation(screen *ebiten.Image) {
-
 	// Draw the backgroundimage of the game
 	screen.DrawImage(a.game.board.boardImage, a.game.board.boardImageOptions)
 

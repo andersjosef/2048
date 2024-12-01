@@ -141,6 +141,9 @@ func (m *Input) resetMouseState() {
 func (i *Input) performMove() {
 	dx := i.endCursorPos[0] - i.startCursorPos[0]
 	dy := i.endCursorPos[1] - i.startCursorPos[1]
+	if i.game.gameOver {
+		return
+	}
 
 	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
 		if dx > 0 {
@@ -214,15 +217,27 @@ func SwitchDefaultDarkMode(i *Input) {
 ///// Main game logic action /////
 
 func (i *Input) moveRight() {
+	if i.game.gameOver {
+		return
+	}
 	i.game.board.moveRight()
 }
 func (i *Input) moveLeft() {
+	if i.game.gameOver {
+		return
+	}
 	i.game.board.moveLeft()
 }
 func (i *Input) moveUp() {
+	if i.game.gameOver {
+		return
+	}
 	i.game.board.moveUp()
 }
 func (i *Input) moveDown() {
+	if i.game.gameOver {
+		return
+	}
 	i.game.board.moveDown()
 }
 

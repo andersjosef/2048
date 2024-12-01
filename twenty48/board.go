@@ -44,12 +44,6 @@ func NewBoard(g *Game) (*Board, error) {
 
 	// create baordImage
 	b.createBoardImage()
-	b.board = [BOARDSIZE][BOARDSIZE]int{
-		{2048, 8, 2048, 64},
-		{64, 2048, 64, 2048},
-		{128, 64, 2048, 64},
-		{128, 8, 64, 2048},
-	}
 
 	return b, nil
 
