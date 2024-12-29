@@ -73,12 +73,12 @@ func (m *Input) UpdateInput(b *Board) error {
 	if m.game.buttonManager.checkButtons() {
 		return nil
 	}
-	m.handleKeyboardInput(b)
-	m.handleMouseInput(b)
+	m.handleKeyboardInput()
+	m.handleMouseInput()
 	return nil
 }
 
-func (i *Input) handleKeyboardInput(b *Board) error {
+func (i *Input) handleKeyboardInput() error {
 	i.keys = inpututil.AppendPressedKeys(i.keys[:0])
 
 	// Take key and prevent retriggering
@@ -87,11 +87,11 @@ func (i *Input) handleKeyboardInput(b *Board) error {
 		key_pressed := i.keys[len(i.keys)-1]
 
 		// Get the appropriate action map based on the current game state
-		if actionMap, ok := keyActions[b.game.state]; ok { // Check if actionmap exist for current game state
+		if actionMap, ok := keyActions[i.game.state]; ok { // Check if actionmap exist for current game state
 			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
 				action(i)
-			} else if b.game.state == StateMainMenu { // If button is not in map and state is main menu
-				b.game.state = StateRunning
+			} else if i.game.state == StateMainMenu { // If button is not in map and state is main menu
+				i.game.state = StateRunning
 			}
 		}
 
@@ -101,7 +101,7 @@ func (i *Input) handleKeyboardInput(b *Board) error {
 	return nil
 }
 
-func (i *Input) handleMouseInput(b *Board) {
+func (i *Input) handleMouseInput() {
 	// Can left, right or wheel click
 	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
 		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
@@ -109,8 +109,8 @@ func (i *Input) handleMouseInput(b *Board) {
 
 	// Cursor movement updates
 	if pressed {
-		if b.game.state == StateMainMenu { // If in main menu click will trigger game state
-			b.game.state = StateRunning
+		if i.game.state == StateMainMenu { // If in main menu click will trigger game state
+			i.game.state = StateRunning
 		} else { // If not in menu update only end cursor coordinate
 			i.endCursorPos[0], i.endCursorPos[1] = ebiten.CursorPosition()
 		}

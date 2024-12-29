@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Modifications made by [Your Name or Organization]:
+// Modifications
 // - Simplified the limit calculation by removing the triangle wave function.
 // - Changed the source image for `level` from `imageSrc3` to `imageSrc1`.
 // - Removed the unused `Cursor` variable to reduce global scope complexity.
