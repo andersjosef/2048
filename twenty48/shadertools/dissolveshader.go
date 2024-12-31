@@ -21,6 +21,7 @@ package shadertools
 
 import (
 	_ "embed"
+	"image/color"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -148,6 +149,7 @@ func applyDissolveShader(image *ebiten.Image, time float32) *ebiten.Image {
 	// Check cache for noise image in right size, if not create new
 	noise := getResizedNoiseImage(w, h)
 	newImage := getNewImage(w, h)
+	newImage.Fill(color.RGBA{0, 0, 0, 0})
 	op := &ebiten.DrawRectShaderOptions{
 		Uniforms: map[string]any{
 			"Time": time / FadeDuration,
