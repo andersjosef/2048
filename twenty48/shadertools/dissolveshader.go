@@ -36,6 +36,7 @@ var (
 	timesFadeIn  map[int]float32
 	timesFadeOut map[int]float32
 	noiseCache   map[[2]int]*ebiten.Image
+	newCache     map[[2]int]*ebiten.Image
 	noiseImage   *ebiten.Image
 	idCounter    int
 	imageToId    map[*ebiten.Image]int
@@ -77,6 +78,7 @@ func ResetTimesMapsDissolve() {
 	timesFadeIn = make(map[int]float32)
 	timesFadeOut = make(map[int]float32)
 	noiseCache = make(map[[2]int]*ebiten.Image)
+	newCache = make(map[[2]int]*ebiten.Image)
 	idCounter = 0
 	imageToId = make(map[*ebiten.Image]int)
 }
@@ -89,6 +91,17 @@ func getResizedNoiseImage(w, h int) *ebiten.Image {
 	resized := resizeImage(noiseImage, w, h)
 	noiseCache[key] = resized
 	return resized
+
+}
+
+func getNewImage(w, h int) *ebiten.Image {
+	key := [2]int{w, h}
+	if newImage, exists := newCache[key]; exists {
+		return newImage
+	}
+	newImage := ebiten.NewImage(w, h)
+	newCache[key] = newImage
+	return newImage
 
 }
 
@@ -134,7 +147,7 @@ func applyDissolveShader(image *ebiten.Image, time float32) *ebiten.Image {
 	w, h := image.Bounds().Dx(), image.Bounds().Dy()
 	// Check cache for noise image in right size, if not create new
 	noise := getResizedNoiseImage(w, h)
-	newImage := ebiten.NewImage(w, h)
+	newImage := getNewImage(w, h)
 	op := &ebiten.DrawRectShaderOptions{
 		Uniforms: map[string]any{
 			"Time": time / FadeDuration,
