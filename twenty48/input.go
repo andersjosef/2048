@@ -18,12 +18,15 @@ type Input struct {
 	startCursorPos [2]int
 	endCursorPos   [2]int
 	justMoved      bool // To make sure only one move is done
+
+	touchInput *TouchInput
 }
 
 func InitInput(g *Game) *Input {
-	var m = &Input{game: g}
+	var i = &Input{game: g}
+	i.touchInput = newTouchInput(i)
 
-	return m
+	return i
 }
 
 type ActionFunc func(*Input)
@@ -75,6 +78,7 @@ func (m *Input) UpdateInput(b *Board) error {
 	}
 	m.handleKeyboardInput()
 	m.handleMouseInput()
+	m.touchInput.handleTouchInput()
 	return nil
 }
 
@@ -145,6 +149,23 @@ func (i *Input) performMove() {
 		return
 	}
 
+	i.SelectMoveDelta(dx, dy)
+	// if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
+	// 	if dx > 0 {
+	// 		i.moveRight()
+	// 	} else {
+	// 		i.moveLeft()
+	// 	}
+	// } else { // Y-axis largest
+	// 	if dy > 0 {
+	// 		i.moveDown()
+	// 	} else {
+	// 		i.moveUp()
+	// 	}
+	// }
+}
+
+func (i *Input) SelectMoveDelta(dx, dy int) {
 	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
 		if dx > 0 {
 			i.moveRight()
