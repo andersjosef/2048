@@ -78,7 +78,7 @@ func (m *Input) UpdateInput(b *Board) error {
 	}
 	m.handleKeyboardInput()
 	m.handleMouseInput()
-	m.touchInput.handleTouchInput()
+	m.touchInput.TouchUpdate()
 	return nil
 }
 
