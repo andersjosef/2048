@@ -121,8 +121,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	}
 	g.buttonManager.drawButtons(screen)
-
-	g.input.touchInput.Draw(screen)
 }
 
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
