@@ -150,19 +150,6 @@ func (i *Input) performMove() {
 	}
 
 	i.SelectMoveDelta(dx, dy)
-	// if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
-	// 	if dx > 0 {
-	// 		i.moveRight()
-	// 	} else {
-	// 		i.moveLeft()
-	// 	}
-	// } else { // Y-axis largest
-	// 	if dy > 0 {
-	// 		i.moveDown()
-	// 	} else {
-	// 		i.moveUp()
-	// 	}
-	// }
 }
 
 func (i *Input) SelectMoveDelta(dx, dy int) {

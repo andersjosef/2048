@@ -42,6 +42,14 @@ type touch struct {
 	wasPinch, isPan  bool
 }
 
+// By move the motion of swiping the buttons is meant
+func (t *touch) shouldTriggerTouchMove() (bool, int, int) {
+	dx := t.currX - t.originX
+	dy := t.currY - t.originY
+
+	return int(math.Abs(float64(dx))) > MOVE_THRESHOLD || int(math.Abs(float64(dy))) > MOVE_THRESHOLD, dx, dy
+}
+
 type pinch struct {
 	id1, id2 ebiten.TouchID
 	originH  float64
@@ -71,6 +79,8 @@ type TouchInput struct {
 	pan      *pan
 	taps     []tap
 	tapped   bool
+
+	canSwipe bool
 }
 
 func newTouchInput(i *Input) *TouchInput {
@@ -85,6 +95,10 @@ func newTouchInput(i *Input) *TouchInput {
 func (g *TouchInput) TouchUpdate() error {
 	// Clear the previous frame's taps.
 	g.taps = g.taps[:0]
+
+	if len(g.touches) == 0 {
+		g.canSwipe = true
+	}
 
 	// What touches have just ended?
 	for id, t := range g.touches {
@@ -104,6 +118,9 @@ func (g *TouchInput) TouchUpdate() error {
 					X: t.currX,
 					Y: t.currY,
 				})
+				if g.input.game.state == StateMainMenu {
+					g.input.game.state = StateRunning
+				}
 			}
 
 			delete(g.touches, id)
@@ -128,6 +145,13 @@ func (g *TouchInput) TouchUpdate() error {
 		t := g.touches[id]
 		t.duration = inpututil.TouchPressDuration(id)
 		t.currX, t.currY = ebiten.TouchPosition(id)
+		shouldTriggerMove, dx, dy := t.shouldTriggerTouchMove()
+
+		if shouldTriggerMove && g.canSwipe {
+			g.input.SelectMoveDelta(dx, dy)
+			g.canSwipe = false
+		}
+
 	}
 
 	// Interpret the raw touch data that's been collected into g.touches into
@@ -212,6 +236,7 @@ func (g *TouchInput) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Use a two finger pinch to zoom, swipe with one finger to pan, or tap to reset the view")
 
 	ebitenutil.DebugPrintAt(screen, fmt.Sprint(g.taps), 250, 250)
+	ebitenutil.DebugPrintAt(screen, fmt.Sprint(g.touches), 300, 250)
 }
 
 func (ti *TouchInput) checkTapped() bool {
