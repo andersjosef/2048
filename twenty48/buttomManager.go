@@ -135,11 +135,12 @@ func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {
 func (bm *ButtonManager) checkButtons() bool {
 	// On mouse click loop over every button in array
 	// If cursor is within range of some button do the buttons action
+	tapped := bm.game.input.touchInput.checkTapped()
 
 	// Can left, right or wheel click
 	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
 		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
-		ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
+		ebiten.IsMouseButtonPressed(ebiten.MouseButton2) || tapped
 
 	// Dont check if button isnt pressed
 	if !pressed {
@@ -156,7 +157,15 @@ func (bm *ButtonManager) checkButtons() bool {
 
 	buttonArray := bm.buttonArrayMap[bm.game.state]
 	for _, button := range buttonArray {
-		if button.CursorWithin(curX, curY) {
+		var tapWithin bool
+		for _, tap := range bm.game.input.touchInput.taps {
+			if button.CursorWithin(tap.X, tap.Y) {
+				tapWithin = true
+				bm.game.input.touchInput.taps = bm.game.input.touchInput.taps[:0]
+				break
+			}
+		}
+		if button.CursorWithin(curX, curY) || tapWithin {
 			button.OnTrigger()
 			bm.buttonPressed = true
 			return true

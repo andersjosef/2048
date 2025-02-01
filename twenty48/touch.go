@@ -70,6 +70,7 @@ type TouchInput struct {
 	pinch    *pinch
 	pan      *pan
 	taps     []tap
+	tapped   bool
 }
 
 func newTouchInput(i *Input) *TouchInput {
@@ -211,4 +212,14 @@ func (g *TouchInput) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(screen, "Use a two finger pinch to zoom, swipe with one finger to pan, or tap to reset the view")
 
 	ebitenutil.DebugPrintAt(screen, fmt.Sprint(g.taps), 250, 250)
+}
+
+func (ti *TouchInput) checkTapped() bool {
+	if len(ti.taps) == 0 {
+		ti.tapped = false
+		return false
+	} else {
+		ti.tapped = true
+		return true
+	}
 }
