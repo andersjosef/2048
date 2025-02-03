@@ -56,10 +56,9 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 }
 
 func (m *Menu) DrawInstructions(screen *ebiten.Image) {
-	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
 
 	// Title
-	m.game.renderer.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, m.game.fontSet.Big, true)
+	m.game.renderer.DrawDoubleText(screen, "Instructions", logicalWidth/2, logicalHeight/10, 2, m.game.fontSet.Big, true)
 
 	// Instructions messages
 	instructions := []string{
@@ -75,8 +74,8 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	// Render each instruction line
 	for i, line := range instructions {
 		// Adjust Y-position dynamically based on line index
-		rowXPos := realWidth / 2
-		lineYPos := (realHeight / 5) + i*(realHeight/18)
+		rowXPos := logicalWidth / 2
+		lineYPos := (logicalHeight / 5) + i*(logicalHeight/18)
 
 		if button, ok := m.game.buttonManager.buttonKeyMap[line]; ok {
 			if newText, ok := m.dynamicText[button.identifier]; ok {
@@ -97,7 +96,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 		returnButtonText += " to Game"
 	}
 	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdateText(returnButtonText)
-	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(realWidth/2, realHeight-realHeight/10)
+	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(logicalWidth/2, logicalHeight-logicalHeight/10)
 }
 
 func (m *Menu) UpdateDynamicText() {
@@ -106,9 +105,8 @@ func (m *Menu) UpdateDynamicText() {
 }
 
 func (m *Menu) initTitle() *ebiten.Image {
-	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
-	newImage := ebiten.NewImage(realWidth*int(m.game.scale), realHeight*int(m.game.scale))
-	m.game.renderer.DrawDoubleText(newImage, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
+	newImage := ebiten.NewImage(logicalWidth, logicalHeight)
+	m.game.renderer.DrawDoubleText(newImage, "2048", logicalWidth/2, logicalHeight/2, 2, m.game.fontSet.Big, true)
 
 	return newImage
 

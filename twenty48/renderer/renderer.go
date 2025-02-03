@@ -9,7 +9,6 @@ import (
 )
 
 type Renderer struct {
-	scale float64
 }
 
 func InitRenderer(fontSet *theme.FontSet) *Renderer {
@@ -24,7 +23,6 @@ func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int
 	textWidth := text.Advance(message, fontUsed)
 	textHeight := -(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
 
-	// Scale the position
 	baseX := float64(xpos)
 	baseY := float64(ypos)
 
