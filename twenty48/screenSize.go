@@ -29,7 +29,7 @@ func (s *ScreenControl) GetRealWidthHeight() (int, int) {
 	if s.fullscreen { // changing to full screen
 		newWidth, newHeight = ebiten.Monitor().Size()
 	} else { // changing to small
-		newWidth, newHeight = SCREENWIDTH, SCREENHEIGHT
+		newWidth, newHeight = logicalWidth, logicalWidth
 	}
 	return newWidth, newHeight
 }

@@ -49,18 +49,24 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyEscape:     CloseGame,
 		ebiten.KeyQ:          SwitchDefaultDarkMode,
 		ebiten.KeyI:          toggleInfo,
+		ebiten.KeyMinus:      ScaleWindowUp,
+		ebiten.KeyPeriod:     ScaleWindowDown,
 	},
 	StateMainMenu: { // Menu
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
+		ebiten.KeyMinus:  ScaleWindowUp,
+		ebiten.KeyPeriod: ScaleWindowDown,
 	},
 	StateInstructions: { // Instructions
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
+		ebiten.KeyMinus:  ScaleWindowUp,
+		ebiten.KeyPeriod: ScaleWindowDown,
 	},
 	StateGameOver: { // Game Over
 		ebiten.KeyEscape: CloseGame,
@@ -68,6 +74,8 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
 		ebiten.KeyR:      ResetGame,
+		ebiten.KeyMinus:  ScaleWindowUp,
+		ebiten.KeyPeriod: ScaleWindowDown,
 	},
 }
 
@@ -194,7 +202,7 @@ func ToggleFullScreen(i *Input) {
 	if i.game.screenControl.fullscreen {
 		ebiten.SetFullscreen(false)
 		shadertools.UpdateNoiseImage(50, 50)
-		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(SCREENWIDTH-20, 20)
+		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(logicalWidth-20, 20)
 		i.game.screenControl.fullscreen = false
 	} else {
 		ebiten.SetFullscreen(true)
@@ -264,4 +272,16 @@ func toggleInfo(i *Input) {
 		i.game.state = i.game.previousState
 	}
 
+}
+
+func ScaleWindowUp(i *Input) {
+	i.game.scale++
+	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+}
+
+func ScaleWindowDown(i *Input) {
+	if i.game.scale > 1 {
+		i.game.scale--
+		ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+	}
 }

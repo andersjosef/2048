@@ -3,7 +3,6 @@ package twenty48
 import (
 	"fmt"
 	"image/color"
-	"math"
 
 	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/shadertools"
@@ -14,9 +13,9 @@ import (
 
 /* variables and constants */
 const (
-	SCREENWIDTH  int = 640
-	SCREENHEIGHT int = 480
-	BOARDSIZE    int = 4
+	logicalWidth  int = 640
+	logicalHeight int = 480
+	BOARDSIZE     int = 4
 )
 
 // Gamestates Enum style
@@ -87,6 +86,8 @@ func NewGame() (*Game, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	ebiten.SetWindowSize(logicalWidth*int(g.scale), logicalHeight*int(g.scale))
 	return g, nil
 }
 
@@ -123,12 +124,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.buttonManager.drawButtons(screen)
 }
 
-func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
-func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
-	// scale := ebiten.DeviceScaleFactor()
-	canvasWidth := math.Ceil(logicWinWidth * g.scale)
-	canvasHeight := math.Ceil(logicWinHeight * g.scale)
-	return canvasWidth, canvasHeight
+// Layout defines the logical screen size and how it scales to the actual screen.
+func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return logicalWidth, logicalHeight
 }
 
 func DrawScore(screen *ebiten.Image, g *Game) {
