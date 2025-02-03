@@ -16,7 +16,7 @@ const BORDERSIZE float32 = TILESIZE / 25
 
 var (
 	startPosX float32 = float32((logicalWidth - (BOARDSIZE * int(TILESIZE))) / 2)
-	startPosY float32 = float32((logicalWidth - (BOARDSIZE * int(TILESIZE))) / 2)
+	startPosY float32 = float32((logicalHeight - (BOARDSIZE * int(TILESIZE))) / 2)
 )
 
 type Board struct {
@@ -50,8 +50,7 @@ func NewBoard(g *Game) (*Board, error) {
 }
 
 func (b *Board) initBoardForEndScreen() {
-	realW, realH := b.game.screenControl.GetRealWidthHeight()
-	b.boardForEndScreen = ebiten.NewImage(realW, realH)
+	b.boardForEndScreen = ebiten.NewImage(logicalWidth, logicalHeight)
 }
 
 func (b *Board) randomNewPiece() {

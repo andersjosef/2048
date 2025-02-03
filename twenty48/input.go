@@ -201,19 +201,11 @@ func CloseGame(i *Input) {
 func ToggleFullScreen(i *Input) {
 	if i.game.screenControl.fullscreen {
 		ebiten.SetFullscreen(false)
-		shadertools.UpdateNoiseImage(50, 50)
-		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(logicalWidth-20, 20)
 		i.game.screenControl.fullscreen = false
 	} else {
 		ebiten.SetFullscreen(true)
-		shadertools.UpdateNoiseImage(100, 100)
-		newScreenLength, _ := ebiten.Monitor().Size()
-		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(newScreenLength-20, 20)
 		i.game.screenControl.fullscreen = true
 	}
-	i.game.menu.UpdateDynamicText()
-	i.game.menu.titleImage = i.game.menu.initTitle()
-	i.game.board.initBoardForEndScreen()
 	i.game.screenSizeChanged = true
 }
 
