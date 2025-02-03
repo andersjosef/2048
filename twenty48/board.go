@@ -166,8 +166,9 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	)
 
 	op := &text.DrawOptions{}
-	op.GeoM.Translate(float64(textPosX), float64(textPosY))
+	op.GeoM.Translate(float64(textPosX)*b.game.scale, float64(textPosY)*b.game.scale)
 	op.ColorScale.ScaleWithColor(b.game.currentTheme.ColorText)
+	fmt.Println(b.game.scale)
 	text.Draw(screen, msg, fontUsed, op)
 }
 

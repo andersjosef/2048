@@ -155,3 +155,12 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	text.Draw(screen, score_text, myFont,
 		mainOpt)
 }
+
+// For reinitializing a font with a higher dpi
+func (g *Game) updateFonts() {
+	var err error
+	g.fontSet, err = theme.InitFonts(g.scale)
+	if err != nil {
+		fmt.Println("Error changing fontsiz")
+	}
+}
