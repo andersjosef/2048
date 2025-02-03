@@ -78,7 +78,7 @@ func NewGame() (*Game, error) {
 	g.animation = InitAnimation(g)
 	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard(g)
-	g.renderer = renderer.InitRenderer(g.fontSet, g.scale)
+	g.renderer = renderer.InitRenderer(g.fontSet)
 	g.menu = NewMenu(g)
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)

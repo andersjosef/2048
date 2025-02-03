@@ -12,25 +12,21 @@ type Renderer struct {
 	scale float64
 }
 
-func InitRenderer(fontSet *theme.FontSet, scale float64) *Renderer {
-	r := &Renderer{
-		scale: scale,
-	}
+func InitRenderer(fontSet *theme.FontSet) *Renderer {
+	r := &Renderer{}
 
 	return r
 }
 
 func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
 
-	scale := r.scale
-
 	// Calculate text dimensions
 	textWidth := text.Advance(message, fontUsed)
 	textHeight := -(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
 
 	// Scale the position
-	baseX := scale * float64(xpos)
-	baseY := scale * float64(ypos)
+	baseX := float64(xpos)
+	baseY := float64(ypos)
 
 	// Adjust for centering
 	if isCentered {
@@ -48,8 +44,8 @@ func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int
 	// Set options for main text
 	mainOpt := &text.DrawOptions{}
 	mainOpt.GeoM.Translate(
-		baseX-offset*scale,
-		baseY-offset*scale)
+		baseX-offset,
+		baseY-offset)
 	mainOpt.ColorScale.ScaleWithColor(color.White)
 
 	// Draw shadow and main text

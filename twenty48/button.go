@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
@@ -27,11 +26,8 @@ func (bu *Button) UpdatePos(posX, posY int) {
 		log.Fatal(err)
 	}
 
-	scale := bu.game.scale
-
-	// Scale delta down since they use actual size
-	var textLengt int = (dx / 2) / int(scale)
-	var textWidth int = (dy / 2) / int(scale)
+	var textLengt int = (dx / 2)
+	var textWidth int = (dy / 2)
 
 	bu.startPos = [2]int{
 		posX - textLengt,
@@ -51,9 +47,8 @@ func (bu *Button) UpdateText(newText string) {
 }
 
 func (bu *Button) CursorWithin(curX, curY int) bool {
-	scale := ebiten.Monitor().DeviceScaleFactor()
-	curX = int(float64(curX) / scale)
-	curY = int(float64(curY) / scale)
+	curX = int(float64(curX))
+	curY = int(float64(curY))
 
 	if curX >= bu.startPos[0] && curX <= bu.endPos[0] {
 		if curY >= bu.startPos[1] && curY <= bu.endPos[1] {
