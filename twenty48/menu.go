@@ -21,7 +21,7 @@ func NewMenu(g *Game) *Menu {
 	var m *Menu = &Menu{
 		game: g,
 	}
-	m.titleImage = m.initTitle()
+	m.initTitle() // Inits title image to menu parameter
 	m.dynamicText = map[string]string{
 		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
 		"Press Q to toggle dark mode":  fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode),
@@ -103,11 +103,17 @@ func (m *Menu) UpdateDynamicText() {
 	m.dynamicText["Press Q to toggle dark mode"] = fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode)
 }
 
-func (m *Menu) initTitle() *ebiten.Image {
-	newImage := ebiten.NewImage(logicalWidth, logicalHeight)
-	m.game.renderer.DrawDoubleText(newImage, "2048", logicalWidth/2, logicalHeight/2, 2, m.game.fontSet.Big, true)
-
-	return newImage
+func (m *Menu) initTitle() {
+	var xPos, yPos int
+	if m.game.screenControl.fullscreen {
+		xPos, yPos = ebiten.Monitor().Size()
+	} else {
+		xPos = logicalWidth * int(m.game.scale)
+		yPos = logicalHeight * int(m.game.scale)
+	}
+	newImage := ebiten.NewImage(xPos, yPos)
+	m.game.renderer.DrawDoubleText(newImage, "2048", xPos/2, yPos/2, 2, m.game.fontSet.Big, true)
+	m.titleImage = newImage
 
 }
 

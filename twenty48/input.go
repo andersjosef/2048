@@ -1,7 +1,6 @@
 package twenty48
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/andersjosef/2048/twenty48/shadertools"
@@ -204,10 +203,14 @@ func ToggleFullScreen(i *Input) {
 		ebiten.SetFullscreen(false)
 		i.game.screenControl.fullscreen = false
 		i.game.board.sizes.scaleBoard()
+		i.game.menu.initTitle()
+		shadertools.UpdateNoiseImage(50, 50)
 	} else {
 		ebiten.SetFullscreen(true)
 		i.game.screenControl.fullscreen = true
 		i.game.board.sizes.scaleBoard()
+		i.game.menu.initTitle()
+		shadertools.UpdateNoiseImage(150, 150)
 	}
 	i.game.screenSizeChanged = true
 }
@@ -271,18 +274,21 @@ func toggleInfo(i *Input) {
 
 func ScaleWindowUp(i *Input) {
 	i.game.scale++
-	i.game.updateFonts()
-	i.game.board.sizes.scaleBoard()
-	fmt.Println(i.game.board.sizes)
-	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+	ScaleWindow(i)
 }
 
 func ScaleWindowDown(i *Input) {
 	if i.game.scale > 1 {
 		i.game.scale--
-		i.game.updateFonts()
-		i.game.board.sizes.scaleBoard()
-		fmt.Println(i.game.board.sizes)
-		ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+		ScaleWindow(i)
 	}
+}
+
+// Helper function for scaling image, contains what is equal for up and down
+func ScaleWindow(i *Input) {
+	i.game.updateFonts()
+	i.game.board.sizes.scaleBoard()
+	i.game.menu.initTitle()
+	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+
 }
