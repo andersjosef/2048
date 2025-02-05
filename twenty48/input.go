@@ -268,14 +268,14 @@ func toggleInfo(i *Input) {
 
 func ScaleWindowUp(i *Input) {
 	i.game.scale++
-	i.game.updateFonts()
+	// i.game.updateFonts()
 	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
 }
 
 func ScaleWindowDown(i *Input) {
 	if i.game.scale > 1 {
 		i.game.scale--
-		i.game.updateFonts()
+		// i.game.updateFonts()
 		ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
 	}
 }
