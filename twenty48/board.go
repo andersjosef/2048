@@ -95,12 +95,7 @@ func NewBoard(g *Game) (*Board, error) {
 }
 
 func (b *Board) initBoardForEndScreen() {
-	if b.game.screenControl.fullscreen {
-		screenSizeX, screenSizeY := ebiten.Monitor().Size()
-		b.boardForEndScreen = ebiten.NewImage(screenSizeX, screenSizeY)
-	} else {
-		b.boardForEndScreen = ebiten.NewImage(logicalWidth*int(b.game.scale), logicalHeight*int(b.game.scale))
-	}
+	b.boardForEndScreen = ebiten.NewImage(b.game.screenControl.actualWidth, b.game.screenControl.actualHeight)
 }
 
 func (b *Board) randomNewPiece() {
