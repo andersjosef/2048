@@ -204,12 +204,14 @@ func ToggleFullScreen(i *Input) {
 		i.game.screenControl.fullscreen = false
 		i.game.board.sizes.scaleBoard()
 		i.game.menu.initTitle()
+		i.game.screenControl.UpdateActualDimentions()
 		shadertools.UpdateNoiseImage(50, 50)
 	} else {
 		ebiten.SetFullscreen(true)
 		i.game.screenControl.fullscreen = true
 		i.game.board.sizes.scaleBoard()
 		i.game.menu.initTitle()
+		i.game.screenControl.UpdateActualDimentions()
 		shadertools.UpdateNoiseImage(150, 150)
 	}
 	i.game.screenSizeChanged = true
@@ -286,6 +288,7 @@ func ScaleWindowDown(i *Input) {
 
 // Helper function for scaling image, contains what is equal for up and down
 func ScaleWindow(i *Input) {
+	i.game.screenControl.UpdateActualDimentions()
 	i.game.updateFonts()
 	i.game.board.sizes.scaleBoard()
 	i.game.menu.initTitle()

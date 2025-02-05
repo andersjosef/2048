@@ -48,8 +48,8 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	m.drawTitle(screen)
 
 	// Instruction key info
-	insX := logicalWidth / 2
-	insY := (logicalHeight / 2) + logicalHeight/10
+	insX := m.game.screenControl.actualWidth / 2
+	insY := (m.game.screenControl.actualHeight / 2) + m.game.screenControl.actualHeight/10
 	m.game.buttonManager.buttonKeyMap["I: Instructions"].UpdatePos(insX, insY)
 
 }
