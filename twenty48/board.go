@@ -21,14 +21,16 @@ var (
 
 // The sizes for the board that can be scaled up and down with window size changes
 type Sizes struct {
+	board      *Board
 	tileSize   float32
 	bordersize float32
 	startPosX  float32
 	startPosY  float32
 }
 
-func InitSizes() *Sizes {
+func InitSizes(b *Board) *Sizes {
 	sfb := &Sizes{
+		board:      b,
 		tileSize:   TILESIZE,
 		bordersize: BORDERSIZE,
 		startPosX:  startPosX,
@@ -37,11 +39,29 @@ func InitSizes() *Sizes {
 	return sfb
 }
 
-func (s *Sizes) scaleBoard(scale int) {
+func (s *Sizes) scaleBoard() {
+	scale := s.board.game.scale
+
 	s.tileSize = TILESIZE * float32(scale)
 	s.bordersize = BORDERSIZE * float32(scale)
-	s.startPosX = startPosX * float32(scale)
-	s.startPosY = startPosY * float32(scale)
+
+	// center startpos (center - half width)
+	if s.board.game.screenControl.fullscreen {
+		// Full screen based on monitor size
+		screenSizeX, screenSizeY := ebiten.Monitor().Size()
+		s.startPosX = float32((screenSizeX - (BOARDSIZE * int(s.tileSize))) / 2)
+		s.startPosY = float32((screenSizeY - (BOARDSIZE * int(s.tileSize))) / 2)
+
+	} else {
+		// Not full screen, manual tracking
+		s.startPosX = float32((logicalWidth-(BOARDSIZE*int(TILESIZE)))/2) * float32(scale)
+		s.startPosY = float32((logicalHeight-(BOARDSIZE*int(TILESIZE)))/2) * float32(scale)
+	}
+	newOpt := &ebiten.DrawImageOptions{}
+	newOpt.GeoM.Translate(float64(s.startPosX), float64(s.startPosY))
+	s.board.boardImageOptions = newOpt
+
+	s.board.createBoardImage()
 }
 
 type Board struct {
@@ -58,7 +78,7 @@ type Board struct {
 func NewBoard(g *Game) (*Board, error) {
 
 	b := &Board{}
-	b.sizes = InitSizes()
+	b.sizes = InitSizes(b)
 
 	b.game = g
 
@@ -75,7 +95,12 @@ func NewBoard(g *Game) (*Board, error) {
 }
 
 func (b *Board) initBoardForEndScreen() {
-	b.boardForEndScreen = ebiten.NewImage(logicalWidth*int(b.game.scale), logicalHeight*int(b.game.scale))
+	if b.game.screenControl.fullscreen {
+		screenSizeX, screenSizeY := ebiten.Monitor().Size()
+		b.boardForEndScreen = ebiten.NewImage(screenSizeX, screenSizeY)
+	} else {
+		b.boardForEndScreen = ebiten.NewImage(logicalWidth*int(b.game.scale), logicalHeight*int(b.game.scale))
+	}
 }
 
 func (b *Board) randomNewPiece() {
