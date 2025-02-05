@@ -1,6 +1,7 @@
 package twenty48
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/andersjosef/2048/twenty48/shadertools"
@@ -269,6 +270,9 @@ func toggleInfo(i *Input) {
 func ScaleWindowUp(i *Input) {
 	i.game.scale++
 	// i.game.updateFonts()
+	i.game.board.sizes.scaleBoard(int(i.game.scale))
+	fmt.Println(i.game.board.sizes)
+	i.game.board.createBoardImage()
 	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
 }
 
@@ -276,6 +280,9 @@ func ScaleWindowDown(i *Input) {
 	if i.game.scale > 1 {
 		i.game.scale--
 		// i.game.updateFonts()
+		i.game.board.sizes.scaleBoard(int(i.game.scale))
+		fmt.Println(i.game.board.sizes)
+		i.game.board.createBoardImage()
 		ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
 	}
 }

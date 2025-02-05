@@ -19,9 +19,35 @@ var (
 	startPosY float32 = float32((logicalHeight - (BOARDSIZE * int(TILESIZE))) / 2)
 )
 
+// The sizes for the board that can be scaled up and down with window size changes
+type Sizes struct {
+	tileSize   float32
+	bordersize float32
+	startPosX  float32
+	startPosY  float32
+}
+
+func InitSizes() *Sizes {
+	sfb := &Sizes{
+		tileSize:   TILESIZE,
+		bordersize: BORDERSIZE,
+		startPosX:  startPosX,
+		startPosY:  startPosY,
+	}
+	return sfb
+}
+
+func (s *Sizes) scaleBoard(scale int) {
+	s.tileSize = TILESIZE * float32(scale)
+	s.bordersize = BORDERSIZE * float32(scale)
+	s.startPosX = startPosX * float32(scale)
+	s.startPosY = startPosY * float32(scale)
+}
+
 type Board struct {
 	board             [BOARDSIZE][BOARDSIZE]int // 2d array for the board :)
 	game              *Game
+	sizes             *Sizes
 	boardBeforeChange [BOARDSIZE][BOARDSIZE]int
 	boardImage        *ebiten.Image
 	boardImageOptions *ebiten.DrawImageOptions
@@ -32,10 +58,9 @@ type Board struct {
 func NewBoard(g *Game) (*Board, error) {
 
 	b := &Board{}
+	b.sizes = InitSizes()
 
 	b.game = g
-
-	b.initBoardForEndScreen()
 
 	// add the two start pieces
 	for i := 0; i < 2; i++ {
@@ -50,7 +75,7 @@ func NewBoard(g *Game) (*Board, error) {
 }
 
 func (b *Board) initBoardForEndScreen() {
-	b.boardForEndScreen = ebiten.NewImage(logicalWidth, logicalHeight)
+	b.boardForEndScreen = ebiten.NewImage(logicalWidth*int(b.game.scale), logicalHeight*int(b.game.scale))
 }
 
 func (b *Board) randomNewPiece() {
@@ -81,7 +106,7 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 	// draw tiles
 	for y := 0; y < len(b.board); y++ {
 		for x := 0; x < len(b.board[0]); x++ {
-			b.DrawTile(b.boardForEndScreen, startPosX, startPosY, x, y, b.board[y][x], 0, 0)
+			b.DrawTile(b.boardForEndScreen, b.sizes.startPosX, b.sizes.startPosY, x, y, b.board[y][x], 0, 0)
 		}
 	}
 	if !b.game.gameOver {
@@ -100,8 +125,8 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 // draws one tile of the game with everything background, number, color, etc.
 func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int, value int, movDistX, movDistY float32) {
 	var (
-		xpos float32 = (startX + float32(x)*TILESIZE + movDistX*TILESIZE)
-		ypos float32 = (startY + float32(y)*TILESIZE + movDistY*TILESIZE)
+		xpos float32 = (startX + float32(x)*b.sizes.tileSize + movDistX*b.sizes.tileSize)
+		ypos float32 = (startY + float32(y)*b.sizes.tileSize + movDistY*b.sizes.tileSize)
 	)
 
 	if value != 0 {
@@ -118,21 +143,21 @@ func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int,
 }
 
 func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
-	var sizeBorder float32 = (float32(TILESIZE) + BORDERSIZE)
-	var sizeInside float32 = (TILESIZE - BORDERSIZE)
+	var sizeBorder float32 = (float32(b.sizes.tileSize) + b.sizes.bordersize)
+	var sizeInside float32 = (b.sizes.tileSize - b.sizes.bordersize)
 
 	vector.DrawFilledRect(screen, xpos, ypos,
 		sizeBorder, sizeBorder, b.game.currentTheme.ColorBorder, false) //outer
-	vector.DrawFilledRect(screen, xpos+BORDERSIZE, ypos+BORDERSIZE,
+	vector.DrawFilledRect(screen, xpos+b.sizes.bordersize, ypos+b.sizes.bordersize,
 		sizeInside, sizeInside, b.game.currentTheme.ColorBackgroundTile, false) // inner
 }
 
 // background of a number, since they have colors
 func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8, movDistX, movDistY float32) {
 	var (
-		xpos      float32 = (startX + float32(x)*TILESIZE + BORDERSIZE + movDistX*TILESIZE)
-		ypos      float32 = (startY + float32(y)*TILESIZE + BORDERSIZE + movDistY*TILESIZE)
-		size_tile float32 = (float32(TILESIZE) - BORDERSIZE)
+		xpos      float32 = (startX + float32(x)*b.sizes.tileSize + b.sizes.bordersize + movDistX*b.sizes.tileSize)
+		ypos      float32 = (startY + float32(y)*b.sizes.tileSize + b.sizes.bordersize + movDistY*b.sizes.tileSize)
+		size_tile float32 = (float32(b.sizes.tileSize) - b.sizes.bordersize)
 	)
 	vector.DrawFilledRect(screen, xpos, ypos,
 		size_tile, size_tile, theme.GetColor(val), false) // tiles
@@ -152,17 +177,17 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	)
 
 	// check for text with first font is too large for it and swap
-	if int(text.Advance(msg, fontSet.Big)) > int(TILESIZE) {
+	if int(text.Advance(msg, fontSet.Big)) > int(b.sizes.tileSize) {
 		// fontUsed = mplusNormalFontSmaller
 		fontUsed = fontSet.Smaller
 		textHeight = -(fontSet.Smaller.Metrics().VAscent + fontSet.Smaller.Metrics().VDescent)
-		dx = (float32(int(text.Advance(msg, fontSet.Smaller)) + int(BORDERSIZE)))
+		dx = (float32(int(text.Advance(msg, fontSet.Smaller)) + int(b.sizes.bordersize)))
 		dy = float32(textHeight)
 	}
 
 	var (
-		textPosX int = int(xpos + (BORDERSIZE/2 + TILESIZE/2) - dx/2)
-		textPosY int = int(ypos + (BORDERSIZE/2 + TILESIZE/2) + dy/2)
+		textPosX int = int(xpos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) - dx/2)
+		textPosY int = int(ypos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) + dy/2)
 	)
 
 	op := &text.DrawOptions{}
@@ -181,18 +206,21 @@ func (b *Board) addNewRandomPieceIfBoardChanged() {
 
 func (b *Board) createBoardImage() {
 	var (
-		sizeX int = int(float64((BOARDSIZE * int(TILESIZE)) + (int(BORDERSIZE) * 2)))
+		sizeX int = int(float64((BOARDSIZE * int(b.sizes.tileSize)) + (int(b.sizes.bordersize) * 2)))
 		sizeY     = sizeX
 	)
 	b.boardImage = ebiten.NewImage(sizeX, sizeY)
 	for y := 0; y < BOARDSIZE; y++ {
 		for x := 0; x < BOARDSIZE; x++ {
-			b.DrawBorderBackground(b.boardImage, float32(x)*TILESIZE, float32(y)*TILESIZE)
+			b.DrawBorderBackground(b.boardImage, float32(x)*b.sizes.tileSize, float32(y)*b.sizes.tileSize)
 		}
 
 	}
 	b.boardImageOptions = &ebiten.DrawImageOptions{}
-	b.boardImageOptions.GeoM.Translate(float64(startPosX), float64(startPosY))
+	b.boardImageOptions.GeoM.Translate(float64(b.sizes.startPosX), float64(b.sizes.startPosY))
+
+	// Will update the size of it for screensize changes
+	b.initBoardForEndScreen()
 }
 
 // Check if its gameOver
