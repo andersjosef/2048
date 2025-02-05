@@ -205,6 +205,7 @@ func ToggleFullScreen(i *Input) {
 		i.game.board.sizes.scaleBoard()
 		i.game.menu.initTitle()
 		i.game.screenControl.UpdateActualDimentions()
+		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(i.game.screenControl.actualWidth-20, 20)
 		shadertools.UpdateNoiseImage(50, 50)
 	} else {
 		ebiten.SetFullscreen(true)
@@ -212,6 +213,7 @@ func ToggleFullScreen(i *Input) {
 		i.game.board.sizes.scaleBoard()
 		i.game.menu.initTitle()
 		i.game.screenControl.UpdateActualDimentions()
+		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(i.game.screenControl.actualWidth-20, 20)
 		shadertools.UpdateNoiseImage(150, 150)
 	}
 	i.game.screenSizeChanged = true

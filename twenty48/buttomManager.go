@@ -93,7 +93,7 @@ func (bm *ButtonManager) initButtons() {
 	// Running loop
 	bm.AddButton(
 		"II",
-		[2]int{logicalWidth - 20, 20},
+		[2]int{bm.game.screenControl.actualWidth - 20, 20},
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		toggleInfo,

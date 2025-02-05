@@ -9,9 +9,9 @@ import (
 func (g *Game) DrawGameOverScreen(screen *ebiten.Image) {
 	scoreString := fmt.Sprintf("Score: %v", g.score)
 
-	g.renderer.DrawDoubleText(screen, "Game Over", logicalWidth/2, logicalHeight/3, 2, g.fontSet.Big, true)
-	g.renderer.DrawDoubleText(screen, scoreString, logicalWidth/2, logicalHeight/2, 2, g.fontSet.Mini, true)
+	g.renderer.DrawDoubleText(screen, "Game Over", g.screenControl.actualWidth/2, g.screenControl.actualHeight/3, 2, g.fontSet.Big, true)
+	g.renderer.DrawDoubleText(screen, scoreString, g.screenControl.actualWidth/2, g.screenControl.actualHeight/2, 2, g.fontSet.Mini, true)
 	// Restart Button pos
-	g.buttonManager.buttonKeyMap["R: Play again"].UpdatePos(logicalWidth/2, logicalHeight-logicalHeight/3)
+	g.buttonManager.buttonKeyMap["R: Play again"].UpdatePos(g.screenControl.actualWidth/2, g.screenControl.actualHeight-g.screenControl.actualHeight/3)
 
 }
