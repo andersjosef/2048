@@ -202,21 +202,24 @@ func ToggleFullScreen(i *Input) {
 	if i.game.screenControl.fullscreen {
 		ebiten.SetFullscreen(false)
 		i.game.screenControl.fullscreen = false
-		i.game.screenControl.UpdateActualDimentions()
-		i.game.board.sizes.scaleBoard()
-		i.game.menu.initTitle()
-		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(i.game.screenControl.actualWidth-20, 20)
-		shadertools.UpdateNoiseImage(50, 50)
+		i.screenChanging(50, 50)
 	} else {
 		ebiten.SetFullscreen(true)
 		i.game.screenControl.fullscreen = true
-		i.game.screenControl.UpdateActualDimentions()
-		i.game.board.sizes.scaleBoard()
-		i.game.menu.initTitle()
-		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(i.game.screenControl.actualWidth-20, 20)
-		shadertools.UpdateNoiseImage(150, 150)
+		i.screenChanging(150, 150)
 	}
 	i.game.screenSizeChanged = true
+}
+
+// Helper function for toggle screen
+// Contains everything that is the same for full screen and windowed
+func (i *Input) screenChanging(newNoiceX, newNoiceY int) {
+	i.game.screenControl.UpdateActualDimentions()
+	i.game.board.sizes.scaleBoard()
+	i.game.menu.initTitle()
+	i.updatePauseButtonLocation()
+	shadertools.UpdateNoiseImage(newNoiceX, newNoiceY)
+
 }
 
 func SwitchDefaultDarkMode(i *Input) {
@@ -294,6 +297,12 @@ func ScaleWindow(i *Input) {
 	i.game.updateFonts()
 	i.game.board.sizes.scaleBoard()
 	i.game.menu.initTitle()
+	i.updatePauseButtonLocation()
 	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+}
 
+// Helper function for updating the pause button location
+// When changing screen size
+func (i *Input) updatePauseButtonLocation() {
+	i.game.buttonManager.buttonKeyMap["II"].UpdatePos(i.game.screenControl.actualWidth-20, 20)
 }
