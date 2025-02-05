@@ -269,7 +269,7 @@ func toggleInfo(i *Input) {
 
 func ScaleWindowUp(i *Input) {
 	i.game.scale++
-	// i.game.updateFonts()
+	i.game.updateFonts()
 	i.game.board.sizes.scaleBoard(int(i.game.scale))
 	fmt.Println(i.game.board.sizes)
 	i.game.board.createBoardImage()
@@ -279,7 +279,7 @@ func ScaleWindowUp(i *Input) {
 func ScaleWindowDown(i *Input) {
 	if i.game.scale > 1 {
 		i.game.scale--
-		// i.game.updateFonts()
+		i.game.updateFonts()
 		i.game.board.sizes.scaleBoard(int(i.game.scale))
 		fmt.Println(i.game.board.sizes)
 		i.game.board.createBoardImage()

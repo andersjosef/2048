@@ -98,9 +98,7 @@ func (g *Game) Update() error {
 	if g.shouldClose { // quit game check
 		return ebiten.Termination
 	}
-	// if g.screenSizeChanged {
-	// 	g.screenControl.ChangeBoardPosition()
-	// }
+
 	shadertools.Update()
 	return nil
 }

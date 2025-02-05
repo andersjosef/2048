@@ -59,7 +59,7 @@ func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
 				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
 			}
-			a.game.board.DrawTile(screen, startPosX, startPosY, x, y, a.game.board.boardBeforeChange[y][x], movingDistX, movingDistY)
+			a.game.board.DrawTile(screen, a.game.board.sizes.startPosX, a.game.board.sizes.startPosY, x, y, a.game.board.boardBeforeChange[y][x], movingDistX, movingDistY)
 		}
 	}
 
