@@ -202,23 +202,23 @@ func ToggleFullScreen(i *Input) {
 	if i.game.screenControl.fullscreen {
 		ebiten.SetFullscreen(false)
 		i.game.screenControl.fullscreen = false
-		i.screenChanging(50, 50)
+		i.screenChanging()
 	} else {
 		ebiten.SetFullscreen(true)
 		i.game.screenControl.fullscreen = true
-		i.screenChanging(150, 150)
+		i.screenChanging()
 	}
 	i.game.screenSizeChanged = true
 }
 
 // Helper function for toggle screen
 // Contains everything that is the same for full screen and windowed
-func (i *Input) screenChanging(newNoiceX, newNoiceY int) {
+func (i *Input) screenChanging() {
 	i.game.screenControl.UpdateActualDimentions()
 	i.game.board.sizes.scaleBoard()
 	i.game.menu.initTitle()
 	i.updatePauseButtonLocation()
-	shadertools.UpdateScaleNoiseImage(newNoiceX, newNoiceY)
+	shadertools.UpdateScaleNoiseImage()
 
 }
 

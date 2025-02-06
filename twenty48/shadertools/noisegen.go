@@ -39,7 +39,8 @@ func UpdateNewNoiseImage(newWidth, newHeight int) {
 	noiseImage = generateNoiseImage(newWidth, newHeight)
 }
 
-func UpdateScaleNoiseImage(newWidth, newHeight int) {
+func UpdateScaleNoiseImage() {
+	newWidth, newHeight := ebiten.WindowSize()
 	img := ebiten.NewImage(newWidth, newHeight)
 	oldX, oldY := noiseImage.Bounds().Dx(), noiseImage.Bounds().Dy()
 	opts := &ebiten.DrawImageOptions{}
