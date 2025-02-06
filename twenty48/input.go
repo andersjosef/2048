@@ -280,6 +280,11 @@ func toggleInfo(i *Input) {
 }
 
 func ScaleWindowUp(i *Input) {
+	// Oob Check to stop the growth somewhere
+	x, y := ebiten.Monitor().Size()
+	if logicalWidth*int(i.game.scale) >= x || logicalHeight*int(i.game.scale) >= y {
+		return
+	}
 	i.game.scale++
 	ScaleWindow(i)
 }
@@ -298,6 +303,7 @@ func ScaleWindow(i *Input) {
 	i.game.board.sizes.scaleBoard()
 	i.game.menu.initTitle()
 	i.updatePauseButtonLocation()
+	i.game.buttonManager.UpdateFontsForButtons()
 	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
 }
 

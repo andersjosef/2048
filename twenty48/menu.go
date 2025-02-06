@@ -104,13 +104,8 @@ func (m *Menu) UpdateDynamicText() {
 }
 
 func (m *Menu) initTitle() {
-	var xPos, yPos int
-	if m.game.screenControl.fullscreen {
-		xPos, yPos = ebiten.Monitor().Size()
-	} else {
-		xPos = logicalWidth * int(m.game.scale)
-		yPos = logicalHeight * int(m.game.scale)
-	}
+	var xPos, yPos = m.game.screenControl.actualWidth, m.game.screenControl.actualHeight
+
 	newImage := ebiten.NewImage(xPos, yPos)
 	m.game.renderer.DrawDoubleText(newImage, "2048", xPos/2, yPos/2, 2, m.game.fontSet.Big, true)
 	m.titleImage = newImage

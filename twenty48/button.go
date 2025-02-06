@@ -7,6 +7,15 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
+type FontType int
+
+const (
+	FontMini FontType = iota
+	FontSmaller
+	FontNormal
+	FontBig
+)
+
 // // Button ////
 type Button struct {
 	game           *Game
@@ -15,6 +24,7 @@ type Button struct {
 	identifier     string
 	text           string
 	font           *text.GoTextFace
+	fontType       FontType
 	offset         float64
 	actionFunction ActionFunc
 }
