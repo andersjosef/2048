@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
@@ -29,10 +30,12 @@ func InitFonts(scale float64) (*FontSet, error) {
 		log.Fatal(err)
 	}
 
+	dpiScale := ebiten.Monitor().DeviceScaleFactor()
+
 	initializeFont := func(size int) *text.GoTextFace {
 		face := &text.GoTextFace{
 			Source: mplusFaceSource,
-			Size:   float64(size) * scale,
+			Size:   float64(size) * scale * dpiScale,
 		}
 		if err != nil {
 			log.Fatal(err)

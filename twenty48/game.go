@@ -14,9 +14,9 @@ import (
 
 /* variables and constants */
 const (
-	SCREENWIDTH  int = 640
-	SCREENHEIGHT int = 480
-	BOARDSIZE    int = 4
+	logicalWidth  int = 640
+	logicalHeight int = 480
+	BOARDSIZE     int = 4
 )
 
 // Gamestates Enum style
@@ -52,10 +52,11 @@ type Game struct {
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state:             StateMainMenu,
-		previousState:     StateMainMenu,
-		shouldClose:       false,
-		scale:             ebiten.Monitor().DeviceScaleFactor(),
+		state:         StateMainMenu,
+		previousState: StateMainMenu,
+		shouldClose:   false,
+		// scale:             ebiten.Monitor().DeviceScaleFactor(),
+		scale:             1,
 		screenSizeChanged: false,
 		darkMode:          true,
 	}
@@ -79,7 +80,7 @@ func NewGame() (*Game, error) {
 	g.animation = InitAnimation(g)
 	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard(g)
-	g.renderer = renderer.InitRenderer(g.fontSet, g.scale)
+	g.renderer = renderer.InitRenderer(g.fontSet)
 	g.menu = NewMenu(g)
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)
@@ -87,6 +88,8 @@ func NewGame() (*Game, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	ebiten.SetWindowSize(logicalWidth*int(g.scale), logicalHeight*int(g.scale))
 	return g, nil
 }
 
@@ -96,9 +99,7 @@ func (g *Game) Update() error {
 	if g.shouldClose { // quit game check
 		return ebiten.Termination
 	}
-	if g.screenSizeChanged {
-		g.screenControl.ChangeBoardPosition()
-	}
+
 	shadertools.Update()
 	return nil
 }
@@ -125,9 +126,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
 func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
-	// scale := ebiten.DeviceScaleFactor()
-	canvasWidth := math.Ceil(logicWinWidth * g.scale)
-	canvasHeight := math.Ceil(logicWinHeight * g.scale)
+	scale := ebiten.Monitor().DeviceScaleFactor()
+	canvasWidth := math.Ceil(logicWinWidth * scale)
+	canvasHeight := math.Ceil(logicWinHeight * scale)
 	return canvasWidth, canvasHeight
 }
 
@@ -156,4 +157,13 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 
 	text.Draw(screen, score_text, myFont,
 		mainOpt)
+}
+
+// For reinitializing a font with a higher dpi
+func (g *Game) updateFonts() {
+	var err error
+	g.fontSet, err = theme.InitFonts(g.scale)
+	if err != nil {
+		fmt.Println("Error changing fontsiz")
+	}
 }

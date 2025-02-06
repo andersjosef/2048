@@ -49,18 +49,24 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyEscape:     CloseGame,
 		ebiten.KeyQ:          SwitchDefaultDarkMode,
 		ebiten.KeyI:          toggleInfo,
+		ebiten.KeyMinus:      ScaleWindowUp,
+		ebiten.KeyPeriod:     ScaleWindowDown,
 	},
 	StateMainMenu: { // Menu
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
+		ebiten.KeyMinus:  ScaleWindowUp,
+		ebiten.KeyPeriod: ScaleWindowDown,
 	},
 	StateInstructions: { // Instructions
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
+		ebiten.KeyMinus:  ScaleWindowUp,
+		ebiten.KeyPeriod: ScaleWindowDown,
 	},
 	StateGameOver: { // Game Over
 		ebiten.KeyEscape: CloseGame,
@@ -68,6 +74,8 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyQ:      SwitchDefaultDarkMode,
 		ebiten.KeyI:      toggleInfo,
 		ebiten.KeyR:      ResetGame,
+		ebiten.KeyMinus:  ScaleWindowUp,
+		ebiten.KeyPeriod: ScaleWindowDown,
 	},
 }
 
@@ -193,20 +201,25 @@ func CloseGame(i *Input) {
 func ToggleFullScreen(i *Input) {
 	if i.game.screenControl.fullscreen {
 		ebiten.SetFullscreen(false)
-		shadertools.UpdateNoiseImage(50, 50)
-		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(SCREENWIDTH-20, 20)
 		i.game.screenControl.fullscreen = false
+		i.screenChanging()
 	} else {
 		ebiten.SetFullscreen(true)
-		shadertools.UpdateNoiseImage(100, 100)
-		newScreenLength, _ := ebiten.Monitor().Size()
-		i.game.buttonManager.buttonKeyMap["II"].UpdatePos(newScreenLength-20, 20)
 		i.game.screenControl.fullscreen = true
+		i.screenChanging()
 	}
-	i.game.menu.UpdateDynamicText()
-	i.game.menu.titleImage = i.game.menu.initTitle()
-	i.game.board.initBoardForEndScreen()
 	i.game.screenSizeChanged = true
+}
+
+// Helper function for toggle screen
+// Contains everything that is the same for full screen and windowed
+func (i *Input) screenChanging() {
+	i.game.screenControl.UpdateActualDimentions()
+	i.game.board.sizes.scaleBoard()
+	i.game.menu.initTitle()
+	i.updatePauseButtonLocation()
+	shadertools.UpdateScaleNoiseImage()
+
 }
 
 func SwitchDefaultDarkMode(i *Input) {
@@ -264,4 +277,49 @@ func toggleInfo(i *Input) {
 		i.game.state = i.game.previousState
 	}
 
+}
+
+func ScaleWindowUp(i *Input) {
+	// Oob Check to stop the growth somewhere
+	mw, mh := ebiten.Monitor().Size()
+	ww, wh := ebiten.WindowSize()
+	if ww >= mw || wh >= mh {
+		return
+	}
+	i.game.scale++
+	ScaleWindow(i)
+}
+
+func ScaleWindowDown(i *Input) {
+	if i.game.scale > 1 {
+		i.game.scale--
+		ScaleWindow(i)
+	}
+}
+
+// Helper function for scaling image, contains what is equal for up and down
+func ScaleWindow(i *Input) {
+	i.game.screenControl.UpdateActualDimentions()
+	i.game.updateFonts()
+	i.game.board.sizes.scaleBoard()
+	i.game.menu.initTitle()
+	i.updatePauseButtonLocation()
+	i.game.buttonManager.UpdateFontsForButtons()
+	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+	i.centerWindow()
+
+}
+
+// Will center the image to the new size
+// when scaling the screen up and down
+func (i *Input) centerWindow() {
+	mw, mh := ebiten.Monitor().Size()
+	ww, wh := ebiten.WindowSize()
+	ebiten.SetWindowPosition(mw/2-ww/2, mh/2-wh/2)
+}
+
+// Helper function for updating the pause button location
+// When changing screen size
+func (i *Input) updatePauseButtonLocation() {
+	i.game.buttonManager.buttonKeyMap["II"].UpdatePos(i.game.screenControl.actualWidth-20, 20)
 }

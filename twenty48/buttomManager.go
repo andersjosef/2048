@@ -40,6 +40,7 @@ func (bm *ButtonManager) initButtons() {
 		[2]int{0, 0},
 		smallOffsett,
 		bm.game.fontSet.Mini,
+		FontMini,
 		toggleInfo,
 		StateMainMenu,
 	)
@@ -50,6 +51,7 @@ func (bm *ButtonManager) initButtons() {
 		[2]int{0, 0},
 		smallOffsett,
 		bm.game.fontSet.Mini,
+		FontMini,
 		ResetGame,
 		StateInstructions,
 	)
@@ -59,6 +61,7 @@ func (bm *ButtonManager) initButtons() {
 		[2]int{0, 0},
 		smallOffsett,
 		bm.game.fontSet.Mini,
+		FontMini,
 		ToggleFullScreen,
 		StateInstructions,
 	)
@@ -68,6 +71,7 @@ func (bm *ButtonManager) initButtons() {
 		[2]int{0, 0},
 		smallOffsett,
 		bm.game.fontSet.Mini,
+		FontMini,
 		SwitchDefaultDarkMode,
 		StateInstructions,
 	)
@@ -77,6 +81,7 @@ func (bm *ButtonManager) initButtons() {
 		[2]int{0, 0},
 		smallOffsett,
 		bm.game.fontSet.Mini,
+		FontMini,
 		CloseGame,
 		StateInstructions,
 	)
@@ -86,6 +91,7 @@ func (bm *ButtonManager) initButtons() {
 		[2]int{0, 0},
 		smallOffsett,
 		bm.game.fontSet.Mini,
+		FontMini,
 		toggleInfo,
 		StateInstructions,
 	)
@@ -93,9 +99,10 @@ func (bm *ButtonManager) initButtons() {
 	// Running loop
 	bm.AddButton(
 		"II",
-		[2]int{SCREENWIDTH - 20, 20},
+		[2]int{bm.game.screenControl.actualWidth - 20, 20},
 		smallOffsett,
 		bm.game.fontSet.Mini,
+		-1, // Something not in enum for now, needs update to size
 		toggleInfo,
 		StateRunning,
 	)
@@ -107,6 +114,7 @@ func (bm *ButtonManager) initButtons() {
 		[2]int{0, 0},
 		smallOffsett,
 		bm.game.fontSet.Mini,
+		FontMini,
 		ResetGame,
 		StateGameOver,
 	)
@@ -174,13 +182,14 @@ func (bm *ButtonManager) checkButtons() bool {
 	return false
 }
 
-func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, actionFunction ActionFunc, state GameState) {
+func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, fontType FontType, actionFunction ActionFunc, state GameState) {
 	// Create new button obj
 	newButton := &Button{
 		game:           bm.game,
 		identifier:     buttonText,
 		text:           buttonText,
 		font:           font,
+		fontType:       fontType,
 		actionFunction: actionFunction,
 		offset:         offset,
 	}
@@ -193,4 +202,22 @@ func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset fl
 
 	// Store text as key for access other places in the code
 	bm.buttonKeyMap[newButton.identifier] = newButton
+}
+
+func (bm *ButtonManager) UpdateFontsForButtons() {
+	for _, buttons := range bm.buttonArrayMap {
+		for _, button := range buttons {
+			// Check fonts and update them
+			switch button.fontType {
+			case FontMini:
+				button.font = bm.game.fontSet.Mini
+			case FontSmaller:
+				button.font = bm.game.fontSet.Smaller
+			case FontNormal:
+				button.font = bm.game.fontSet.Normal
+			case FontBig:
+				button.font = bm.game.fontSet.Big
+			}
+		}
+	}
 }

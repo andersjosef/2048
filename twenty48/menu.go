@@ -21,7 +21,7 @@ func NewMenu(g *Game) *Menu {
 	var m *Menu = &Menu{
 		game: g,
 	}
-	m.titleImage = m.initTitle()
+	m.initTitle() // Inits title image to menu parameter
 	m.dynamicText = map[string]string{
 		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
 		"Press Q to toggle dark mode":  fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode),
@@ -43,23 +43,21 @@ func (m *Menu) DrawMenu(screen *ebiten.Image) {
 }
 
 func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
-	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
 
 	// Title
 	m.drawTitle(screen)
 
 	// Instruction key info
-	insX := realWidth / 2
-	insY := (realHeight / 2) + realHeight/10
+	insX := m.game.screenControl.actualWidth / 2
+	insY := (m.game.screenControl.actualHeight / 2) + m.game.screenControl.actualHeight/10
 	m.game.buttonManager.buttonKeyMap["I: Instructions"].UpdatePos(insX, insY)
 
 }
 
 func (m *Menu) DrawInstructions(screen *ebiten.Image) {
-	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
 
 	// Title
-	m.game.renderer.DrawDoubleText(screen, "Instructions", realWidth/2, realHeight/10, 2, m.game.fontSet.Big, true)
+	m.game.renderer.DrawDoubleText(screen, "Instructions", m.game.screenControl.actualWidth/2, m.game.screenControl.actualHeight/10, 2, m.game.fontSet.Big, true)
 
 	// Instructions messages
 	instructions := []string{
@@ -75,8 +73,8 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	// Render each instruction line
 	for i, line := range instructions {
 		// Adjust Y-position dynamically based on line index
-		rowXPos := realWidth / 2
-		lineYPos := (realHeight / 5) + i*(realHeight/18)
+		rowXPos := m.game.screenControl.actualWidth / 2
+		lineYPos := (m.game.screenControl.actualHeight / 5) + i*(m.game.screenControl.actualHeight/18)
 
 		if button, ok := m.game.buttonManager.buttonKeyMap[line]; ok {
 			if newText, ok := m.dynamicText[button.identifier]; ok {
@@ -97,7 +95,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 		returnButtonText += " to Game"
 	}
 	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdateText(returnButtonText)
-	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(realWidth/2, realHeight-realHeight/10)
+	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(m.game.screenControl.actualWidth/2, m.game.screenControl.actualHeight-m.game.screenControl.actualHeight/10)
 }
 
 func (m *Menu) UpdateDynamicText() {
@@ -105,12 +103,12 @@ func (m *Menu) UpdateDynamicText() {
 	m.dynamicText["Press Q to toggle dark mode"] = fmt.Sprintf("Press Q to toggle dark mode: %v", m.game.darkMode)
 }
 
-func (m *Menu) initTitle() *ebiten.Image {
-	var realWidth, realHeight int = m.game.screenControl.GetRealWidthHeight()
-	newImage := ebiten.NewImage(realWidth*int(m.game.scale), realHeight*int(m.game.scale))
-	m.game.renderer.DrawDoubleText(newImage, "2048", realWidth/2, realHeight/2, 2, m.game.fontSet.Big, true)
+func (m *Menu) initTitle() {
+	var xPos, yPos = m.game.screenControl.actualWidth, m.game.screenControl.actualHeight
 
-	return newImage
+	newImage := ebiten.NewImage(xPos, yPos)
+	m.game.renderer.DrawDoubleText(newImage, "2048", xPos/2, yPos/2, 2, m.game.fontSet.Big, true)
+	m.titleImage = newImage
 
 }
 
