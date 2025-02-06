@@ -35,6 +35,15 @@ func generateNoiseImage(width, height int) *ebiten.Image {
 	return img
 }
 
-func UpdateNoiseImage(newWidth, newHeight int) {
+func UpdateNewNoiseImage(newWidth, newHeight int) {
 	noiseImage = generateNoiseImage(newWidth, newHeight)
+}
+
+func UpdateScaleNoiseImage(newWidth, newHeight int) {
+	img := ebiten.NewImage(newWidth, newHeight)
+	oldX, oldY := noiseImage.Bounds().Dx(), noiseImage.Bounds().Dy()
+	opts := &ebiten.DrawImageOptions{}
+	opts.GeoM.Scale(float64(newWidth)/float64(oldX), float64(newHeight)/float64(oldY))
+	img.DrawImage(noiseImage, opts)
+	noiseImage = img
 }

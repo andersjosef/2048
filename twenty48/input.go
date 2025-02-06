@@ -218,7 +218,7 @@ func (i *Input) screenChanging(newNoiceX, newNoiceY int) {
 	i.game.board.sizes.scaleBoard()
 	i.game.menu.initTitle()
 	i.updatePauseButtonLocation()
-	shadertools.UpdateNoiseImage(newNoiceX, newNoiceY)
+	shadertools.UpdateScaleNoiseImage(newNoiceX, newNoiceY)
 
 }
 
@@ -281,9 +281,9 @@ func toggleInfo(i *Input) {
 
 func ScaleWindowUp(i *Input) {
 	// Oob Check to stop the growth somewhere
-	x, y := ebiten.Monitor().Size()
-	dpiScale := ebiten.Monitor().DeviceScaleFactor()
-	if logicalWidth*int(i.game.scale)*int(dpiScale) >= x || logicalHeight*int(i.game.scale) >= y*int(dpiScale) {
+	mw, mh := ebiten.Monitor().Size()
+	ww, wh := ebiten.WindowSize()
+	if ww >= mw || wh >= mh {
 		return
 	}
 	i.game.scale++
