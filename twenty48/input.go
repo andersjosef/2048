@@ -306,6 +306,16 @@ func ScaleWindow(i *Input) {
 	i.updatePauseButtonLocation()
 	i.game.buttonManager.UpdateFontsForButtons()
 	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+	i.centerWindow()
+
+}
+
+// Will center the image to the new size
+// when scaling the screen up and down
+func (i *Input) centerWindow() {
+	mw, mh := ebiten.Monitor().Size()
+	ww, wh := ebiten.WindowSize()
+	ebiten.SetWindowPosition(mw/2-ww/2, mh/2-wh/2)
 }
 
 // Helper function for updating the pause button location
