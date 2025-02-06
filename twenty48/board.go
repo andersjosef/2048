@@ -45,18 +45,9 @@ func (s *Sizes) scaleBoard() {
 	s.tileSize = TILESIZE * float32(scale)
 	s.bordersize = BORDERSIZE * float32(scale)
 
-	// center startpos (center - half width)
-	if s.board.game.screenControl.fullscreen {
-		// Full screen based on monitor size
-		screenSizeX, screenSizeY := ebiten.Monitor().Size()
-		s.startPosX = float32((screenSizeX - (BOARDSIZE * int(s.tileSize))) / 2)
-		s.startPosY = float32((screenSizeY - (BOARDSIZE * int(s.tileSize))) / 2)
+	s.startPosX = float32((s.board.game.screenControl.actualWidth - (BOARDSIZE * int(s.tileSize))) / 2)
+	s.startPosY = float32((s.board.game.screenControl.actualHeight - (BOARDSIZE * int(s.tileSize))) / 2)
 
-	} else {
-		// Not full screen, manual tracking
-		s.startPosX = float32((logicalWidth-(BOARDSIZE*int(TILESIZE)))/2) * float32(scale)
-		s.startPosY = float32((logicalHeight-(BOARDSIZE*int(TILESIZE)))/2) * float32(scale)
-	}
 	newOpt := &ebiten.DrawImageOptions{}
 	newOpt.GeoM.Translate(float64(s.startPosX), float64(s.startPosY))
 	s.board.boardImageOptions = newOpt
