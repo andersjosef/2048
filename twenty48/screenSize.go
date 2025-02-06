@@ -20,10 +20,13 @@ func InitScreenControl(g *Game) *ScreenControl {
 }
 
 func (sc *ScreenControl) UpdateActualDimentions() {
+	dpiScale := ebiten.Monitor().DeviceScaleFactor() // Accounting for high dpi monitors
 	if sc.fullscreen {
 		sc.actualWidth, sc.actualHeight = ebiten.Monitor().Size()
+		sc.actualWidth *= int(dpiScale)
+		sc.actualHeight *= int(dpiScale)
 	} else {
-		sc.actualWidth = logicalWidth * int(sc.game.scale)
-		sc.actualHeight = logicalHeight * int(sc.game.scale)
+		sc.actualWidth = logicalWidth * int(sc.game.scale) * int(dpiScale)
+		sc.actualHeight = logicalHeight * int(sc.game.scale) * int(dpiScale)
 	}
 }

@@ -29,21 +29,23 @@ type Sizes struct {
 }
 
 func InitSizes(b *Board) *Sizes {
+	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 	sfb := &Sizes{
 		board:      b,
-		tileSize:   TILESIZE,
-		bordersize: BORDERSIZE,
-		startPosX:  startPosX,
-		startPosY:  startPosY,
+		tileSize:   TILESIZE * float32(dpiScale),
+		bordersize: BORDERSIZE * float32(dpiScale),
+		startPosX:  startPosX * float32(dpiScale),
+		startPosY:  startPosY * float32(dpiScale),
 	}
 	return sfb
 }
 
 func (s *Sizes) scaleBoard() {
 	scale := s.board.game.scale
+	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 
-	s.tileSize = TILESIZE * float32(scale)
-	s.bordersize = BORDERSIZE * float32(scale)
+	s.tileSize = TILESIZE * float32(scale) * float32(dpiScale)
+	s.bordersize = BORDERSIZE * float32(scale) * float32(dpiScale)
 
 	s.startPosX = float32((s.board.game.screenControl.actualWidth - (BOARDSIZE * int(s.tileSize))) / 2)
 	s.startPosY = float32((s.board.game.screenControl.actualHeight - (BOARDSIZE * int(s.tileSize))) / 2)

@@ -282,7 +282,8 @@ func toggleInfo(i *Input) {
 func ScaleWindowUp(i *Input) {
 	// Oob Check to stop the growth somewhere
 	x, y := ebiten.Monitor().Size()
-	if logicalWidth*int(i.game.scale) >= x || logicalHeight*int(i.game.scale) >= y {
+	dpiScale := ebiten.Monitor().DeviceScaleFactor()
+	if logicalWidth*int(i.game.scale)*int(dpiScale) >= x || logicalHeight*int(i.game.scale) >= y*int(dpiScale) {
 		return
 	}
 	i.game.scale++

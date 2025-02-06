@@ -52,10 +52,11 @@ type Game struct {
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state:             StateMainMenu,
-		previousState:     StateMainMenu,
-		shouldClose:       false,
-		scale:             ebiten.Monitor().DeviceScaleFactor(),
+		state:         StateMainMenu,
+		previousState: StateMainMenu,
+		shouldClose:   false,
+		// scale:             ebiten.Monitor().DeviceScaleFactor(),
+		scale:             1,
 		screenSizeChanged: false,
 		darkMode:          true,
 	}
