@@ -37,15 +37,15 @@ func (bu *Button) UpdatePos(posX, posY int) {
 	}
 
 	var textLengt int = (dx / 2)
-	var textWidth int = (dy / 2)
+	var textHeight int = (dy / 2)
 
 	bu.startPos = [2]int{
 		posX - textLengt,
-		posY - textWidth,
+		posY - textHeight,
 	}
 	bu.endPos = [2]int{
 		posX + textLengt,
-		posY + textWidth,
+		posY + textHeight,
 	}
 
 }
@@ -72,11 +72,10 @@ func (bu *Button) GetDimentions() (int, int, error) {
 	if bu.font == nil {
 		return -1, -1, fmt.Errorf("cant get dimentions, font is not set")
 	}
-	var x int = int(text.Advance(bu.text, bu.font))
-	textHeight := bu.font.Metrics().VAscent + bu.font.Metrics().VDescent
-	var y int = int(textHeight)
+	textLength := int(text.Advance(bu.text, bu.font))
+	textHeight := int(bu.font.Metrics().VAscent + bu.font.Metrics().VDescent)
 
-	return x, y, nil
+	return textLength, textHeight, nil
 }
 
 func (bu *Button) OnTrigger() {
