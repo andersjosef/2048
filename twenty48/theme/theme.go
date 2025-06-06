@@ -6,7 +6,7 @@ import (
 
 type ThemePicker struct {
 	themeSlice []Theme
-	index      uint
+	index      int
 
 	currentTheme Theme
 }
@@ -32,8 +32,8 @@ func (tp *ThemePicker) GetCurrentTheme() Theme {
 }
 
 func (tp *ThemePicker) IncrementCurrentTheme() Theme {
-	tp.index++
-	tp.currentTheme = tp.themeSlice[tp.index%uint(len(tp.themeSlice))]
+	tp.index = (tp.index + 1) % len(tp.themeSlice)
+	tp.currentTheme = tp.themeSlice[tp.index]
 	return tp.currentTheme
 }
 
