@@ -4,7 +4,39 @@ import (
 	"image/color"
 )
 
+type ThemePicker struct {
+	themeSlice []Theme
+	index      uint
+
+	currentTheme Theme
+}
+
+func NewThemePicker() *ThemePicker {
+	tp := &ThemePicker{}
+
+	tp.themeSlice = []Theme{
+		DarkTheme,
+		ManMachineTheme,
+		LightTheme,
+	}
+
+	tp.currentTheme = tp.themeSlice[0]
+
+	return tp
+}
+
+func (tp *ThemePicker) GetCurrentTheme() Theme {
+	return tp.currentTheme
+}
+
+func (tp *ThemePicker) IncrementCurrentTheme() Theme {
+	tp.index++
+	tp.currentTheme = tp.themeSlice[tp.index%uint(len(tp.themeSlice))]
+	return tp.currentTheme
+}
+
 type Theme struct {
+	Name                  string
 	ColorText             color.RGBA
 	ColorBorder           color.RGBA
 	ColorBackgroundTile   color.RGBA
@@ -12,7 +44,8 @@ type Theme struct {
 	ColorMap              map[int][4]uint8
 }
 
-var DefaultTheme = Theme{
+var LightTheme = Theme{
+	Name:                  "Light",
 	ColorText:             color.RGBA{110, 93, 71, 255},
 	ColorBorder:           color.RGBA{194, 182, 169, 255},
 	ColorBackgroundTile:   color.RGBA{204, 192, 179, 255},
@@ -37,6 +70,7 @@ var DefaultTheme = Theme{
 }
 
 var DarkTheme = Theme{
+	Name:                  "Dark",
 	ColorText:             color.RGBA{110, 93, 71, 255},
 	ColorBorder:           color.RGBA{154, 142, 129, 255},
 	ColorBackgroundTile:   color.RGBA{164, 152, 139, 255},
@@ -56,6 +90,30 @@ var DarkTheme = Theme{
 		4096:  {129, 169, 106, 255},
 		8192:  {87, 107, 75, 255},
 		16384: {227, 84, 84, 255},
+		-1:    {255, 255, 255, 255},
+	},
+}
+var ManMachineTheme = Theme{
+	Name:                  "Man-Machine",
+	ColorText:             color.RGBA{79, 82, 45, 255},
+	ColorBorder:           color.RGBA{255, 105, 180, 255},
+	ColorBackgroundTile:   color.RGBA{40, 10, 50, 255},
+	ColorScreenBackground: color.RGBA{15, 0, 35, 255},
+	ColorMap: map[int][4]uint8{
+		2:     {255, 235, 205, 255},
+		4:     {255, 200, 150, 255},
+		8:     {255, 150, 100, 255},
+		16:    {255, 100, 50, 255},
+		32:    {255, 160, 0, 255},
+		64:    {255, 210, 0, 255},
+		128:   {255, 240, 150, 255},
+		256:   {200, 255, 150, 255},
+		512:   {150, 255, 200, 255},
+		1024:  {100, 200, 255, 255},
+		2048:  {50, 150, 255, 255},
+		4096:  {0, 100, 255, 255},
+		8192:  {100, 0, 200, 255},
+		16384: {200, 0, 150, 255},
 		-1:    {255, 255, 255, 255},
 	},
 }

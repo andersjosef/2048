@@ -72,7 +72,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		FontMini,
-		SwitchDefaultDarkMode,
+		toggleTheme,
 		StateInstructions,
 	)
 
