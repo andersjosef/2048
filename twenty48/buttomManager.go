@@ -67,7 +67,7 @@ func (bm *ButtonManager) initButtons() {
 	)
 
 	bm.AddButton(
-		"Press Q to toggle dark mode",
+		"Press Q to toggle theme:",
 		[2]int{0, 0},
 		smallOffsett,
 		bm.game.fontSet.Mini,
