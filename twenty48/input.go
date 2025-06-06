@@ -20,11 +20,17 @@ type Input struct {
 	justMoved      bool // To make sure only one move is done
 
 	touchInput *TouchInput
+
+	isHidingMouse     bool
+	lastPosMouse      [2]int
+	movementThreshold float64 // If mouse is moved beyond this show again
 }
 
 func InitInput(g *Game) *Input {
 	var i = &Input{game: g}
 	i.touchInput = newTouchInput(i)
+
+	i.movementThreshold = 20 // Set how much the mouse has to move to reappear
 
 	return i
 }
@@ -95,6 +101,7 @@ func (i *Input) handleKeyboardInput() error {
 
 	// Take key and prevent retriggering
 	if len(i.keys) > 0 && !i.keyIsBeingPressed {
+		i.checkForMakingCursorHidden()
 		i.keyIsBeingPressed = true
 		key_pressed := i.keys[len(i.keys)-1]
 
@@ -114,6 +121,8 @@ func (i *Input) handleKeyboardInput() error {
 }
 
 func (i *Input) handleMouseInput() {
+	i.checkForMakingCursorVisible()
+
 	// Can left, right or wheel click
 	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
 		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
@@ -219,7 +228,30 @@ func (i *Input) screenChanging() {
 	i.game.menu.initTitle()
 	i.updatePauseButtonLocation()
 	shadertools.UpdateScaleNoiseImage()
+}
 
+// Helper functions for toggeling mouse being displayed or not
+func (i *Input) checkForMakingCursorVisible() {
+	if i.isHidingMouse {
+		lastX := float64(i.lastPosMouse[0])
+		lastY := float64(i.lastPosMouse[1])
+
+		x, y := ebiten.CursorPosition()
+
+		if math.Abs(lastX-float64(x)) > i.movementThreshold ||
+			math.Abs(lastY-float64(y)) > i.movementThreshold {
+			ebiten.SetCursorMode(ebiten.CursorModeVisible)
+			i.isHidingMouse = false
+		}
+	}
+}
+
+func (i *Input) checkForMakingCursorHidden() {
+	if !i.isHidingMouse {
+		i.lastPosMouse[0], i.lastPosMouse[1] = ebiten.CursorPosition()
+		ebiten.SetCursorMode(ebiten.CursorModeHidden)
+		i.isHidingMouse = true
+	}
 }
 
 func SwitchDefaultDarkMode(i *Input) {
