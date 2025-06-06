@@ -15,9 +15,11 @@ func NewThemePicker() *ThemePicker {
 	tp := &ThemePicker{}
 
 	tp.themeSlice = []Theme{
-		DarkTheme,
-		ManMachineTheme,
-		LightTheme,
+		greenTheme,
+		manMachineTheme,
+		darkTheme,
+		monoTheme,
+		lightTheme,
 	}
 
 	tp.currentTheme = tp.themeSlice[0]
@@ -44,7 +46,7 @@ type Theme struct {
 	ColorMap              map[int][4]uint8
 }
 
-var LightTheme = Theme{
+var lightTheme = Theme{
 	Name:                  "Light",
 	ColorText:             color.RGBA{110, 93, 71, 255},
 	ColorBorder:           color.RGBA{194, 182, 169, 255},
@@ -69,8 +71,8 @@ var LightTheme = Theme{
 	},
 }
 
-var DarkTheme = Theme{
-	Name:                  "Dark",
+var greenTheme = Theme{
+	Name:                  "Green",
 	ColorText:             color.RGBA{110, 93, 71, 255},
 	ColorBorder:           color.RGBA{154, 142, 129, 255},
 	ColorBackgroundTile:   color.RGBA{164, 152, 139, 255},
@@ -93,7 +95,7 @@ var DarkTheme = Theme{
 		-1:    {255, 255, 255, 255},
 	},
 }
-var ManMachineTheme = Theme{
+var manMachineTheme = Theme{
 	Name:                  "Man-Machine",
 	ColorText:             color.RGBA{79, 82, 45, 255},
 	ColorBorder:           color.RGBA{255, 105, 180, 255},
@@ -114,6 +116,56 @@ var ManMachineTheme = Theme{
 		4096:  {0, 100, 255, 255},
 		8192:  {100, 0, 200, 255},
 		16384: {200, 0, 150, 255},
+		-1:    {255, 255, 255, 255},
+	},
+}
+
+var monoTheme = Theme{
+	Name:                  "Mono",
+	ColorText:             color.RGBA{50, 50, 50, 255},
+	ColorBorder:           color.RGBA{150, 150, 150, 255},
+	ColorBackgroundTile:   color.RGBA{220, 220, 220, 255},
+	ColorScreenBackground: color.RGBA{205, 205, 205, 255},
+	ColorMap: map[int][4]uint8{
+		2:     {238, 238, 238, 255},
+		4:     {200, 200, 200, 255},
+		8:     {170, 170, 170, 255},
+		16:    {140, 140, 140, 255},
+		32:    {110, 110, 110, 255},
+		64:    {80, 80, 80, 255},
+		128:   {60, 60, 60, 255},
+		256:   {40, 40, 40, 255},
+		512:   {20, 20, 20, 255},
+		1024:  {0, 100, 200, 255},
+		2048:  {0, 80, 160, 255},
+		4096:  {0, 60, 120, 255},
+		8192:  {0, 40, 80, 255},
+		16384: {0, 20, 40, 255},
+		-1:    {255, 255, 255, 255},
+	},
+}
+
+var darkTheme = Theme{
+	Name:                  "Dark",
+	ColorText:             color.RGBA{220, 220, 230, 255},
+	ColorBorder:           color.RGBA{90, 90, 100, 255},
+	ColorBackgroundTile:   color.RGBA{30, 30, 40, 255},
+	ColorScreenBackground: color.RGBA{15, 15, 20, 255},
+	ColorMap: map[int][4]uint8{
+		2:     {25, 59, 76, 255},
+		4:     {76, 42, 25, 255},
+		8:     {25, 76, 76, 255},
+		16:    {76, 25, 76, 255},
+		32:    {51, 76, 25, 255},
+		64:    {76, 25, 25, 255},
+		128:   {33, 25, 76, 255},
+		256:   {76, 59, 25, 255},
+		512:   {25, 76, 42, 255},
+		1024:  {76, 34, 25, 255},
+		2048:  {76, 25, 51, 255},
+		4096:  {25, 50, 76, 255},
+		8192:  {25, 76, 59, 255},
+		16384: {76, 68, 25, 255},
 		-1:    {255, 255, 255, 255},
 	},
 }
