@@ -37,6 +37,7 @@ type Game struct {
 	input             *Input
 	buttonManager     *ButtonManager
 	fontSet           *theme.FontSet
+	themePicker       *theme.ThemePicker
 	renderer          *renderer.Renderer
 	state             GameState // Game is in menu, running, etc
 	previousState     GameState
@@ -44,7 +45,6 @@ type Game struct {
 	shouldClose       bool // If yes will close the game
 	scale             float64
 	screenSizeChanged bool
-	darkMode          bool
 	currentTheme      theme.Theme
 	gameOver          bool
 }
@@ -58,19 +58,13 @@ func NewGame() (*Game, error) {
 		// scale:             ebiten.Monitor().DeviceScaleFactor(),
 		scale:             1,
 		screenSizeChanged: false,
-		darkMode:          true,
 	}
 
-	if g.darkMode {
-		g.currentTheme = theme.DarkTheme
-	} else {
-		g.currentTheme = theme.DefaultTheme
-
-	}
-
-	var err error
+	g.themePicker = theme.NewThemePicker()
+	g.currentTheme = g.themePicker.GetCurrentTheme()
 
 	// initialize text
+	var err error
 	g.fontSet, err = theme.InitFonts(g.scale)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize fonts: %v", err)

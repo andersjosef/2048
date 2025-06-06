@@ -4,7 +4,6 @@ import (
 	"math"
 
 	"github.com/andersjosef/2048/twenty48/shadertools"
-	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -53,7 +52,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyR:          ResetGame,
 		ebiten.KeyF:          ToggleFullScreen,
 		ebiten.KeyEscape:     CloseGame,
-		ebiten.KeyQ:          SwitchDefaultDarkMode,
+		ebiten.KeyQ:          toggleTheme,
 		ebiten.KeyI:          toggleInfo,
 		ebiten.KeyMinus:      ScaleWindowUp,
 		ebiten.KeyPeriod:     ScaleWindowDown,
@@ -61,7 +60,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 	StateMainMenu: { // Menu
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
-		ebiten.KeyQ:      SwitchDefaultDarkMode,
+		ebiten.KeyQ:      toggleTheme,
 		ebiten.KeyI:      toggleInfo,
 		ebiten.KeyMinus:  ScaleWindowUp,
 		ebiten.KeyPeriod: ScaleWindowDown,
@@ -69,7 +68,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 	StateInstructions: { // Instructions
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
-		ebiten.KeyQ:      SwitchDefaultDarkMode,
+		ebiten.KeyQ:      toggleTheme,
 		ebiten.KeyI:      toggleInfo,
 		ebiten.KeyMinus:  ScaleWindowUp,
 		ebiten.KeyPeriod: ScaleWindowDown,
@@ -77,7 +76,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 	StateGameOver: { // Game Over
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
-		ebiten.KeyQ:      SwitchDefaultDarkMode,
+		ebiten.KeyQ:      toggleTheme,
 		ebiten.KeyI:      toggleInfo,
 		ebiten.KeyR:      ResetGame,
 		ebiten.KeyMinus:  ScaleWindowUp,
@@ -254,15 +253,8 @@ func (i *Input) checkForMakingCursorHidden() {
 	}
 }
 
-func SwitchDefaultDarkMode(i *Input) {
-	i.game.darkMode = !i.game.darkMode
-
-	if i.game.darkMode { // DARK MODE
-		i.game.currentTheme = theme.DarkTheme
-	} else { // DEFAULT MODE
-		i.game.currentTheme = theme.DefaultTheme
-
-	}
+func toggleTheme(i *Input) {
+	i.game.currentTheme = i.game.themePicker.IncrementCurrentTheme()
 	i.game.board.createBoardImage()
 	i.game.menu.UpdateDynamicText()
 }
