@@ -2,6 +2,7 @@ package shadertools
 
 import (
 	"image/color"
+	"math/rand"
 
 	"github.com/aquilax/go-perlin"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,10 +17,10 @@ func generateNoiseImage(width, height int) *ebiten.Image {
 		scale       = 0.1 // Adjust this for zoom
 	)
 
-	perlin := perlin.NewPerlin(alpha, beta, n, 42)
+	perlin := perlin.NewPerlin(alpha, beta, n, int64(rand.Int()))
 
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
+	for y := range height {
+		for x := range width {
 			// Generate Perlin noise value
 			noise := perlin.Noise2D(float64(x)*scale, float64(y)*scale)
 
@@ -39,8 +40,7 @@ func UpdateNewNoiseImage(newWidth, newHeight int) {
 	noiseImage = generateNoiseImage(newWidth, newHeight)
 }
 
-func UpdateScaleNoiseImage() {
-	newWidth, newHeight := ebiten.WindowSize()
+func UpdateScaleNoiseImage(newWidth, newHeight int) {
 	img := ebiten.NewImage(newWidth, newHeight)
 	oldX, oldY := noiseImage.Bounds().Dx(), noiseImage.Bounds().Dy()
 	opts := &ebiten.DrawImageOptions{}

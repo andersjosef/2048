@@ -226,7 +226,8 @@ func (i *Input) screenChanging() {
 	i.game.board.sizes.scaleBoard()
 	i.game.menu.initTitle()
 	i.updatePauseButtonLocation()
-	shadertools.UpdateScaleNoiseImage()
+	val := int(i.game.board.sizes.baseTileSize)
+	shadertools.UpdateScaleNoiseImage(val, val)
 }
 
 // Helper functions for toggeling mouse being displayed or not
