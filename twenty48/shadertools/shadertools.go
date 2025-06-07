@@ -6,8 +6,8 @@ import (
 
 func Update() {
 	// Update the times maps
-	updateFadeOut()
-	updateFadeIn()
+	updateFade(timesFadeIn, -1)
+	updateFade(timesFadeOut, 1)
 }
 
 // Returns a new Image with new size

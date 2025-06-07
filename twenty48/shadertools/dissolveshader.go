@@ -163,26 +163,20 @@ func applyDissolveShader(image *ebiten.Image, time float32) *ebiten.Image {
 
 //// UPDATES ////
 
-// Fade in update
-func updateFadeIn() {
-	for key := range timesFadeIn {
-		if timesFadeIn[key] > 0 {
-			timesFadeIn[key]--
-		} else {
-			timesFadeIn[key] = 0
-		}
+// Updating fade (in or out)
+func updateFade(mapRef map[int]float32, direction int) {
+	for key, val := range mapRef {
+		mapRef[key] = clamp(val+float32(direction), 0, FadeDuration)
 	}
 
 }
 
-// Update fade out times map
-func updateFadeOut() {
-	// Fade out update
-	for key := range timesFadeOut {
-		if timesFadeOut[key] < FadeDuration {
-			timesFadeOut[key]++
-		} else {
-			timesFadeOut[key] = FadeDuration
-		}
+func clamp(val, min, max float32) float32 {
+	if val < min {
+		return min
 	}
+	if val > max {
+		return max
+	}
+	return val
 }
