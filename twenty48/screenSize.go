@@ -26,7 +26,7 @@ func (sc *ScreenControl) UpdateActualDimentions() {
 		sc.actualWidth *= int(dpiScale)
 		sc.actualHeight *= int(dpiScale)
 	} else {
-		sc.actualWidth = logicalWidth * int(sc.game.scale) * int(dpiScale)
-		sc.actualHeight = logicalHeight * int(sc.game.scale) * int(dpiScale)
+		sc.actualWidth = LOGICAL_WIDTH * int(sc.game.scale) * int(dpiScale)
+		sc.actualHeight = LOGICAL_HEIGHT * int(sc.game.scale) * int(dpiScale)
 	}
 }

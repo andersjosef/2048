@@ -14,9 +14,9 @@ import (
 
 /* variables and constants */
 const (
-	logicalWidth  int = 640
-	logicalHeight int = 480
-	BOARDSIZE     int = 4
+	LOGICAL_WIDTH  int = 640
+	LOGICAL_HEIGHT int = 480
+	BOARDSIZE      int = 4
 )
 
 // Gamestates Enum style
@@ -83,7 +83,7 @@ func NewGame() (*Game, error) {
 		return nil, err
 	}
 
-	ebiten.SetWindowSize(logicalWidth*int(g.scale), logicalHeight*int(g.scale))
+	ebiten.SetWindowSize(LOGICAL_WIDTH*int(g.scale), LOGICAL_HEIGHT*int(g.scale))
 	return g, nil
 }
 

@@ -11,14 +11,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
-const TILESIZE float32 = float32(logicalWidth) / 6.4
-const BORDERSIZE float32 = TILESIZE / 25
-
-var (
-	startPosX float32 = float32((logicalWidth - (BOARDSIZE * int(TILESIZE))) / 2)
-	startPosY float32 = float32((logicalHeight - (BOARDSIZE * int(TILESIZE))) / 2)
-)
-
 // The sizes for the board that can be scaled up and down with window size changes
 type Sizes struct {
 	board      *Board
@@ -26,16 +18,28 @@ type Sizes struct {
 	bordersize float32
 	startPosX  float32
 	startPosY  float32
+
+	baseTileSize   float32
+	baseBorderSize float32
 }
 
 func InitSizes(b *Board) *Sizes {
+	const (
+		BASE_TILESIZE   float32 = float32(LOGICAL_WIDTH) / 6.4
+		BASE_BORDERSIZE float32 = BASE_TILESIZE / 25
+		START_POS_X     float32 = float32((LOGICAL_WIDTH - (BOARDSIZE * int(BASE_TILESIZE))) / 2)
+		START_POS_Y     float32 = float32((LOGICAL_HEIGHT - (BOARDSIZE * int(BASE_TILESIZE))) / 2)
+	)
+
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 	sfb := &Sizes{
-		board:      b,
-		tileSize:   TILESIZE * float32(dpiScale),
-		bordersize: BORDERSIZE * float32(dpiScale),
-		startPosX:  startPosX * float32(dpiScale),
-		startPosY:  startPosY * float32(dpiScale),
+		baseTileSize:   BASE_TILESIZE,
+		baseBorderSize: BASE_BORDERSIZE,
+		board:          b,
+		tileSize:       BASE_TILESIZE * float32(dpiScale),
+		bordersize:     BASE_BORDERSIZE * float32(dpiScale),
+		startPosX:      START_POS_X * float32(dpiScale),
+		startPosY:      START_POS_Y * float32(dpiScale),
 	}
 	return sfb
 }
@@ -44,8 +48,8 @@ func (s *Sizes) scaleBoard() {
 	scale := s.board.game.scale
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 
-	s.tileSize = TILESIZE * float32(scale) * float32(dpiScale)
-	s.bordersize = BORDERSIZE * float32(scale) * float32(dpiScale)
+	s.tileSize = s.baseTileSize * float32(scale) * float32(dpiScale)
+	s.bordersize = s.baseBorderSize * float32(scale) * float32(dpiScale)
 
 	s.startPosX = float32((s.board.game.screenControl.actualWidth - (BOARDSIZE * int(s.tileSize))) / 2)
 	s.startPosY = float32((s.board.game.screenControl.actualHeight - (BOARDSIZE * int(s.tileSize))) / 2)

@@ -329,7 +329,7 @@ func ScaleWindow(i *Input) {
 	i.game.menu.initTitle()
 	i.updatePauseButtonLocation()
 	i.game.buttonManager.UpdateFontsForButtons()
-	ebiten.SetWindowSize(logicalWidth*int(i.game.scale), logicalHeight*int(i.game.scale))
+	ebiten.SetWindowSize(LOGICAL_WIDTH*int(i.game.scale), LOGICAL_HEIGHT*int(i.game.scale))
 	i.centerWindow()
 
 }
