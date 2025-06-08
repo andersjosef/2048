@@ -56,8 +56,8 @@ func NewGame() (*Game, error) {
 	}
 
 	// initialize new board
-	g.animation = InitAnimation(g)
 	g.board, err = NewBoard(g)
+	g.animation = InitAnimation(g.board)
 	g.renderer = renderer.InitRenderer(g.fontSet)
 	g.menu = menu.NewMenu(g)
 	g.input = InitInput(g)

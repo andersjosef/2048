@@ -341,7 +341,7 @@ func TestMoves(t *testing.T) {
 
 func TestInitAnimation(t *testing.T) {
 	g := &Game{}
-	a := InitAnimation(g)
+	a := InitAnimation(g.board)
 
 	wantArrayOfChange := [co.BOARDSIZE][co.BOARDSIZE]int{
 		{0, 0, 0, 0},

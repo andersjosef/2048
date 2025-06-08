@@ -11,17 +11,17 @@ import (
 type Animation struct {
 	isAnimating     bool
 	arrayOfChange   [co.BOARDSIZE][co.BOARDSIZE]int
-	game            *Game
+	view            View
 	currentDir      string
 	animationLength float32           //seconds
 	directionMap    map[string][2]int // multiply this to get x y movement of tiles
 	startTime       time.Time
 }
 
-func InitAnimation(g *Game) *Animation {
+func InitAnimation(g View) *Animation {
 	a := &Animation{
 		isAnimating:     false,
-		game:            g,
+		view:            g,
 		animationLength: 0.20, // Animation duration in seconds
 		directionMap: map[string][2]int{
 			"UP":    {0, -1},
@@ -36,15 +36,17 @@ func InitAnimation(g *Game) *Animation {
 
 func (a *Animation) Draw(screen *ebiten.Image) {
 	// Draw the backgroundimage of the game
-	screen.DrawImage(a.game.board.boardImage, a.game.board.boardImageOptions)
+	// screen.DrawImage(a.game.board.boardImage, a.game.board.boardImageOptions)
+	a.view.DrawBackgoundBoard(screen)
 
 	// Calculate animation progress based on time since start
 	timeSinceStart := time.Since(a.startTime)
 	progress := min(float32(timeSinceStart.Seconds())/a.animationLength, 1)
 
 	// Draw tiles for animation
-	for y := range len(a.game.board.matrix) {
-		for x := range len(a.game.board.matrix[0]) {
+	mWidth, mHeight := a.view.GetBoardDimentions()
+	for y := range mHeight {
+		for x := range mWidth {
 			var (
 				movingDistX float32 = progress * float32(a.directionMap[a.currentDir][0]) * float32(co.BOARDSIZE-1)
 				movingDistY float32 = progress * float32(a.directionMap[a.currentDir][1]) * float32(co.BOARDSIZE-1)
@@ -53,7 +55,23 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
 				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
 			}
-			a.game.board.DrawTile(screen, a.game.board.sizes.startPosX, a.game.board.sizes.startPosY, x, y, a.game.board.matrixBeforeChange[y][x], movingDistX, movingDistY)
+			a.view.DrawMovingMatrix(
+				screen,
+				x,
+				y,
+				movingDistX,
+				movingDistY,
+			)
+			// a.view.DrawTile(
+			// 	screen,
+			// 	a.view.board.sizes.startPosX,
+			// 	a.view.board.sizes.startPosY,
+			// 	x,
+			// 	y,
+			// 	a.view.board.matrixBeforeChange[y][x],
+			// 	movingDistX,
+			// 	movingDistY,
+			// )
 		}
 	}
 
