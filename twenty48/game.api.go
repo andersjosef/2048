@@ -15,6 +15,10 @@ func (g *Game) GetState() GameState {
 	return g.state
 }
 
+func (g *Game) GetPreviousState() GameState {
+	return g.previousState
+}
+
 func (g *Game) GetCurrentTheme() theme.Theme {
 	return g.currentTheme
 }
@@ -25,7 +29,20 @@ func (g *Game) GetFontSet() theme.FontSet {
 
 // // ButtonManagerProvider ////
 func (g *Game) UpdatePosForButton(keyName string, posX, posY int) {
-	g.buttonManager.buttonKeyMap[keyName].UpdatePos(posX, posY)
+	if button, doExist := g.buttonManager.buttonKeyMap[keyName]; doExist {
+		button.UpdatePos(posX, posY)
+	}
+}
+
+func (g *Game) UpdateTextForButton(keyName, newText string) {
+	g.buttonManager.buttonKeyMap[keyName].UpdateText(newText)
+}
+
+func (g *Game) GetButton(identifier string) (button *Button, exists bool) {
+	if button, doExist := g.buttonManager.buttonKeyMap[identifier]; doExist {
+		return button, true
+	}
+	return nil, false
 }
 
 // // ScreenControlProvider ////
@@ -33,7 +50,7 @@ func (g *Game) GetActualSize() (x, y int) {
 	return g.screenControl.actualWidth, g.screenControl.actualHeight
 }
 
-func (g *Game) GetIsFullScreen() bool {
+func (g *Game) IsFullScreen() bool {
 	return g.screenControl.isFullscreen
 }
 

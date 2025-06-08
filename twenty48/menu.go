@@ -9,7 +9,7 @@ import (
 )
 
 type Menu struct {
-	game        *Game
+	view        GameView
 	dynamicText map[string]string
 
 	titleImage      *ebiten.Image
@@ -17,14 +17,14 @@ type Menu struct {
 }
 
 // Initialize menu
-func NewMenu(g *Game) *Menu {
+func NewMenu(v GameView) *Menu {
 	var m *Menu = &Menu{
-		game: g,
+		view: v,
 	}
 	m.initTitle() // Inits title image to menu parameter
 	m.dynamicText = map[string]string{
-		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.isFullscreen),
-		"Press Q to toggle theme:":     fmt.Sprintf("Press Q to toggle theme: %v", m.game.currentTheme.Name),
+		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.view.IsFullScreen()),
+		"Press Q to toggle theme:":     fmt.Sprintf("Press Q to toggle theme: %v", m.view.GetCurrentTheme().Name),
 	}
 
 	return m
@@ -32,7 +32,7 @@ func NewMenu(g *Game) *Menu {
 
 func (m *Menu) DrawMenu(screen *ebiten.Image) {
 
-	switch m.game.state {
+	switch m.view.GetState() {
 	case StateMainMenu:
 		m.DrawMainMenu(screen)
 	case StateInstructions:
@@ -48,16 +48,31 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	m.drawTitle(screen)
 
 	// Instruction key info
-	insX := m.game.screenControl.actualWidth / 2
-	insY := (m.game.screenControl.actualHeight / 2) + m.game.screenControl.actualHeight/10
-	m.game.buttonManager.buttonKeyMap["I: Instructions"].UpdatePos(insX, insY)
+	width, height := m.view.GetActualSize()
+
+	insX := width / 2
+	insY := (height / 2) + height/10
+
+	// m.view.buttonManager.buttonKeyMap["I: Instructions"].UpdatePos(insX, insY)
+	m.view.UpdatePosForButton("I: Instructions", insX, insY)
 
 }
 
 func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 
+	width, height := m.view.GetActualSize()
+
 	// Title
-	m.game.renderer.DrawDoubleText(screen, "Instructions", m.game.screenControl.actualWidth/2, m.game.screenControl.actualHeight/10, 2, m.game.fontSet.Big, true)
+	// m.view.renderer.DrawDoubleText(screen, "Instructions", m.view.screenControl.actualWidth/2, m.view.screenControl.actualHeight/10, 2, m.view.fontSet.Big, true)
+	m.view.DrawDoubleText(
+		screen,
+		"Instructions",
+		width/2,
+		height/10,
+		2,
+		m.view.GetFontSet().Big,
+		true,
+	)
 
 	// Instructions messages
 	instructions := []string{
@@ -73,41 +88,69 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	// Render each instruction line
 	for i, line := range instructions {
 		// Adjust Y-position dynamically based on line index
-		rowXPos := m.game.screenControl.actualWidth / 2
-		lineYPos := (m.game.screenControl.actualHeight / 5) + i*(m.game.screenControl.actualHeight/18)
+		rowXPos := width / 2
+		lineYPos := (height / 5) + i*(height/18)
 
-		if button, ok := m.game.buttonManager.buttonKeyMap[line]; ok {
+		// TODO refactor out button in this
+		// if button, ok := m.view.buttonManager.buttonKeyMap[line]; ok {
+		if button, ok := m.view.GetButton(line); ok {
 			if newText, ok := m.dynamicText[button.identifier]; ok {
 				button.UpdateText(newText)
 			}
 			button.UpdatePos(rowXPos, lineYPos)
 		} else {
-			m.game.renderer.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, m.game.fontSet.Mini, true)
+			// m.view.renderer.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, m.view.fontSet.Mini, true)
+			m.view.DrawDoubleText(
+				screen,
+				line,
+				rowXPos,
+				lineYPos,
+				1,
+				m.view.GetFontSet().Mini,
+				true,
+			)
 		}
 
 	}
 
 	// Add a back button
 	returnButtonText := "Press I to return"
-	if m.game.previousState == StateMainMenu {
+	if m.view.GetPreviousState() == StateMainMenu {
 		returnButtonText += " to Main Menu"
-	} else if m.game.previousState == StateRunning {
+	} else if m.view.GetPreviousState() == StateRunning {
 		returnButtonText += " to Game"
 	}
-	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdateText(returnButtonText)
-	m.game.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(m.game.screenControl.actualWidth/2, m.game.screenControl.actualHeight-m.game.screenControl.actualHeight/10)
+	// m.view.buttonManager.buttonKeyMap["Press I to return"].UpdateText(returnButtonText)
+	// m.view.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(m.view.screenControl.actualWidth/2, m.view.screenControl.actualHeight-m.view.screenControl.actualHeight/10)
+	m.view.UpdateTextForButton(
+		"Press I to return",
+		returnButtonText,
+	)
+	m.view.UpdatePosForButton(
+		"Press I to return",
+		width/2,
+		height-height/10,
+	)
 }
 
 func (m *Menu) UpdateDynamicText() {
-	m.dynamicText["Press F to toggle Fullscreen"] = fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.isFullscreen)
-	m.dynamicText["Press Q to toggle theme:"] = fmt.Sprintf("Press Q to toggle theme: %v", m.game.currentTheme.Name)
+	m.dynamicText["Press F to toggle Fullscreen"] = fmt.Sprintf("Press F to toggle Fullscreen: %v", m.view.IsFullScreen())
+	m.dynamicText["Press Q to toggle theme:"] = fmt.Sprintf("Press Q to toggle theme: %v", m.view.GetCurrentTheme().Name)
 }
 
 func (m *Menu) initTitle() {
-	var xPos, yPos = m.game.screenControl.actualWidth, m.game.screenControl.actualHeight
+	xPos, yPos := m.view.GetActualSize()
 
 	newImage := ebiten.NewImage(xPos, yPos)
-	m.game.renderer.DrawDoubleText(newImage, "2048", xPos/2, yPos/2, 2, m.game.fontSet.Big, true)
+	m.view.DrawDoubleText(
+		newImage,
+		"2048",
+		xPos/2,
+		yPos/2,
+		2,
+		m.view.GetFontSet().Big,
+		true,
+	)
 	m.titleImage = newImage
 
 }

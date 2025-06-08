@@ -15,17 +15,20 @@ type GameView interface {
 
 type GameProvider interface {
 	GetState() GameState
+	GetPreviousState() GameState
 	GetCurrentTheme() theme.Theme
 	GetFontSet() theme.FontSet
 }
 
 type ButtonManagerProvider interface {
 	UpdatePosForButton(keyName string, posX, posY int)
+	UpdateTextForButton(keyName, newText string)
+	GetButton(identifier string) (button *Button, exists bool) // Temporary!
 }
 
 type ScreenControlProvider interface {
 	GetActualSize() (x, y int)
-	GetIsFullScreen() bool
+	IsFullScreen() bool
 }
 
 type RendererProvider interface {
