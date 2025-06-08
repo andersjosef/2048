@@ -72,10 +72,10 @@ func (bu *Button) GetDimentions() (int, int, error) {
 	if bu.font == nil {
 		return -1, -1, fmt.Errorf("cant get dimentions, font is not set")
 	}
-	textLength := int(text.Advance(bu.text, bu.font))
-	textHeight := int(bu.font.Metrics().VAscent + bu.font.Metrics().VDescent)
 
-	return textLength, textHeight, nil
+	textLength, textHeight := text.Measure(bu.text, bu.font, 0)
+
+	return int(textLength), int(textHeight), nil
 }
 
 func (bu *Button) OnTrigger() {
