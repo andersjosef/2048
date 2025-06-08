@@ -45,13 +45,13 @@ func (sc *ScreenControl) ToggleFullScreen() {
 	sc.SetFullScreen(!sc.isFullscreen)
 }
 
-func (sc *ScreenControl) IsFullScreen() bool {
-	return sc.isFullscreen
-}
-
 func (sc *ScreenControl) SetFullScreen(val bool) {
 	sc.isFullscreen = val
 	sc.UpdateActualDimentions()
+}
+
+func (sc *ScreenControl) IsFullScreen() bool {
+	return sc.isFullscreen
 }
 
 func (sc *ScreenControl) GetScale() float64 {

@@ -210,7 +210,6 @@ func CloseGame(i *Input) {
 func ToggleFullScreen(i *Input) {
 	i.game.screenControl.ToggleFullScreen()
 	i.screenChanging()
-	i.game.screenSizeChanged = true
 }
 
 // Helper function for toggle screen

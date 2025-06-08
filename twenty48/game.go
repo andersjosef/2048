@@ -16,31 +16,29 @@ import (
 )
 
 type Game struct {
-	board             *Board
-	screenControl     *screencontrol.ScreenControl
-	animation         *Animation
-	menu              *menu.Menu
-	input             *Input
-	buttonManager     *ButtonManager
-	fontSet           *theme.FontSet
-	themePicker       *theme.ThemePicker
-	renderer          *renderer.Renderer
-	state             co.GameState // Game is in menu, running, etc
-	previousState     co.GameState
-	score             int
-	shouldClose       bool // If yes will close the game
-	screenSizeChanged bool
-	currentTheme      theme.Theme
-	gameOver          bool
+	board         *Board
+	screenControl *screencontrol.ScreenControl
+	animation     *Animation
+	menu          *menu.Menu
+	input         *Input
+	buttonManager *ButtonManager
+	fontSet       *theme.FontSet
+	themePicker   *theme.ThemePicker
+	renderer      *renderer.Renderer
+	state         co.GameState // Game is in menu, running, etc
+	previousState co.GameState
+	score         int
+	shouldClose   bool // If yes will close the game
+	currentTheme  theme.Theme
+	gameOver      bool
 }
 
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state:             co.StateMainMenu,
-		previousState:     co.StateMainMenu,
-		shouldClose:       false,
-		screenSizeChanged: false,
+		state:         co.StateMainMenu,
+		previousState: co.StateMainMenu,
+		shouldClose:   false,
 	}
 
 	g.themePicker = theme.NewThemePicker()
