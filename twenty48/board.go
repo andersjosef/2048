@@ -5,6 +5,7 @@ import (
 	"math/rand"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -42,6 +43,14 @@ func InitSizes(b *Board) *Sizes {
 		startPosX:      START_POS_X * float32(dpiScale),
 		startPosY:      START_POS_Y * float32(dpiScale),
 	}
+
+	sfb.board.game.GetBusHandler().Register(
+		eventhandler.EventScreenChanged,
+		func(evt eventhandler.Event) {
+			sfb.scaleBoard()
+		},
+	)
+
 	return sfb
 }
 
@@ -78,9 +87,8 @@ type Board struct {
 func NewBoard(g *Game) (*Board, error) {
 
 	b := &Board{}
-	b.sizes = InitSizes(b)
-
 	b.game = g
+	b.sizes = InitSizes(b)
 
 	// add the two start pieces
 	for i := 0; i < 2; i++ {

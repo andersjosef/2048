@@ -215,7 +215,7 @@ func ToggleFullScreen(i *Input) {
 // Helper function for toggle screen
 // Contains everything that is the same for full screen and windowed
 func (i *Input) screenChanging() {
-	i.game.board.sizes.scaleBoard()
+	// i.game.board.sizes.scaleBoard()
 	i.game.menu.UpdateCenteredTitle()
 	i.updatePauseButtonLocation()
 	val := int(i.game.board.sizes.baseTileSize)

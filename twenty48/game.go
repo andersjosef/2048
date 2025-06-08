@@ -6,6 +6,7 @@ import (
 	"math"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/menu"
 	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/screencontrol"
@@ -25,6 +26,7 @@ type Game struct {
 	fontSet       *theme.FontSet
 	themePicker   *theme.ThemePicker
 	renderer      *renderer.Renderer
+	eventBus      *eventhandler.EventBus
 	state         co.GameState // Game is in menu, running, etc
 	previousState co.GameState
 	score         int
@@ -41,6 +43,7 @@ func NewGame() (*Game, error) {
 		shouldClose:   false,
 	}
 
+	g.eventBus = eventhandler.NewEventBus()
 	g.themePicker = theme.NewThemePicker()
 	g.currentTheme = g.themePicker.GetCurrentTheme()
 	g.screenControl = screencontrol.InitScreenControl(g)
@@ -72,6 +75,7 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) Update() error {
+	g.eventBus.Dispatch()
 	g.input.UpdateInput(g.board)
 
 	if g.shouldClose { // quit game check

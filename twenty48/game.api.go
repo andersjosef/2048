@@ -2,6 +2,7 @@ package twenty48
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -77,4 +78,9 @@ func (g *Game) IsFullScreen() bool {
 // // RendererProvider ////
 func (g *Game) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
 	g.renderer.DrawDoubleText(screen, message, xpos, ypos, offset, fontUsed, isCentered)
+}
+
+// // bus ////
+func (g *Game) GetBusHandler() *eventhandler.EventBus {
+	return g.eventBus
 }

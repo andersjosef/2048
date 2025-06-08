@@ -2,6 +2,7 @@ package screencontrol
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -43,6 +44,11 @@ func (sc *ScreenControl) GetActualSize() (x, y int) {
 func (sc *ScreenControl) ToggleFullScreen() {
 	ebiten.SetFullscreen(!sc.isFullscreen)
 	sc.SetFullScreen(!sc.isFullscreen)
+
+	// Trigger screen changed event
+	sc.view.GetBusHandler().Emit(eventhandler.Event{
+		Type: eventhandler.EventScreenChanged,
+	})
 }
 
 func (sc *ScreenControl) SetFullScreen(val bool) {
