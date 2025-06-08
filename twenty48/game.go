@@ -109,7 +109,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 		DrawScore(screen, g)
 	case StateMainMenu, StateInstructions: //game is in menu
-		g.menu.DrawMenu(screen)
+		g.menu.Draw(screen)
 
 	case StateGameOver:
 		g.DrawGameOverScreen(screen)

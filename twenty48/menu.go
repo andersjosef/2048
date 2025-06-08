@@ -30,8 +30,7 @@ func NewMenu(v GameView) *Menu {
 	return m
 }
 
-func (m *Menu) DrawMenu(screen *ebiten.Image) {
-
+func (m *Menu) Draw(screen *ebiten.Image) {
 	switch m.view.GetState() {
 	case StateMainMenu:
 		m.DrawMainMenu(screen)
