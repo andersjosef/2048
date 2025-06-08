@@ -41,6 +41,7 @@ func (b *Board) moveUp() {
 	b.game.gameOver = b.isGameOver()
 }
 
+// TODO separate out logic on all these...
 func (b *Board) moveRight() {
 	b.updateBoardBeforeChange()
 	for i := range b.matrix {
