@@ -215,37 +215,29 @@ func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float3
 }
 
 func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, value int) {
-	// draw the number to the screen
 	fontSet := b.game.fontSet
 	msg := fmt.Sprintf("%v", value)
-	fontUsed := fontSet.Normal
-	textHeight := -(fontSet.Normal.Metrics().VAscent + fontSet.Normal.Metrics().VDescent)
 
-	width, _ := text.Measure(msg, fontSet.Normal, 0)
-
-	var (
-		dx float32 = float32(width)
-		dy float32 = float32(textHeight)
-	)
-
-	// check for text with first font is too large for it and swap
-	if int(text.Advance(msg, fontSet.Big)) > int(b.sizes.tileSize) {
-		// fontUsed = mplusNormalFontSmaller
+	var fontUsed *text.GoTextFace
+	if float32(text.Advance(msg, fontSet.Big)) > b.sizes.tileSize {
 		fontUsed = fontSet.Smaller
-		textHeight = -(fontSet.Smaller.Metrics().VAscent + fontSet.Smaller.Metrics().VDescent)
-		width, _ := text.Measure(msg, fontSet.Smaller, 0)
-		dx = float32(width)
-		dy = float32(textHeight)
+	} else {
+		fontUsed = fontSet.Normal
 	}
 
-	var (
-		textPosX int = int(xpos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) - dx/2)
-		textPosY int = int(ypos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) + dy/2)
-	)
+	metrics := fontUsed.Metrics()
+	textHeight := -(metrics.VAscent + metrics.VDescent)
+	width, _ := text.Measure(msg, fontUsed, 0)
+
+	dx := float32(width)
+	dy := float32(textHeight)
+
+	textPosX := int(xpos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) - dx/2)
+	textPosY := int(ypos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) + dy/2)
 
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(float64(textPosX), float64(textPosY))
-	op.ColorScale.ScaleWithColor(b.game.currentTheme.ColorText)
+	op.ColorScale.ScaleWithColor(b.game.GetCurrentTheme().ColorText)
 	text.Draw(screen, msg, fontUsed, op)
 }
 
