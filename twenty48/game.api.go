@@ -28,14 +28,25 @@ func (g *Game) GetFontSet() theme.FontSet {
 }
 
 // // ButtonManagerProvider ////
-func (g *Game) UpdatePosForButton(keyName string, posX, posY int) {
-	if button, doExist := g.buttonManager.buttonKeyMap[keyName]; doExist {
-		button.UpdatePos(posX, posY)
-	}
+func (g *Game) ButtonExists(keyName string) (exists bool) {
+	_, exists = g.buttonManager.buttonKeyMap[keyName]
+	return
 }
 
-func (g *Game) UpdateTextForButton(keyName, newText string) {
-	g.buttonManager.buttonKeyMap[keyName].UpdateText(newText)
+func (g *Game) UpdatePosForButton(keyName string, posX, posY int) (exists bool) {
+	if button, doExist := g.buttonManager.buttonKeyMap[keyName]; doExist {
+		button.UpdatePos(posX, posY)
+		return true
+	}
+	return false
+}
+
+func (g *Game) UpdateTextForButton(keyName, newText string) (exists bool) {
+	if button, doExist := g.buttonManager.buttonKeyMap[keyName]; doExist {
+		button.UpdateText(newText)
+		return true
+	}
+	return false
 }
 
 func (g *Game) GetButton(identifier string) (button *Button, exists bool) {

@@ -21,9 +21,9 @@ type GameProvider interface {
 }
 
 type ButtonManagerProvider interface {
-	UpdatePosForButton(keyName string, posX, posY int)
-	UpdateTextForButton(keyName, newText string)
-	GetButton(identifier string) (button *Button, exists bool) // Temporary!
+	UpdatePosForButton(keyName string, posX, posY int) (exists bool)
+	UpdateTextForButton(keyName, newText string) (exists bool)
+	ButtonExists(keyname string) (exists bool)
 }
 
 type ScreenControlProvider interface {

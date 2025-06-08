@@ -89,14 +89,12 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 		rowXPos := width / 2
 		lineYPos := (height / 5) + i*(height/18)
 
-		// TODO refactor out button in this
-		// if button, ok := m.view.buttonManager.buttonKeyMap[line]; ok {
-		if button, ok := m.view.GetButton(line); ok {
-			if newText, ok := m.dynamicText[button.identifier]; ok {
-				button.UpdateText(newText)
+		if m.view.ButtonExists(line) { // Buttons
+			if newText, doExist := m.dynamicText[line]; doExist {
+				m.view.UpdateTextForButton(line, newText)
 			}
-			button.UpdatePos(rowXPos, lineYPos)
-		} else {
+			m.view.UpdatePosForButton(line, rowXPos, lineYPos)
+		} else { // Just text
 			m.view.DrawDoubleText(
 				screen,
 				line,
