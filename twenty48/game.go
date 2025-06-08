@@ -8,6 +8,7 @@ import (
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/menu"
 	"github.com/andersjosef/2048/twenty48/renderer"
+	"github.com/andersjosef/2048/twenty48/screencontrol"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,7 +17,7 @@ import (
 
 type Game struct {
 	board             *Board
-	screenControl     *ScreenControl
+	screenControl     *screencontrol.ScreenControl
 	animation         *Animation
 	menu              *menu.Menu
 	input             *Input
@@ -56,7 +57,7 @@ func NewGame() (*Game, error) {
 
 	// initialize new board
 	g.animation = InitAnimation(g)
-	g.screenControl = InitScreenControl(g)
+	g.screenControl = screencontrol.InitScreenControl(g)
 	g.board, err = NewBoard(g)
 	g.renderer = renderer.InitRenderer(g.fontSet)
 	g.menu = menu.NewMenu(g)

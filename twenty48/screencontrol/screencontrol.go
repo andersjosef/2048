@@ -1,4 +1,4 @@
-package twenty48
+package screencontrol
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
@@ -7,15 +7,15 @@ import (
 
 type ScreenControl struct {
 	isFullscreen bool
-	game         *Game
+	view         GameView
 	actualWidth  int
 	actualHeight int
 }
 
-func InitScreenControl(g *Game) *ScreenControl {
+func InitScreenControl(g GameView) *ScreenControl {
 	sc := &ScreenControl{
 		isFullscreen: false,
-		game:         g,
+		view:         g,
 	}
 
 	sc.UpdateActualDimentions()
@@ -29,7 +29,19 @@ func (sc *ScreenControl) UpdateActualDimentions() {
 		sc.actualWidth *= int(dpiScale)
 		sc.actualHeight *= int(dpiScale)
 	} else {
-		sc.actualWidth = co.LOGICAL_WIDTH * int(sc.game.scale) * int(dpiScale)
-		sc.actualHeight = co.LOGICAL_HEIGHT * int(sc.game.scale) * int(dpiScale)
+		sc.actualWidth = co.LOGICAL_WIDTH * int(sc.view.GetScale()) * int(dpiScale)
+		sc.actualHeight = co.LOGICAL_HEIGHT * int(sc.view.GetScale()) * int(dpiScale)
 	}
+}
+
+func (sc *ScreenControl) GetActualSize() (x, y int) {
+	return sc.actualWidth, sc.actualHeight
+}
+
+func (sc *ScreenControl) IsFullScreen() bool {
+	return sc.isFullscreen
+}
+
+func (sc *ScreenControl) SetFullScreen(val bool) {
+	sc.isFullscreen = val
 }

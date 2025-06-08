@@ -52,8 +52,10 @@ func (s *Sizes) scaleBoard() {
 	s.tileSize = s.baseTileSize * float32(scale) * float32(dpiScale)
 	s.bordersize = s.baseBorderSize * float32(scale) * float32(dpiScale)
 
-	s.startPosX = float32((s.board.game.screenControl.actualWidth - (co.BOARDSIZE * int(s.tileSize))) / 2)
-	s.startPosY = float32((s.board.game.screenControl.actualHeight - (co.BOARDSIZE * int(s.tileSize))) / 2)
+	width, height := s.board.game.GetActualSize()
+
+	s.startPosX = float32((width - (co.BOARDSIZE * int(s.tileSize))) / 2)
+	s.startPosY = float32((height - (co.BOARDSIZE * int(s.tileSize))) / 2)
 
 	newOpt := &ebiten.DrawImageOptions{}
 	newOpt.GeoM.Translate(float64(s.startPosX), float64(s.startPosY))
@@ -93,7 +95,8 @@ func NewBoard(g *Game) (*Board, error) {
 }
 
 func (b *Board) initBoardForEndScreen() {
-	b.boardForEndScreen = ebiten.NewImage(b.game.screenControl.actualWidth, b.game.screenControl.actualHeight)
+	width, height := b.game.GetActualSize()
+	b.boardForEndScreen = ebiten.NewImage(width, height)
 }
 
 func (b *Board) randomNewPiece() {

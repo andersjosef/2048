@@ -170,7 +170,6 @@ func (m *Menu) drawGameOverScreen(screen *ebiten.Image) {
 	scoreString := fmt.Sprintf("Score: %v", m.view.GetScore())
 
 	width, height := m.view.GetActualSize()
-	fmt.Println(width, height)
 
 	m.view.DrawDoubleText(
 		screen,

@@ -32,6 +32,10 @@ func (g *Game) GetFontSet() theme.FontSet {
 	return *g.fontSet
 }
 
+func (g *Game) GetScale() float64 {
+	return g.scale
+}
+
 // // ButtonManagerProvider ////
 func (g *Game) ButtonExists(keyName string) (exists bool) {
 	_, exists = g.buttonManager.buttonKeyMap[keyName]
@@ -63,11 +67,11 @@ func (g *Game) GetButton(identifier string) (button *Button, exists bool) {
 
 // // ScreenControlProvider ////
 func (g *Game) GetActualSize() (x, y int) {
-	return g.screenControl.actualWidth, g.screenControl.actualHeight
+	return g.screenControl.GetActualSize()
 }
 
 func (g *Game) IsFullScreen() bool {
-	return g.screenControl.isFullscreen
+	return g.screenControl.IsFullScreen()
 }
 
 // // RendererProvider ////

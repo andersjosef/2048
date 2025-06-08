@@ -208,13 +208,13 @@ func CloseGame(i *Input) {
 }
 
 func ToggleFullScreen(i *Input) {
-	if i.game.screenControl.isFullscreen {
+	if i.game.screenControl.IsFullScreen() {
 		ebiten.SetFullscreen(false)
-		i.game.screenControl.isFullscreen = false
+		i.game.screenControl.SetFullScreen(false)
 		i.screenChanging()
 	} else {
 		ebiten.SetFullscreen(true)
-		i.game.screenControl.isFullscreen = true
+		i.game.screenControl.SetFullScreen(true)
 		i.screenChanging()
 	}
 	i.game.screenSizeChanged = true
@@ -347,5 +347,6 @@ func (i *Input) centerWindow() {
 // Helper function for updating the pause button location
 // When changing screen size
 func (i *Input) updatePauseButtonLocation() {
-	i.game.buttonManager.buttonKeyMap["II"].UpdatePos(i.game.screenControl.actualWidth-20, 20)
+	width, _ := i.game.GetActualSize()
+	i.game.buttonManager.buttonKeyMap["II"].UpdatePos(width-20, 20)
 }

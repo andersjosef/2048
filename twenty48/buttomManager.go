@@ -34,6 +34,7 @@ func InitButtonManager(g *Game) *ButtonManager {
 func (bm *ButtonManager) initButtons() {
 
 	smallOffsett := 1.0
+	width, _ := bm.game.GetActualSize()
 
 	// Main Menu
 	bm.AddButton(
@@ -100,7 +101,7 @@ func (bm *ButtonManager) initButtons() {
 	// Running loop
 	bm.AddButton(
 		"II",
-		[2]int{bm.game.screenControl.actualWidth - 20, 20},
+		[2]int{width - 20, 20},
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		-1, // Something not in enum for now, needs update to size
