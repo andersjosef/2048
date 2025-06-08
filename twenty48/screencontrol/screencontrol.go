@@ -8,13 +8,13 @@ import (
 
 type ScreenControl struct {
 	isFullscreen bool
-	view         GameView
+	view         View
 	actualWidth  int
 	actualHeight int
 	scale        float64
 }
 
-func InitScreenControl(g GameView) *ScreenControl {
+func InitScreenControl(g View) *ScreenControl {
 	sc := &ScreenControl{
 		isFullscreen: false,
 		view:         g,

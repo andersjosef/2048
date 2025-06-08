@@ -10,7 +10,7 @@ import (
 )
 
 type Menu struct {
-	view        GameView
+	view        View
 	dynamicText map[string]string
 
 	titleImage      *ebiten.Image
@@ -18,7 +18,7 @@ type Menu struct {
 }
 
 // Initialize menu
-func NewMenu(v GameView) *Menu {
+func NewMenu(v View) *Menu {
 	var m *Menu = &Menu{
 		view: v,
 	}

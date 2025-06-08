@@ -8,7 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-type GameView interface {
+type View interface {
 	GameProvider
 	ButtonManagerProvider
 	ScreenControlProvider
