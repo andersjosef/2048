@@ -30,8 +30,6 @@ func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int
 	if isCentered {
 		baseX -= textWidth / 2  // Center horizontally
 		baseY += textHeight / 2 // Center vertically
-	} else {
-		baseY -= textHeight / 4 // Center vertically
 	}
 
 	// Set options for shadow text
