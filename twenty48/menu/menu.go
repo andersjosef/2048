@@ -14,7 +14,7 @@ type Menu struct {
 	dynamicText map[string]string
 
 	titleImage      *ebiten.Image
-	TitleInFullView bool
+	titleInFullView bool
 }
 
 // Initialize menu
@@ -36,7 +36,18 @@ func NewMenu(v GameView) *Menu {
 		},
 	)
 
+	m.registerEvents()
+
 	return m
+}
+
+func (m *Menu) registerEvents() {
+	m.view.GetBusHandler().Register(
+		eventhandler.EventResetGame,
+		func(_ eventhandler.Event) {
+			m.titleInFullView = false
+		},
+	)
 }
 
 func (m *Menu) Draw(screen *ebiten.Image) {
@@ -161,10 +172,10 @@ func (m *Menu) UpdateCenteredTitle() {
 // Drawing the title and using shader when animating
 func (m *Menu) drawTitle(screen *ebiten.Image) {
 
-	if !m.TitleInFullView {
+	if !m.titleInFullView {
 		shaderImage, isDone := shadertools.GetImageFadeIn(m.titleImage)
 		if isDone {
-			m.TitleInFullView = true
+			m.titleInFullView = true
 		}
 		screen.DrawImage(shaderImage, &ebiten.DrawImageOptions{})
 

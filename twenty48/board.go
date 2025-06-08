@@ -100,8 +100,22 @@ func NewBoard(g *Game) (*Board, error) {
 	// create baordImage
 	b.createBoardImage()
 
+	b.registerEvents()
+
 	return b, nil
 
+}
+
+func (b *Board) registerEvents() {
+	b.game.GetBusHandler().Register(
+		eventhandler.EventResetGame,
+		func(_ eventhandler.Event) {
+			b.board = [co.BOARDSIZE][co.BOARDSIZE]int{}
+			b.randomNewPiece()
+			b.randomNewPiece()
+
+		},
+	)
 }
 
 func (b *Board) initBoardForEndScreen() {

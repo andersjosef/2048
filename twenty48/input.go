@@ -5,7 +5,6 @@ import (
 
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
-	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -201,14 +200,9 @@ func (i *Input) SelectMoveDelta(dx, dy int) {
 ///// Utilities //////
 
 func ResetGame(i *Input) {
-	i.game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{}
-	i.game.board.game.score = 0
-	i.game.board.randomNewPiece()
-	i.game.board.randomNewPiece()
-	i.game.board.game.state = co.StateMainMenu // Swap to main menu
-	shadertools.ResetTimesMapsDissolve()
-	i.game.menu.TitleInFullView = false
-	i.game.gameOver = false
+	i.game.GetBusHandler().Emit(eventhandler.Event{
+		Type: eventhandler.EventResetGame,
+	})
 }
 
 func CloseGame(i *Input) {

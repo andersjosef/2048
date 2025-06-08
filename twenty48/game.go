@@ -71,6 +71,8 @@ func NewGame() (*Game, error) {
 		co.LOGICAL_WIDTH*int(g.screenControl.GetScale()),
 		co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()),
 	)
+
+	g.registerEvents()
 	return g, nil
 }
 
@@ -142,4 +144,17 @@ func (g *Game) updateFonts() {
 	if err != nil {
 		fmt.Println("Error changing fontsiz")
 	}
+}
+
+func (g *Game) registerEvents() {
+	g.eventBus.Register(
+		eventhandler.EventResetGame,
+		func(_ eventhandler.Event) {
+			g.score = 0
+			g.state = co.StateMainMenu // Swap to main menu
+			g.gameOver = false
+			shadertools.ResetTimesMapsDissolve()
+
+		},
+	)
 }
