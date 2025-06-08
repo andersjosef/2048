@@ -99,12 +99,6 @@ func NewBoard(g *Game) (*Board, error) {
 
 	// create baordImage
 	b.createBoardImage()
-	b.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
-		{2048, 256, 2048, 2048},
-		{2048, 2048, 256, 2048},
-		{2048, 128, 2048, 2048},
-		{2048, 2048, 2048, 2048},
-	}
 
 	b.registerEvents()
 
