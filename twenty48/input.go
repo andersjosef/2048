@@ -3,7 +3,8 @@ package twenty48
 import (
 	"math"
 
-	"github.com/andersjosef/2048/twenty48/shadertools"
+	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -31,6 +32,13 @@ func InitInput(g *Game) *Input {
 
 	i.movementThreshold = 20 // Set how much the mouse has to move to reappear
 
+	i.game.GetBusHandler().Register(
+		eventhandler.EventScreenChanged,
+		func(_ eventhandler.Event) {
+			i.updatePauseButtonLocation()
+		},
+	)
+
 	return i
 }
 
@@ -39,8 +47,8 @@ type ActionFunc func(*Input)
 const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
 
 // buttons
-var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
-	StateRunning: { // Main loop
+var keyActions = map[co.GameState]map[ebiten.Key]ActionFunc{
+	co.StateRunning: { // Main loop
 		ebiten.KeyArrowRight: (*Input).moveRight,
 		ebiten.KeyD:          (*Input).moveRight,
 		ebiten.KeyArrowLeft:  (*Input).moveLeft,
@@ -57,7 +65,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyMinus:      ScaleWindowUp,
 		ebiten.KeyPeriod:     ScaleWindowDown,
 	},
-	StateMainMenu: { // Menu
+	co.StateMainMenu: { // Menu
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      toggleTheme,
@@ -65,7 +73,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyMinus:  ScaleWindowUp,
 		ebiten.KeyPeriod: ScaleWindowDown,
 	},
-	StateInstructions: { // Instructions
+	co.StateInstructions: { // Instructions
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      toggleTheme,
@@ -73,7 +81,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyMinus:  ScaleWindowUp,
 		ebiten.KeyPeriod: ScaleWindowDown,
 	},
-	StateGameOver: { // Game Over
+	co.StateGameOver: { // Game Over
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      toggleTheme,
@@ -84,14 +92,14 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 	},
 }
 
-func (m *Input) UpdateInput(b *Board) error {
+func (i *Input) UpdateInput(b *Board) error {
 	// Keyboard and Mouse input handling
-	if m.game.buttonManager.checkButtons() {
+	if i.game.buttonManager.checkButtons() {
 		return nil
 	}
-	m.handleKeyboardInput()
-	m.handleMouseInput()
-	m.touchInput.TouchUpdate()
+	i.handleKeyboardInput()
+	i.handleMouseInput()
+	i.touchInput.TouchUpdate()
 	return nil
 }
 
@@ -108,8 +116,8 @@ func (i *Input) handleKeyboardInput() error {
 		if actionMap, ok := keyActions[i.game.state]; ok { // Check if actionmap exist for current game state
 			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
 				action(i)
-			} else if i.game.state == StateMainMenu { // If button is not in map and state is main menu
-				i.game.state = StateRunning
+			} else if i.game.state == co.StateMainMenu { // If button is not in map and state is main menu
+				i.game.state = co.StateRunning
 			}
 		}
 
@@ -129,8 +137,8 @@ func (i *Input) handleMouseInput() {
 
 	// Cursor movement updates
 	if pressed {
-		if i.game.state == StateMainMenu { // If in main menu click will trigger game state
-			i.game.state = StateRunning
+		if i.game.state == co.StateMainMenu { // If in main menu click will trigger game state
+			i.game.state = co.StateRunning
 		} else { // If not in menu update only end cursor coordinate
 			i.endCursorPos[0], i.endCursorPos[1] = ebiten.CursorPosition()
 		}
@@ -192,14 +200,9 @@ func (i *Input) SelectMoveDelta(dx, dy int) {
 ///// Utilities //////
 
 func ResetGame(i *Input) {
-	i.game.board.board = [BOARDSIZE][BOARDSIZE]int{}
-	i.game.board.game.score = 0
-	i.game.board.randomNewPiece()
-	i.game.board.randomNewPiece()
-	i.game.board.game.state = StateMainMenu // Swap to main menu
-	shadertools.ResetTimesMapsDissolve()
-	i.game.menu.titleInFullView = false
-	i.game.gameOver = false
+	i.game.GetBusHandler().Emit(eventhandler.Event{
+		Type: eventhandler.EventResetGame,
+	})
 }
 
 func CloseGame(i *Input) {
@@ -207,27 +210,7 @@ func CloseGame(i *Input) {
 }
 
 func ToggleFullScreen(i *Input) {
-	if i.game.screenControl.fullscreen {
-		ebiten.SetFullscreen(false)
-		i.game.screenControl.fullscreen = false
-		i.screenChanging()
-	} else {
-		ebiten.SetFullscreen(true)
-		i.game.screenControl.fullscreen = true
-		i.screenChanging()
-	}
-	i.game.screenSizeChanged = true
-}
-
-// Helper function for toggle screen
-// Contains everything that is the same for full screen and windowed
-func (i *Input) screenChanging() {
-	i.game.screenControl.UpdateActualDimentions()
-	i.game.board.sizes.scaleBoard()
-	i.game.menu.initTitle()
-	i.updatePauseButtonLocation()
-	val := int(i.game.board.sizes.baseTileSize)
-	shadertools.UpdateScaleNoiseImage(val, val)
+	i.game.screenControl.ToggleFullScreen()
 }
 
 // Helper functions for toggeling mouse being displayed or not
@@ -292,13 +275,13 @@ func (i *Input) moveDown() {
 func toggleInfo(i *Input) {
 
 	switch i.game.state {
-	case StateMainMenu:
-		i.game.state = StateInstructions
-		i.game.previousState = StateMainMenu
-	case StateRunning:
-		i.game.state = StateInstructions
-		i.game.previousState = StateRunning
-	case StateInstructions:
+	case co.StateMainMenu:
+		i.game.state = co.StateInstructions
+		i.game.previousState = co.StateMainMenu
+	case co.StateRunning:
+		i.game.state = co.StateInstructions
+		i.game.previousState = co.StateRunning
+	case co.StateInstructions:
 		i.game.state = i.game.previousState
 	}
 
@@ -311,26 +294,24 @@ func ScaleWindowUp(i *Input) {
 	if ww >= mw || wh >= mh {
 		return
 	}
-	i.game.scale++
+	i.game.screenControl.IncrementScale()
 	ScaleWindow(i)
 }
 
 func ScaleWindowDown(i *Input) {
-	if i.game.scale > 1 {
-		i.game.scale--
+	if i.game.screenControl.DecrementScale() {
 		ScaleWindow(i)
 	}
 }
 
 // Helper function for scaling image, contains what is equal for up and down
 func ScaleWindow(i *Input) {
-	i.game.screenControl.UpdateActualDimentions()
 	i.game.updateFonts()
 	i.game.board.sizes.scaleBoard()
-	i.game.menu.initTitle()
+	i.game.menu.UpdateCenteredTitle()
 	i.updatePauseButtonLocation()
 	i.game.buttonManager.UpdateFontsForButtons()
-	ebiten.SetWindowSize(LOGICAL_WIDTH*int(i.game.scale), LOGICAL_HEIGHT*int(i.game.scale))
+	ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(i.game.screenControl.GetScale()), co.LOGICAL_HEIGHT*int(i.game.screenControl.GetScale()))
 	i.centerWindow()
 
 }
@@ -346,5 +327,6 @@ func (i *Input) centerWindow() {
 // Helper function for updating the pause button location
 // When changing screen size
 func (i *Input) updatePauseButtonLocation() {
-	i.game.buttonManager.buttonKeyMap["II"].UpdatePos(i.game.screenControl.actualWidth-20, 20)
+	width, _ := i.game.GetActualSize()
+	i.game.buttonManager.buttonKeyMap["II"].UpdatePos(width-20, 20)
 }

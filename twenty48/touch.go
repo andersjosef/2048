@@ -18,6 +18,7 @@ import (
 	_ "image/jpeg"
 	"math"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -44,19 +45,6 @@ func (t *touch) shouldTriggerTouchMove() (bool, int, int) {
 	return int(math.Abs(float64(dx))) > MOVE_THRESHOLD || int(math.Abs(float64(dy))) > MOVE_THRESHOLD, dx, dy
 }
 
-type pinch struct {
-	id1, id2 ebiten.TouchID
-	originH  float64
-	prevH    float64
-}
-
-type pan struct {
-	id ebiten.TouchID
-
-	prevX, prevY     int
-	originX, originY int
-}
-
 type tap struct {
 	X, Y int
 }
@@ -64,12 +52,8 @@ type tap struct {
 type TouchInput struct {
 	input *Input
 
-	x, y float64 // Used for placing the image curr not in use
-	zoom float64 // curr not in use
-
 	touchIDs []ebiten.TouchID
 	touches  map[ebiten.TouchID]*touch
-	pan      *pan
 	taps     []tap
 	tapped   bool
 
@@ -132,8 +116,8 @@ func (g *TouchInput) TouchUpdate() error {
 		shouldTriggerMove, dx, dy := t.shouldTriggerTouchMove()
 
 		if shouldTriggerMove && g.canSwipe {
-			if g.input.game.state == StateMainMenu {
-				g.input.game.state = StateRunning
+			if g.input.game.state == co.StateMainMenu {
+				g.input.game.state = co.StateRunning
 			}
 			g.input.SelectMoveDelta(dx, dy)
 			g.canSwipe = false

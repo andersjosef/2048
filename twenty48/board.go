@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -25,10 +27,10 @@ type Sizes struct {
 
 func InitSizes(b *Board) *Sizes {
 	const (
-		BASE_TILESIZE   float32 = float32(LOGICAL_WIDTH) / 6.4
+		BASE_TILESIZE   float32 = float32(co.LOGICAL_WIDTH) / 6.4
 		BASE_BORDERSIZE float32 = BASE_TILESIZE / 25
-		START_POS_X     float32 = float32((LOGICAL_WIDTH - (BOARDSIZE * int(BASE_TILESIZE))) / 2)
-		START_POS_Y     float32 = float32((LOGICAL_HEIGHT - (BOARDSIZE * int(BASE_TILESIZE))) / 2)
+		START_POS_X     float32 = float32((co.LOGICAL_WIDTH - (co.BOARDSIZE * int(BASE_TILESIZE))) / 2)
+		START_POS_Y     float32 = float32((co.LOGICAL_HEIGHT - (co.BOARDSIZE * int(BASE_TILESIZE))) / 2)
 	)
 
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
@@ -41,18 +43,30 @@ func InitSizes(b *Board) *Sizes {
 		startPosX:      START_POS_X * float32(dpiScale),
 		startPosY:      START_POS_Y * float32(dpiScale),
 	}
+
+	sfb.board.game.GetBusHandler().Register(
+		eventhandler.EventScreenChanged,
+		func(evt eventhandler.Event) {
+			sfb.scaleBoard()
+			val := int(sfb.baseTileSize)
+			shadertools.UpdateScaleNoiseImage(val, val)
+		},
+	)
+
 	return sfb
 }
 
 func (s *Sizes) scaleBoard() {
-	scale := s.board.game.scale
+	scale := s.board.game.screenControl.GetScale()
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 
 	s.tileSize = s.baseTileSize * float32(scale) * float32(dpiScale)
 	s.bordersize = s.baseBorderSize * float32(scale) * float32(dpiScale)
 
-	s.startPosX = float32((s.board.game.screenControl.actualWidth - (BOARDSIZE * int(s.tileSize))) / 2)
-	s.startPosY = float32((s.board.game.screenControl.actualHeight - (BOARDSIZE * int(s.tileSize))) / 2)
+	width, height := s.board.game.GetActualSize()
+
+	s.startPosX = float32((width - (co.BOARDSIZE * int(s.tileSize))) / 2)
+	s.startPosY = float32((height - (co.BOARDSIZE * int(s.tileSize))) / 2)
 
 	newOpt := &ebiten.DrawImageOptions{}
 	newOpt.GeoM.Translate(float64(s.startPosX), float64(s.startPosY))
@@ -62,12 +76,12 @@ func (s *Sizes) scaleBoard() {
 }
 
 type Board struct {
-	board             [BOARDSIZE][BOARDSIZE]int // 2d array for the board :)
-	game              *Game
-	sizes             *Sizes
-	boardBeforeChange [BOARDSIZE][BOARDSIZE]int
-	boardImage        *ebiten.Image
-	boardImageOptions *ebiten.DrawImageOptions
+	matrix             [co.BOARDSIZE][co.BOARDSIZE]int // 2d array for the board :)
+	matrixBeforeChange [co.BOARDSIZE][co.BOARDSIZE]int
+	game               *Game
+	sizes              *Sizes
+	boardImage         *ebiten.Image
+	boardImageOptions  *ebiten.DrawImageOptions
 
 	boardForEndScreen *ebiten.Image
 }
@@ -75,29 +89,43 @@ type Board struct {
 func NewBoard(g *Game) (*Board, error) {
 
 	b := &Board{}
+	b.game = g
 	b.sizes = InitSizes(b)
 
-	b.game = g
-
 	// add the two start pieces
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		b.randomNewPiece()
 	}
 
 	// create baordImage
 	b.createBoardImage()
 
+	b.registerEvents()
+
 	return b, nil
 
 }
 
+func (b *Board) registerEvents() {
+	b.game.GetBusHandler().Register(
+		eventhandler.EventResetGame,
+		func(_ eventhandler.Event) {
+			b.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{}
+			b.randomNewPiece()
+			b.randomNewPiece()
+
+		},
+	)
+}
+
 func (b *Board) initBoardForEndScreen() {
-	b.boardForEndScreen = ebiten.NewImage(b.game.screenControl.actualWidth, b.game.screenControl.actualHeight)
+	width, height := b.game.GetActualSize()
+	b.boardForEndScreen = ebiten.NewImage(width, height)
 }
 
 func (b *Board) randomNewPiece() {
 
-	var x, y int = len(b.board), len(b.board[0])
+	var x, y int = len(b.matrix), len(b.matrix[0])
 
 	// Will start at a random position, then check every available spot after
 	// until all tiles are checked
@@ -105,25 +133,25 @@ func (b *Board) randomNewPiece() {
 	for ; count < count+x*y-1; count++ {
 		var posX int = count % x
 		var posY int = (count / y) % y
-		if b.board[posX][posY] == 0 {
+		if b.matrix[posX][posY] == 0 {
 			if rand.Float32() > 0.16 {
-				b.board[posX][posY] = 2 // 84%
+				b.matrix[posX][posY] = 2 // 84%
 			} else {
-				b.board[posX][posY] = 4 // 16% chance of 4 spawning
+				b.matrix[posX][posY] = 4 // 16% chance of 4 spawning
 			}
 			break
 		}
 	}
 }
 
-func (b *Board) drawBoard(screen *ebiten.Image) {
+func (b *Board) Draw(screen *ebiten.Image) {
 	// draw the backgroundimage of the game
 	b.boardForEndScreen.DrawImage(b.boardImage, b.boardImageOptions)
 
 	// draw tiles
-	for y := 0; y < len(b.board); y++ {
-		for x := 0; x < len(b.board[0]); x++ {
-			b.DrawTile(b.boardForEndScreen, b.sizes.startPosX, b.sizes.startPosY, x, y, b.board[y][x], 0, 0)
+	for y := range len(b.matrix) {
+		for x := range len(b.matrix[0]) {
+			b.DrawTile(b.boardForEndScreen, b.sizes.startPosX, b.sizes.startPosY, x, y, b.matrix[y][x], 0, 0)
 		}
 	}
 	if !b.game.gameOver {
@@ -133,7 +161,7 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 		newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
 		if isDone {
 			// After animation go to game over state
-			b.game.state = StateGameOver
+			b.game.state = co.StateGameOver
 		}
 		screen.DrawImage(newImage, &ebiten.DrawImageOptions{})
 	}
@@ -215,19 +243,19 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 
 // the functions for adding a random piece if the board is
 func (b *Board) addNewRandomPieceIfBoardChanged() {
-	if b.boardBeforeChange != b.board { // there will only be a new piece if it is a change
+	if b.matrixBeforeChange != b.matrix { // there will only be a new piece if it is a change
 		b.randomNewPiece()
 	}
 }
 
 func (b *Board) createBoardImage() {
 	var (
-		sizeX int = int(float64((BOARDSIZE * int(b.sizes.tileSize)) + (int(b.sizes.bordersize) * 2)))
+		sizeX int = int(float64((co.BOARDSIZE * int(b.sizes.tileSize)) + (int(b.sizes.bordersize) * 2)))
 		sizeY     = sizeX
 	)
 	b.boardImage = ebiten.NewImage(sizeX, sizeY)
-	for y := 0; y < BOARDSIZE; y++ {
-		for x := 0; x < BOARDSIZE; x++ {
+	for y := range co.BOARDSIZE {
+		for x := range co.BOARDSIZE {
 			b.DrawBorderBackground(b.boardImage, float32(x)*b.sizes.tileSize, float32(y)*b.sizes.tileSize)
 		}
 
@@ -242,27 +270,27 @@ func (b *Board) createBoardImage() {
 // Check if its gameOver
 func (b *Board) isGameOver() bool {
 	// Check if there are any empty spaces left, meaning its possible to play
-	for i := 0; i < BOARDSIZE; i++ {
-		for j := 0; j < BOARDSIZE; j++ {
-			if b.board[i][j] == 0 {
+	for i := range co.BOARDSIZE {
+		for j := range co.BOARDSIZE {
+			if b.matrix[i][j] == 0 {
 				return false
 			}
 		}
 	}
 
 	// Check for vertical merges
-	for i := 0; i < BOARDSIZE-1; i++ {
-		for j := 0; j < BOARDSIZE; j++ {
-			if b.board[i][j] == b.board[i+1][j] {
+	for i := range co.BOARDSIZE - 1 {
+		for j := range co.BOARDSIZE {
+			if b.matrix[i][j] == b.matrix[i+1][j] {
 				return false
 			}
 		}
 	}
 
 	// Check for horisontal merges
-	for i := 0; i < BOARDSIZE; i++ {
-		for j := 0; j < BOARDSIZE-1; j++ {
-			if b.board[i][j] == b.board[i][j+1] {
+	for i := range co.BOARDSIZE {
+		for j := range co.BOARDSIZE - 1 {
+			if b.matrix[i][j] == b.matrix[i][j+1] {
 				return false
 			}
 		}
