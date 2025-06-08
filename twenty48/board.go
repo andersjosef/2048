@@ -99,6 +99,12 @@ func NewBoard(g *Game) (*Board, error) {
 
 	// create baordImage
 	b.createBoardImage()
+	b.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
+		{2048, 256, 2048, 2048},
+		{2048, 2048, 256, 2048},
+		{2048, 128, 2048, 2048},
+		{2048, 2048, 2048, 2048},
+	}
 
 	b.registerEvents()
 
@@ -212,12 +218,13 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 	// draw the number to the screen
 	fontSet := b.game.fontSet
 	msg := fmt.Sprintf("%v", value)
-	// fontUsed := mplusNormalFont
 	fontUsed := fontSet.Normal
 	textHeight := -(fontSet.Normal.Metrics().VAscent + fontSet.Normal.Metrics().VDescent)
 
+	width, _ := text.Measure(msg, fontSet.Normal, 0)
+
 	var (
-		dx float32 = float32(text.Advance(msg, fontSet.Big))
+		dx float32 = float32(width)
 		dy float32 = float32(textHeight)
 	)
 
@@ -226,7 +233,8 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 		// fontUsed = mplusNormalFontSmaller
 		fontUsed = fontSet.Smaller
 		textHeight = -(fontSet.Smaller.Metrics().VAscent + fontSet.Smaller.Metrics().VDescent)
-		dx = (float32(int(text.Advance(msg, fontSet.Smaller)) + int(b.sizes.bordersize)))
+		width, _ := text.Measure(msg, fontSet.Smaller, 0)
+		dx = float32(width)
 		dy = float32(textHeight)
 	}
 
