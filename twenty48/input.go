@@ -92,14 +92,14 @@ var keyActions = map[co.GameState]map[ebiten.Key]ActionFunc{
 	},
 }
 
-func (m *Input) UpdateInput(b *Board) error {
+func (i *Input) UpdateInput(b *Board) error {
 	// Keyboard and Mouse input handling
-	if m.game.buttonManager.checkButtons() {
+	if i.game.buttonManager.checkButtons() {
 		return nil
 	}
-	m.handleKeyboardInput()
-	m.handleMouseInput()
-	m.touchInput.TouchUpdate()
+	i.handleKeyboardInput()
+	i.handleMouseInput()
+	i.touchInput.TouchUpdate()
 	return nil
 }
 
