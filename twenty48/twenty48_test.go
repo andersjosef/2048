@@ -355,26 +355,6 @@ func TestInitAnimation(t *testing.T) {
 
 }
 
-func TestResetAnimation(t *testing.T) {
-	g := &Game{}
-	a := InitAnimation(g)
-
-	a.arrayOfChange = [co.BOARDSIZE][co.BOARDSIZE]int{
-		{0, 1, 0, 0},
-		{0, 0, 0, 3},
-		{0, 0, 2, 0},
-		{0, 0, 0, 0},
-	}
-
-	wantArrayOfChange := [co.BOARDSIZE][co.BOARDSIZE]int{}
-
-	a.ResetArray()
-
-	assert.Equal(t, false, a.isAnimating)
-	assert.Equal(t, wantArrayOfChange, a.arrayOfChange)
-
-}
-
 func TestIsGameOver(t *testing.T) {
 	var tests = []struct {
 		name  string

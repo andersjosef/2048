@@ -34,10 +34,6 @@ func InitAnimation(g *Game) *Animation {
 	return a
 }
 
-func (a *Animation) ResetArray() {
-	a.arrayOfChange = [co.BOARDSIZE][co.BOARDSIZE]int{}
-}
-
 func (a *Animation) Draw(screen *ebiten.Image) {
 	// Draw the backgroundimage of the game
 	screen.DrawImage(a.game.board.boardImage, a.game.board.boardImageOptions)
