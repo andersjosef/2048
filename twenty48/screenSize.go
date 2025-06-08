@@ -1,6 +1,9 @@
 package twenty48
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type ScreenControl struct {
 	isFullscreen bool
@@ -26,7 +29,7 @@ func (sc *ScreenControl) UpdateActualDimentions() {
 		sc.actualWidth *= int(dpiScale)
 		sc.actualHeight *= int(dpiScale)
 	} else {
-		sc.actualWidth = LOGICAL_WIDTH * int(sc.game.scale) * int(dpiScale)
-		sc.actualHeight = LOGICAL_HEIGHT * int(sc.game.scale) * int(dpiScale)
+		sc.actualWidth = co.LOGICAL_WIDTH * int(sc.game.scale) * int(dpiScale)
+		sc.actualHeight = co.LOGICAL_HEIGHT * int(sc.game.scale) * int(dpiScale)
 	}
 }

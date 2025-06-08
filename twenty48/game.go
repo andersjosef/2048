@@ -14,13 +14,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-/* variables and constants */
-const (
-	LOGICAL_WIDTH  int = 640
-	LOGICAL_HEIGHT int = 480
-	BOARDSIZE      int = 4
-)
-
 type Game struct {
 	board             *Board
 	screenControl     *ScreenControl
@@ -75,7 +68,7 @@ func NewGame() (*Game, error) {
 		return nil, err
 	}
 
-	ebiten.SetWindowSize(LOGICAL_WIDTH*int(g.scale), LOGICAL_HEIGHT*int(g.scale))
+	ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(g.scale), co.LOGICAL_HEIGHT*int(g.scale))
 	return g, nil
 }
 

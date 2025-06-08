@@ -5,12 +5,13 @@ import (
 
 	"math/rand"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEmptyBoard(t *testing.T) {
 	board := Board{}
-	want := [BOARDSIZE][BOARDSIZE]int{}
+	want := [co.BOARDSIZE][co.BOARDSIZE]int{}
 
 	assert.Equal(t, want, board.board)
 }
@@ -42,13 +43,13 @@ func TestMoveDown(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
 		{0, 0, 0, 2},
 	}
-	want := [BOARDSIZE][BOARDSIZE]int{
+	want := [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
@@ -58,13 +59,13 @@ func TestMoveDown(t *testing.T) {
 	game.board.moveDown()
 	assert.Equal(t, want, game.board.board)
 
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	want = [BOARDSIZE][BOARDSIZE]int{
+	want = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{0, 0, 0, 0},
 		{0, 2, 0, 0},
 		{0, 2, 0, 0},
@@ -79,7 +80,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 	game, err := NewGame()
 
 	assert.NoError(t, err)
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
@@ -96,7 +97,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 	}
 	assert.Equal(t, 6, count)
 
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 2, 2, 2},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
@@ -130,7 +131,7 @@ func TestScore(t *testing.T) {
 	game, err := NewGame()
 	assert.NoError(t, err)
 
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{8, 16, 2, 0},
 		{0, 0, 2, 0},
 		{0, 0, 0, 0},
@@ -147,7 +148,7 @@ func TestFullBoard(t *testing.T) {
 	game, err := NewGame()
 	assert.NoError(t, err)
 
-	game.board.board = [BOARDSIZE][BOARDSIZE]int{
+	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 8, 2, 8},
 		{8, 2, 8, 2},
 		{2, 8, 2, 8},
@@ -182,20 +183,20 @@ func TestMoves(t *testing.T) {
 	rand.Seed(42)
 	var tests = []struct {
 		name         string
-		initialBoard [BOARDSIZE][BOARDSIZE]int
-		want         [BOARDSIZE][BOARDSIZE]int
+		initialBoard [co.BOARDSIZE][co.BOARDSIZE]int
+		want         [co.BOARDSIZE][co.BOARDSIZE]int
 		moveFunc     func(*Board)
 		wantedScore  int
 	}{
 		{
 			name: "Move Left 1",
-			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+			initialBoard: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 2, 0, 0},
 				{0, 2, 0, 0},
 				{0, 0, 2, 0},
 				{0, 0, 0, 2},
 			},
-			want: [BOARDSIZE][BOARDSIZE]int{
+			want: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{4, 0, 0, 0},
 				{2, 0, 0, 0},
 				{2, 0, 0, 0},
@@ -206,13 +207,13 @@ func TestMoves(t *testing.T) {
 		},
 		{
 			name: "Move Left 2",
-			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+			initialBoard: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 2, 2, 0},
 				{0, 2, 0, 0},
 				{0, 0, 2, 0},
 				{0, 0, 0, 2},
 			},
-			want: [BOARDSIZE][BOARDSIZE]int{
+			want: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{4, 2, 0, 0},
 				{2, 0, 2, 0},
 				{2, 0, 0, 0},
@@ -223,13 +224,13 @@ func TestMoves(t *testing.T) {
 		},
 		{
 			name: "Move right 1",
-			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+			initialBoard: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 2, 0, 0},
 				{0, 2, 0, 0},
 				{0, 0, 2, 0},
 				{0, 0, 0, 2},
 			},
-			want: [BOARDSIZE][BOARDSIZE]int{
+			want: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{0, 2, 0, 4},
 				{0, 0, 0, 2},
 				{0, 0, 0, 2},
@@ -240,13 +241,13 @@ func TestMoves(t *testing.T) {
 		},
 		{
 			name: "Move Right 2",
-			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+			initialBoard: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 2, 2, 0},
 				{0, 2, 0, 0},
 				{0, 2, 2, 0},
 				{0, 0, 0, 2},
 			},
-			want: [BOARDSIZE][BOARDSIZE]int{
+			want: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{0, 2, 2, 4},
 				{0, 0, 0, 2},
 				{0, 0, 0, 4},
@@ -257,13 +258,13 @@ func TestMoves(t *testing.T) {
 		},
 		{
 			name: "Move Up 1",
-			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+			initialBoard: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 2, 0, 0},
 				{0, 2, 0, 0},
 				{0, 0, 2, 0},
 				{0, 0, 0, 2},
 			},
-			want: [BOARDSIZE][BOARDSIZE]int{
+			want: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 4, 2, 2},
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
@@ -274,13 +275,13 @@ func TestMoves(t *testing.T) {
 		},
 		{
 			name: "Move Up 2",
-			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+			initialBoard: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 2, 2, 0},
 				{0, 2, 0, 0},
 				{0, 2, 2, 0},
 				{0, 0, 0, 2},
 			},
-			want: [BOARDSIZE][BOARDSIZE]int{
+			want: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 4, 4, 2},
 				{0, 2, 0, 2},
 				{0, 0, 0, 0},
@@ -291,13 +292,13 @@ func TestMoves(t *testing.T) {
 		},
 		{
 			name: "Move Down 1",
-			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+			initialBoard: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 2, 0, 0},
 				{0, 2, 0, 0},
 				{0, 0, 2, 0},
 				{0, 0, 0, 2},
 			},
-			want: [BOARDSIZE][BOARDSIZE]int{
+			want: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{0, 0, 0, 2},
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
@@ -308,13 +309,13 @@ func TestMoves(t *testing.T) {
 		},
 		{
 			name: "Move Down 2",
-			initialBoard: [BOARDSIZE][BOARDSIZE]int{
+			initialBoard: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 2, 2, 0},
 				{0, 2, 0, 0},
 				{0, 2, 2, 0},
 				{0, 0, 0, 2},
 			},
-			want: [BOARDSIZE][BOARDSIZE]int{
+			want: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
 				{2, 2, 0, 0},
@@ -342,7 +343,7 @@ func TestInitAnimation(t *testing.T) {
 	g := &Game{}
 	a := InitAnimation(g)
 
-	wantArrayOfChange := [BOARDSIZE][BOARDSIZE]int{
+	wantArrayOfChange := [co.BOARDSIZE][co.BOARDSIZE]int{
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
@@ -358,14 +359,14 @@ func TestResetAnimation(t *testing.T) {
 	g := &Game{}
 	a := InitAnimation(g)
 
-	a.arrayOfChange = [BOARDSIZE][BOARDSIZE]int{
+	a.arrayOfChange = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{0, 1, 0, 0},
 		{0, 0, 0, 3},
 		{0, 0, 2, 0},
 		{0, 0, 0, 0},
 	}
 
-	wantArrayOfChange := [BOARDSIZE][BOARDSIZE]int{}
+	wantArrayOfChange := [co.BOARDSIZE][co.BOARDSIZE]int{}
 
 	a.ResetArray()
 
@@ -377,12 +378,12 @@ func TestResetAnimation(t *testing.T) {
 func TestIsGameOver(t *testing.T) {
 	var tests = []struct {
 		name  string
-		board [BOARDSIZE][BOARDSIZE]int
+		board [co.BOARDSIZE][co.BOARDSIZE]int
 		want  bool
 	}{
 		{
 			name: "Empty",
-			board: [BOARDSIZE][BOARDSIZE]int{
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
@@ -392,7 +393,7 @@ func TestIsGameOver(t *testing.T) {
 		},
 		{
 			name: "Full",
-			board: [BOARDSIZE][BOARDSIZE]int{
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 4, 2, 4},
 				{4, 2, 4, 2},
 				{2, 4, 2, 4},
@@ -402,7 +403,7 @@ func TestIsGameOver(t *testing.T) {
 		},
 		{
 			name: "Only UP/DOWN",
-			board: [BOARDSIZE][BOARDSIZE]int{
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 4, 2, 4},
 				{4, 2, 4, 2},
 				{8, 4, 2, 4},
@@ -412,7 +413,7 @@ func TestIsGameOver(t *testing.T) {
 		},
 		{
 			name: "Only RIGHT/LEFT",
-			board: [BOARDSIZE][BOARDSIZE]int{
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 4, 2, 4},
 				{4, 2, 4, 2},
 				{2048, 2048, 2, 4},
@@ -422,7 +423,7 @@ func TestIsGameOver(t *testing.T) {
 		},
 		{
 			name: "X",
-			board: [BOARDSIZE][BOARDSIZE]int{
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
 				{2, 0, 0, 4},
 				{0, 2, 4, 0},
 				{0, 4, 2, 0},

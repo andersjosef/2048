@@ -4,12 +4,13 @@ import (
 	"math"
 	"time"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Animation struct {
 	isAnimating     bool
-	arrayOfChange   [BOARDSIZE][BOARDSIZE]int
+	arrayOfChange   [co.BOARDSIZE][co.BOARDSIZE]int
 	game            *Game
 	currentDir      string
 	animationLength float32           //seconds
@@ -34,7 +35,7 @@ func InitAnimation(g *Game) *Animation {
 }
 
 func (a *Animation) ResetArray() {
-	a.arrayOfChange = [BOARDSIZE][BOARDSIZE]int{}
+	a.arrayOfChange = [co.BOARDSIZE][co.BOARDSIZE]int{}
 }
 
 func (a *Animation) DrawAnimation(screen *ebiten.Image) {
@@ -52,8 +53,8 @@ func (a *Animation) DrawAnimation(screen *ebiten.Image) {
 	for y := 0; y < len(a.game.board.board); y++ {
 		for x := 0; x < len(a.game.board.board[0]); x++ {
 			var (
-				movingDistX float32 = progress * float32(a.directionMap[a.currentDir][0]) * float32(BOARDSIZE-1)
-				movingDistY float32 = progress * float32(a.directionMap[a.currentDir][1]) * float32(BOARDSIZE-1)
+				movingDistX float32 = progress * float32(a.directionMap[a.currentDir][0]) * float32(co.BOARDSIZE-1)
+				movingDistY float32 = progress * float32(a.directionMap[a.currentDir][1]) * float32(co.BOARDSIZE-1)
 			)
 			if math.Abs(float64(movingDistX)) >= float64(a.arrayOfChange[y][x]) || math.Abs(float64(movingDistY)) >= float64(a.arrayOfChange[y][x]) {
 				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])

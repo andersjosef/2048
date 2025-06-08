@@ -9,3 +9,10 @@ const (
 	StateInstructions
 	StateGameOver
 )
+
+/* variables and constants */
+const (
+	LOGICAL_WIDTH  int = 640
+	LOGICAL_HEIGHT int = 480
+	BOARDSIZE      int = 4
+)

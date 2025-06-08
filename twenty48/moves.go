@@ -1,5 +1,7 @@
 package twenty48
 
+import co "github.com/andersjosef/2048/twenty48/constants"
+
 func (b *Board) updateBoardBeforeChange() {
 	b.boardBeforeChange = b.board
 }
@@ -84,7 +86,7 @@ func (b *Board) moveDown() {
 	b.game.gameOver = b.isGameOver()
 }
 
-func reverseRow(row *[BOARDSIZE]int) {
+func reverseRow(row *[co.BOARDSIZE]int) {
 	for i, j := 0, len(*row)-1; i < j; i, j = i+1, j-1 {
 		(*row)[i], (*row)[j] = (*row)[j], (*row)[i]
 	}
@@ -117,7 +119,7 @@ func compactTiles(rowIndex int, b *Board, beforeMerge bool) {
 	}
 }
 
-func mergeTiles(row *[BOARDSIZE]int, b *Board) {
+func mergeTiles(row *[co.BOARDSIZE]int, b *Board) {
 	for i := 0; i < len(*row)-1; i++ {
 		if (*row)[i] == (*row)[i+1] && (*row)[i] != 0 {
 			(*row)[i] *= 2
@@ -129,7 +131,7 @@ func mergeTiles(row *[BOARDSIZE]int, b *Board) {
 }
 
 // Swap cols and rows
-func transpose(board *[BOARDSIZE][BOARDSIZE]int) {
+func transpose(board *[co.BOARDSIZE][co.BOARDSIZE]int) {
 	for i := 0; i < len(*board); i++ {
 		for j := i; j < len((*board)[0]); j++ {
 			(*board)[i][j], (*board)[j][i] = (*board)[j][i], (*board)[i][j]

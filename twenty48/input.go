@@ -193,7 +193,7 @@ func (i *Input) SelectMoveDelta(dx, dy int) {
 ///// Utilities //////
 
 func ResetGame(i *Input) {
-	i.game.board.board = [BOARDSIZE][BOARDSIZE]int{}
+	i.game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{}
 	i.game.board.game.score = 0
 	i.game.board.randomNewPiece()
 	i.game.board.randomNewPiece()
@@ -331,7 +331,7 @@ func ScaleWindow(i *Input) {
 	i.game.menu.InitTitle()
 	i.updatePauseButtonLocation()
 	i.game.buttonManager.UpdateFontsForButtons()
-	ebiten.SetWindowSize(LOGICAL_WIDTH*int(i.game.scale), LOGICAL_HEIGHT*int(i.game.scale))
+	ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(i.game.scale), co.LOGICAL_HEIGHT*int(i.game.scale))
 	i.centerWindow()
 
 }
