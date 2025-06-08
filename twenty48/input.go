@@ -208,22 +208,14 @@ func CloseGame(i *Input) {
 }
 
 func ToggleFullScreen(i *Input) {
-	if i.game.screenControl.IsFullScreen() {
-		ebiten.SetFullscreen(false)
-		i.game.screenControl.SetFullScreen(false)
-		i.screenChanging()
-	} else {
-		ebiten.SetFullscreen(true)
-		i.game.screenControl.SetFullScreen(true)
-		i.screenChanging()
-	}
+	i.game.screenControl.ToggleFullScreen()
+	i.screenChanging()
 	i.game.screenSizeChanged = true
 }
 
 // Helper function for toggle screen
 // Contains everything that is the same for full screen and windowed
 func (i *Input) screenChanging() {
-	i.game.screenControl.UpdateActualDimentions()
 	i.game.board.sizes.scaleBoard()
 	i.game.menu.UpdateCenteredTitle()
 	i.updatePauseButtonLocation()
@@ -312,26 +304,25 @@ func ScaleWindowUp(i *Input) {
 	if ww >= mw || wh >= mh {
 		return
 	}
-	i.game.scale++
+	i.game.screenControl.IncrementScale()
 	ScaleWindow(i)
 }
 
 func ScaleWindowDown(i *Input) {
-	if i.game.scale > 1 {
-		i.game.scale--
+	if i.game.screenControl.DecrementScale() {
+
 		ScaleWindow(i)
 	}
 }
 
 // Helper function for scaling image, contains what is equal for up and down
 func ScaleWindow(i *Input) {
-	i.game.screenControl.UpdateActualDimentions()
 	i.game.updateFonts()
 	i.game.board.sizes.scaleBoard()
 	i.game.menu.UpdateCenteredTitle()
 	i.updatePauseButtonLocation()
 	i.game.buttonManager.UpdateFontsForButtons()
-	ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(i.game.scale), co.LOGICAL_HEIGHT*int(i.game.scale))
+	ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(i.game.screenControl.GetScale()), co.LOGICAL_HEIGHT*int(i.game.screenControl.GetScale()))
 	i.centerWindow()
 
 }

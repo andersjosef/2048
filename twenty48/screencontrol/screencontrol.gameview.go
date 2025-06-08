@@ -1,9 +1,8 @@
 package screencontrol
 
 type GameView interface {
-	GameProvider
 }
 
-type GameProvider interface {
-	GetScale() float64
-}
+// type GameProvider interface {
+// 	GetScale() float64
+// }

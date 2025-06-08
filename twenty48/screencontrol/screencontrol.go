@@ -10,12 +10,14 @@ type ScreenControl struct {
 	view         GameView
 	actualWidth  int
 	actualHeight int
+	scale        float64
 }
 
 func InitScreenControl(g GameView) *ScreenControl {
 	sc := &ScreenControl{
 		isFullscreen: false,
 		view:         g,
+		scale:        1,
 	}
 
 	sc.UpdateActualDimentions()
@@ -29,13 +31,18 @@ func (sc *ScreenControl) UpdateActualDimentions() {
 		sc.actualWidth *= int(dpiScale)
 		sc.actualHeight *= int(dpiScale)
 	} else {
-		sc.actualWidth = co.LOGICAL_WIDTH * int(sc.view.GetScale()) * int(dpiScale)
-		sc.actualHeight = co.LOGICAL_HEIGHT * int(sc.view.GetScale()) * int(dpiScale)
+		sc.actualWidth = co.LOGICAL_WIDTH * int(sc.scale) * int(dpiScale)
+		sc.actualHeight = co.LOGICAL_HEIGHT * int(sc.scale) * int(dpiScale)
 	}
 }
 
 func (sc *ScreenControl) GetActualSize() (x, y int) {
 	return sc.actualWidth, sc.actualHeight
+}
+
+func (sc *ScreenControl) ToggleFullScreen() {
+	ebiten.SetFullscreen(!sc.isFullscreen)
+	sc.SetFullScreen(!sc.isFullscreen)
 }
 
 func (sc *ScreenControl) IsFullScreen() bool {
@@ -44,4 +51,23 @@ func (sc *ScreenControl) IsFullScreen() bool {
 
 func (sc *ScreenControl) SetFullScreen(val bool) {
 	sc.isFullscreen = val
+	sc.UpdateActualDimentions()
+}
+
+func (sc *ScreenControl) GetScale() float64 {
+	return sc.scale
+}
+
+func (sc *ScreenControl) IncrementScale() {
+	sc.scale++
+	sc.UpdateActualDimentions()
+}
+
+func (sc *ScreenControl) DecrementScale() bool {
+	if sc.scale > 1 {
+		sc.scale--
+		sc.UpdateActualDimentions()
+		return true
+	}
+	return false
 }

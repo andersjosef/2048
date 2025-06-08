@@ -46,7 +46,7 @@ func InitSizes(b *Board) *Sizes {
 }
 
 func (s *Sizes) scaleBoard() {
-	scale := s.board.game.scale
+	scale := s.board.game.screenControl.GetScale()
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 
 	s.tileSize = s.baseTileSize * float32(scale) * float32(dpiScale)

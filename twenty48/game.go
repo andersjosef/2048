@@ -29,7 +29,6 @@ type Game struct {
 	previousState     co.GameState
 	score             int
 	shouldClose       bool // If yes will close the game
-	scale             float64
 	screenSizeChanged bool
 	currentTheme      theme.Theme
 	gameOver          bool
@@ -41,23 +40,22 @@ func NewGame() (*Game, error) {
 		state:             co.StateMainMenu,
 		previousState:     co.StateMainMenu,
 		shouldClose:       false,
-		scale:             1,
 		screenSizeChanged: false,
 	}
 
 	g.themePicker = theme.NewThemePicker()
 	g.currentTheme = g.themePicker.GetCurrentTheme()
+	g.screenControl = screencontrol.InitScreenControl(g)
 
 	// initialize text
 	var err error
-	g.fontSet, err = theme.InitFonts(g.scale)
+	g.fontSet, err = theme.InitFonts(g.screenControl.GetScale())
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize fonts: %v", err)
 	}
 
 	// initialize new board
 	g.animation = InitAnimation(g)
-	g.screenControl = screencontrol.InitScreenControl(g)
 	g.board, err = NewBoard(g)
 	g.renderer = renderer.InitRenderer(g.fontSet)
 	g.menu = menu.NewMenu(g)
@@ -68,7 +66,10 @@ func NewGame() (*Game, error) {
 		return nil, err
 	}
 
-	ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(g.scale), co.LOGICAL_HEIGHT*int(g.scale))
+	ebiten.SetWindowSize(
+		co.LOGICAL_WIDTH*int(g.screenControl.GetScale()),
+		co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()),
+	)
 	return g, nil
 }
 
@@ -135,7 +136,7 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 // For reinitializing a font with a higher dpi
 func (g *Game) updateFonts() {
 	var err error
-	g.fontSet, err = theme.InitFonts(g.scale)
+	g.fontSet, err = theme.InitFonts(g.screenControl.GetScale())
 	if err != nil {
 		fmt.Println("Error changing fontsiz")
 	}

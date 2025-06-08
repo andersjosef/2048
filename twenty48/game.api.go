@@ -33,7 +33,7 @@ func (g *Game) GetFontSet() theme.FontSet {
 }
 
 func (g *Game) GetScale() float64 {
-	return g.scale
+	return g.screenControl.GetScale()
 }
 
 // // ButtonManagerProvider ////
