@@ -53,7 +53,6 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 	insX := width / 2
 	insY := (height / 2) + height/10
 
-	// m.view.buttonManager.buttonKeyMap["I: Instructions"].UpdatePos(insX, insY)
 	m.view.UpdatePosForButton("I: Instructions", insX, insY)
 
 }
@@ -63,7 +62,6 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	width, height := m.view.GetActualSize()
 
 	// Title
-	// m.view.renderer.DrawDoubleText(screen, "Instructions", m.view.screenControl.actualWidth/2, m.view.screenControl.actualHeight/10, 2, m.view.fontSet.Big, true)
 	m.view.DrawDoubleText(
 		screen,
 		"Instructions",
@@ -99,7 +97,6 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 			}
 			button.UpdatePos(rowXPos, lineYPos)
 		} else {
-			// m.view.renderer.DrawDoubleText(screen, line, rowXPos, lineYPos, 1, m.view.fontSet.Mini, true)
 			m.view.DrawDoubleText(
 				screen,
 				line,
@@ -120,8 +117,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 	} else if m.view.GetPreviousState() == StateRunning {
 		returnButtonText += " to Game"
 	}
-	// m.view.buttonManager.buttonKeyMap["Press I to return"].UpdateText(returnButtonText)
-	// m.view.buttonManager.buttonKeyMap["Press I to return"].UpdatePos(m.view.screenControl.actualWidth/2, m.view.screenControl.actualHeight-m.view.screenControl.actualHeight/10)
+
 	m.view.UpdateTextForButton(
 		"Press I to return",
 		returnButtonText,
