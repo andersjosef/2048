@@ -225,7 +225,7 @@ func ToggleFullScreen(i *Input) {
 func (i *Input) screenChanging() {
 	i.game.screenControl.UpdateActualDimentions()
 	i.game.board.sizes.scaleBoard()
-	i.game.menu.InitTitle()
+	i.game.menu.UpdateCenteredTitle()
 	i.updatePauseButtonLocation()
 	val := int(i.game.board.sizes.baseTileSize)
 	shadertools.UpdateScaleNoiseImage(val, val)
@@ -328,7 +328,7 @@ func ScaleWindow(i *Input) {
 	i.game.screenControl.UpdateActualDimentions()
 	i.game.updateFonts()
 	i.game.board.sizes.scaleBoard()
-	i.game.menu.InitTitle()
+	i.game.menu.UpdateCenteredTitle()
 	i.updatePauseButtonLocation()
 	i.game.buttonManager.UpdateFontsForButtons()
 	ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(i.game.scale), co.LOGICAL_HEIGHT*int(i.game.scale))

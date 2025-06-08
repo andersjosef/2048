@@ -22,7 +22,7 @@ func NewMenu(v GameView) *Menu {
 	var m *Menu = &Menu{
 		view: v,
 	}
-	m.InitTitle() // Inits title image to menu parameter
+	m.UpdateCenteredTitle() // Inits title image to menu parameter
 	m.dynamicText = map[string]string{
 		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.view.IsFullScreen()),
 		"Press Q to toggle theme:":     fmt.Sprintf("Press Q to toggle theme: %v", m.view.GetCurrentTheme().Name),
@@ -34,15 +34,15 @@ func NewMenu(v GameView) *Menu {
 func (m *Menu) Draw(screen *ebiten.Image) {
 	switch m.view.GetState() {
 	case co.StateMainMenu:
-		m.DrawMainMenu(screen)
+		m.drawMainMenu(screen)
 	case co.StateInstructions:
-		m.DrawInstructions(screen)
+		m.drawInstructions(screen)
 	default:
 		ebitenutil.DebugPrint(screen, "Undefined Menu State")
 	}
 }
 
-func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
+func (m *Menu) drawMainMenu(screen *ebiten.Image) {
 
 	// Title
 	m.drawTitle(screen)
@@ -57,7 +57,7 @@ func (m *Menu) DrawMainMenu(screen *ebiten.Image) {
 
 }
 
-func (m *Menu) DrawInstructions(screen *ebiten.Image) {
+func (m *Menu) drawInstructions(screen *ebiten.Image) {
 
 	width, height := m.view.GetActualSize()
 
@@ -132,7 +132,8 @@ func (m *Menu) UpdateDynamicText() {
 	m.dynamicText["Press Q to toggle theme:"] = fmt.Sprintf("Press Q to toggle theme: %v", m.view.GetCurrentTheme().Name)
 }
 
-func (m *Menu) InitTitle() {
+// Resenter title on change
+func (m *Menu) UpdateCenteredTitle() {
 	xPos, yPos := m.view.GetActualSize()
 
 	newImage := ebiten.NewImage(xPos, yPos)
