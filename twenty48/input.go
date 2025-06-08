@@ -80,6 +80,7 @@ var keyActions = map[co.GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyI:      toggleInfo,
 		ebiten.KeyMinus:  ScaleWindowUp,
 		ebiten.KeyPeriod: ScaleWindowDown,
+		ebiten.KeyR:      ResetGame,
 	},
 	co.StateGameOver: { // Game Over
 		ebiten.KeyEscape: CloseGame,
