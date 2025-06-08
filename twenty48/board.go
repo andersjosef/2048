@@ -219,15 +219,13 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 		fontUsed = fontSet.Normal
 	}
 
-	metrics := fontUsed.Metrics()
-	textHeight := -(metrics.VAscent + metrics.VDescent)
-	width, _ := text.Measure(msg, fontUsed, 0)
+	width, height := text.Measure(msg, fontUsed, 0)
 
 	dx := float32(width)
-	dy := float32(textHeight)
+	dy := float32(height)
 
 	textPosX := int(xpos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) - dx/2)
-	textPosY := int(ypos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) + dy/2)
+	textPosY := int(ypos + (b.sizes.bordersize/2 + b.sizes.tileSize/2) - dy/2)
 
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(float64(textPosX), float64(textPosY))

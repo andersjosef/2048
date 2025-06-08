@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"log"
 
-	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
+	_ "embed"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
@@ -24,8 +25,11 @@ const (
 	fontSizeMini  int     = 25
 )
 
+//go:embed fonts/Rubik-Regular.ttf
+var rubikTTF []byte
+
 func InitFonts(scale float64) (*FontSet, error) {
-	mplusFaceSource, err := text.NewGoTextFaceSource(bytes.NewReader(fonts.MPlus1pRegular_ttf))
+	faceSource, err := text.NewGoTextFaceSource(bytes.NewReader(rubikTTF))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +38,7 @@ func InitFonts(scale float64) (*FontSet, error) {
 
 	initializeFont := func(size int) *text.GoTextFace {
 		face := &text.GoTextFace{
-			Source: mplusFaceSource,
+			Source: faceSource,
 			Size:   float64(size) * scale * dpiScale,
 		}
 		if err != nil {

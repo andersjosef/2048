@@ -20,8 +20,7 @@ func InitRenderer(fontSet *theme.FontSet) *Renderer {
 func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
 
 	// Calculate text dimensions
-	textWidth := text.Advance(message, fontUsed)
-	textHeight := -(fontUsed.Metrics().VAscent + fontUsed.Metrics().VDescent)
+	textWidth, textHeight := text.Measure(message, fontUsed, 0)
 
 	baseX := float64(xpos)
 	baseY := float64(ypos)
@@ -29,7 +28,7 @@ func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int
 	// Adjust for centering
 	if isCentered {
 		baseX -= textWidth / 2  // Center horizontally
-		baseY += textHeight / 2 // Center vertically
+		baseY -= textHeight / 2 // Center vertically
 	}
 
 	// Set options for shadow text
