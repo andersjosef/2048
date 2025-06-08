@@ -93,7 +93,7 @@ func NewBoard(g *Game) (*Board, error) {
 	b.sizes = InitSizes(b)
 
 	// add the two start pieces
-	for i := 0; i < 2; i++ {
+	for range 2 {
 		b.randomNewPiece()
 	}
 
@@ -149,8 +149,8 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 	b.boardForEndScreen.DrawImage(b.boardImage, b.boardImageOptions)
 
 	// draw tiles
-	for y := 0; y < len(b.board); y++ {
-		for x := 0; x < len(b.board[0]); x++ {
+	for y := range len(b.board) {
+		for x := range len(b.board[0]) {
 			b.DrawTile(b.boardForEndScreen, b.sizes.startPosX, b.sizes.startPosY, x, y, b.board[y][x], 0, 0)
 		}
 	}
@@ -254,8 +254,8 @@ func (b *Board) createBoardImage() {
 		sizeY     = sizeX
 	)
 	b.boardImage = ebiten.NewImage(sizeX, sizeY)
-	for y := 0; y < co.BOARDSIZE; y++ {
-		for x := 0; x < co.BOARDSIZE; x++ {
+	for y := range co.BOARDSIZE {
+		for x := range co.BOARDSIZE {
 			b.DrawBorderBackground(b.boardImage, float32(x)*b.sizes.tileSize, float32(y)*b.sizes.tileSize)
 		}
 
@@ -270,8 +270,8 @@ func (b *Board) createBoardImage() {
 // Check if its gameOver
 func (b *Board) isGameOver() bool {
 	// Check if there are any empty spaces left, meaning its possible to play
-	for i := 0; i < co.BOARDSIZE; i++ {
-		for j := 0; j < co.BOARDSIZE; j++ {
+	for i := range co.BOARDSIZE {
+		for j := range co.BOARDSIZE {
 			if b.board[i][j] == 0 {
 				return false
 			}
@@ -279,8 +279,8 @@ func (b *Board) isGameOver() bool {
 	}
 
 	// Check for vertical merges
-	for i := 0; i < co.BOARDSIZE-1; i++ {
-		for j := 0; j < co.BOARDSIZE; j++ {
+	for i := range co.BOARDSIZE - 1 {
+		for j := range co.BOARDSIZE {
 			if b.board[i][j] == b.board[i+1][j] {
 				return false
 			}
@@ -288,8 +288,8 @@ func (b *Board) isGameOver() bool {
 	}
 
 	// Check for horisontal merges
-	for i := 0; i < co.BOARDSIZE; i++ {
-		for j := 0; j < co.BOARDSIZE-1; j++ {
+	for i := range co.BOARDSIZE {
+		for j := range co.BOARDSIZE - 1 {
 			if b.board[i][j] == b.board[i][j+1] {
 				return false
 			}
