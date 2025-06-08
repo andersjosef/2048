@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/animations"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/menu"
@@ -19,7 +20,7 @@ import (
 type Game struct {
 	board         *Board
 	screenControl *screencontrol.ScreenControl
-	animation     *Animation
+	animation     *animations.Animation
 	menu          *menu.Menu
 	input         *Input
 	buttonManager *ButtonManager
@@ -57,7 +58,7 @@ func NewGame() (*Game, error) {
 
 	// initialize new board
 	g.board, err = NewBoard(g)
-	g.animation = InitAnimation(g.board)
+	g.animation = animations.InitAnimation(g.board)
 	g.renderer = renderer.InitRenderer(g.fontSet)
 	g.menu = menu.NewMenu(g)
 	g.input = InitInput(g)
@@ -92,7 +93,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(g.currentTheme.ColorScreenBackground)
 	switch g.state {
 	case co.StateRunning: //game is running loop
-		if g.animation.isAnimating { // show animation
+		if g.animation.IsAnimating() { // show animation
 			g.animation.Draw(screen)
 		} else { // draw normal borad
 			g.board.Draw(screen)

@@ -1,4 +1,4 @@
-package twenty48
+package animations
 
 import (
 	"math"
@@ -10,7 +10,7 @@ import (
 
 type Animation struct {
 	isAnimating     bool
-	arrayOfChange   [co.BOARDSIZE][co.BOARDSIZE]int
+	ArrayOfChange   [co.BOARDSIZE][co.BOARDSIZE]int // TMP exposure!
 	view            View
 	currentDir      string
 	animationLength float32           //seconds
@@ -36,7 +36,6 @@ func InitAnimation(g View) *Animation {
 
 func (a *Animation) Draw(screen *ebiten.Image) {
 	// Draw the backgroundimage of the game
-	// screen.DrawImage(a.game.board.boardImage, a.game.board.boardImageOptions)
 	a.view.DrawBackgoundBoard(screen)
 
 	// Calculate animation progress based on time since start
@@ -51,9 +50,9 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 				movingDistX float32 = progress * float32(a.directionMap[a.currentDir][0]) * float32(co.BOARDSIZE-1)
 				movingDistY float32 = progress * float32(a.directionMap[a.currentDir][1]) * float32(co.BOARDSIZE-1)
 			)
-			if math.Abs(float64(movingDistX)) >= float64(a.arrayOfChange[y][x]) || math.Abs(float64(movingDistY)) >= float64(a.arrayOfChange[y][x]) {
-				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
-				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
+			if math.Abs(float64(movingDistX)) >= float64(a.ArrayOfChange[y][x]) || math.Abs(float64(movingDistY)) >= float64(a.ArrayOfChange[y][x]) {
+				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.ArrayOfChange[y][x])
+				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.ArrayOfChange[y][x])
 			}
 			a.view.DrawMovingMatrix(
 				screen,
@@ -62,16 +61,6 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 				movingDistX,
 				movingDistY,
 			)
-			// a.view.DrawTile(
-			// 	screen,
-			// 	a.view.board.sizes.startPosX,
-			// 	a.view.board.sizes.startPosY,
-			// 	x,
-			// 	y,
-			// 	a.view.board.matrixBeforeChange[y][x],
-			// 	movingDistX,
-			// 	movingDistY,
-			// )
 		}
 	}
 
@@ -86,4 +75,8 @@ func (a *Animation) ActivateAnimation(direction string) {
 	a.currentDir = direction
 	a.isAnimating = true
 	a.startTime = time.Now()
+}
+
+func (a *Animation) IsAnimating() bool {
+	return a.isAnimating
 }

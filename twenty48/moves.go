@@ -33,7 +33,7 @@ func (b *Board) moveUp() {
 		compactTiles(i, b, false)
 	}
 	transpose(&b.matrix) // Transpose back to the original orientation
-	transpose(&b.game.animation.arrayOfChange)
+	transpose(&b.game.animation.ArrayOfChange)
 	b.game.animation.ActivateAnimation("UP")
 
 	b.addNewRandomPieceIfBoardChanged()
@@ -53,7 +53,7 @@ func (b *Board) moveRight() {
 		compactTiles(i, b, false)
 		// Reverse back to original orientation
 		reverseRow(&b.matrix[i])
-		reverseRow(&b.game.animation.arrayOfChange[i])
+		reverseRow(&b.game.animation.ArrayOfChange[i])
 
 		b.game.animation.ActivateAnimation("RIGHT")
 	}
@@ -75,10 +75,10 @@ func (b *Board) moveDown() {
 		compactTiles(i, b, false)
 		// Reverse back to treat the bottom as the top
 		reverseRow(&b.matrix[i])
-		reverseRow(&b.game.animation.arrayOfChange[i])
+		reverseRow(&b.game.animation.ArrayOfChange[i])
 	}
 	transpose(&b.matrix) // Transpose back to the original orientation
-	transpose(&b.game.animation.arrayOfChange)
+	transpose(&b.game.animation.ArrayOfChange)
 	b.game.animation.ActivateAnimation("DOWN")
 
 	b.addNewRandomPieceIfBoardChanged()
@@ -105,7 +105,7 @@ func compactTiles(rowIndex int, b *Board, beforeMerge bool) {
 				extraMov++
 			}
 			if beforeMerge {
-				b.game.animation.arrayOfChange[rowIndex][i] = (i - insertPos) + extraMov // delta movement to the left
+				b.game.animation.ArrayOfChange[rowIndex][i] = (i - insertPos) + extraMov // delta movement to the left
 			}
 			(b.matrix[rowIndex])[insertPos] = val
 			insertPos++

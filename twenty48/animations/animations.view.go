@@ -1,4 +1,4 @@
-package twenty48
+package animations
 
 import "github.com/hajimehoshi/ebiten/v2"
 
