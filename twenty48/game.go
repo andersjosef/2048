@@ -37,10 +37,9 @@ type Game struct {
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state:         co.StateMainMenu,
-		previousState: co.StateMainMenu,
-		shouldClose:   false,
-		// scale:             ebiten.Monitor().DeviceScaleFactor(),
+		state:             co.StateMainMenu,
+		previousState:     co.StateMainMenu,
+		shouldClose:       false,
 		scale:             1,
 		screenSizeChanged: false,
 	}
@@ -93,16 +92,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			g.board.drawBoard(screen)
 		}
 		DrawScore(screen, g)
-	case co.StateMainMenu, co.StateInstructions: //game is in menu
-		g.menu.Draw(screen)
-
-	case co.StateGameOver:
-		g.DrawGameOverScreen(screen)
-
 	}
 	g.buttonManager.drawButtons(screen)
+	g.menu.Draw(screen)
 }
-
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
 func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
 	scale := ebiten.Monitor().DeviceScaleFactor()

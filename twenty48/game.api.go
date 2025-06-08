@@ -12,6 +12,10 @@ import (
 */
 
 // // GameProvider ////
+func (g *Game) GetScore() int {
+	return g.score
+}
+
 func (g *Game) GetState() co.GameState {
 	return g.state
 }

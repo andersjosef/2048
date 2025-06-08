@@ -19,6 +19,7 @@ type GameProvider interface {
 	GetPreviousState() co.GameState
 	GetCurrentTheme() theme.Theme
 	GetFontSet() theme.FontSet
+	GetScore() int
 }
 
 type ButtonManagerProvider interface {

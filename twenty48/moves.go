@@ -132,7 +132,7 @@ func mergeTiles(row *[co.BOARDSIZE]int, b *Board) {
 
 // Swap cols and rows
 func transpose(board *[co.BOARDSIZE][co.BOARDSIZE]int) {
-	for i := 0; i < len(*board); i++ {
+	for i := range len(*board) {
 		for j := i; j < len((*board)[0]); j++ {
 			(*board)[i][j], (*board)[j][i] = (*board)[j][i], (*board)[i][j]
 		}

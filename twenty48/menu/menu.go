@@ -6,7 +6,6 @@ import (
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Menu struct {
@@ -37,8 +36,8 @@ func (m *Menu) Draw(screen *ebiten.Image) {
 		m.drawMainMenu(screen)
 	case co.StateInstructions:
 		m.drawInstructions(screen)
-	default:
-		ebitenutil.DebugPrint(screen, "Undefined Menu State")
+	case co.StateGameOver:
+		m.drawGameOverScreen(screen)
 	}
 }
 
@@ -164,5 +163,38 @@ func (m *Menu) drawTitle(screen *ebiten.Image) {
 		screen.DrawImage(m.titleImage, &ebiten.DrawImageOptions{})
 
 	}
+
+}
+
+func (m *Menu) drawGameOverScreen(screen *ebiten.Image) {
+	scoreString := fmt.Sprintf("Score: %v", m.view.GetScore())
+
+	width, height := m.view.GetActualSize()
+	fmt.Println(width, height)
+
+	m.view.DrawDoubleText(
+		screen,
+		"Game Over",
+		width/2,
+		height/3,
+		2,
+		m.view.GetFontSet().Big,
+		true,
+	)
+	m.view.DrawDoubleText(
+		screen,
+		scoreString,
+		width/2,
+		height-height/2,
+		2,
+		m.view.GetFontSet().Mini,
+		true,
+	)
+	// Restart Button pos
+	m.view.UpdatePosForButton(
+		"R: Play again",
+		width/2,
+		height-height/3,
+	)
 
 }
