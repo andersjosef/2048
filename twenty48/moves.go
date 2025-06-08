@@ -3,16 +3,16 @@ package twenty48
 import co "github.com/andersjosef/2048/twenty48/constants"
 
 func (b *Board) updateBoardBeforeChange() {
-	b.boardBeforeChange = b.board
+	b.matrixBeforeChange = b.matrix
 }
 
 func (b *Board) moveLeft() {
 	b.updateBoardBeforeChange()
-	for i := range b.board {
+	for i := range b.matrix {
 		// Shift tiles to the left
 		compactTiles(i, b, true)
 		// Merge tiles and shift again if needed
-		mergeTiles(&b.board[i], b)
+		mergeTiles(&b.matrix[i], b)
 		compactTiles(i, b, false)
 	}
 	b.game.animation.ActivateAnimation("LEFT")
@@ -24,15 +24,15 @@ func (b *Board) moveLeft() {
 
 func (b *Board) moveUp() {
 	b.updateBoardBeforeChange()
-	transpose(&b.board)
-	for i := range b.board {
+	transpose(&b.matrix)
+	for i := range b.matrix {
 		// Shift tiles "left" (actually up, due to transposition)
 		compactTiles(i, b, true)
 		// Merge tiles and shift again if needed
-		mergeTiles(&b.board[i], b)
+		mergeTiles(&b.matrix[i], b)
 		compactTiles(i, b, false)
 	}
-	transpose(&b.board) // Transpose back to the original orientation
+	transpose(&b.matrix) // Transpose back to the original orientation
 	transpose(&b.game.animation.arrayOfChange)
 	b.game.animation.ActivateAnimation("UP")
 
@@ -43,16 +43,16 @@ func (b *Board) moveUp() {
 
 func (b *Board) moveRight() {
 	b.updateBoardBeforeChange()
-	for i := range b.board {
+	for i := range b.matrix {
 		// Reverse the row to treat the right end as the left
-		reverseRow(&b.board[i])
+		reverseRow(&b.matrix[i])
 		// Shift tiles "left" (actually right, due to reversal)
 		compactTiles(i, b, true)
 		// Merge tiles and shift again if needed
-		mergeTiles(&b.board[i], b)
+		mergeTiles(&b.matrix[i], b)
 		compactTiles(i, b, false)
 		// Reverse back to original orientation
-		reverseRow(&b.board[i])
+		reverseRow(&b.matrix[i])
 		reverseRow(&b.game.animation.arrayOfChange[i])
 
 		b.game.animation.ActivateAnimation("RIGHT")
@@ -64,20 +64,20 @@ func (b *Board) moveRight() {
 }
 func (b *Board) moveDown() {
 	b.updateBoardBeforeChange()
-	transpose(&b.board)
-	for i := range b.board {
+	transpose(&b.matrix)
+	for i := range b.matrix {
 		// Reverse the row (which is actually a column due to transposition)
-		reverseRow(&b.board[i])
+		reverseRow(&b.matrix[i])
 		// Shift tiles "left" (actually down, due to reversal and transposition)
 		compactTiles(i, b, true)
 		// Merge tiles and shift again if needed
-		mergeTiles(&b.board[i], b)
+		mergeTiles(&b.matrix[i], b)
 		compactTiles(i, b, false)
 		// Reverse back to treat the bottom as the top
-		reverseRow(&b.board[i])
+		reverseRow(&b.matrix[i])
 		reverseRow(&b.game.animation.arrayOfChange[i])
 	}
-	transpose(&b.board) // Transpose back to the original orientation
+	transpose(&b.matrix) // Transpose back to the original orientation
 	transpose(&b.game.animation.arrayOfChange)
 	b.game.animation.ActivateAnimation("DOWN")
 
@@ -99,7 +99,7 @@ func compactTiles(rowIndex int, b *Board, beforeMerge bool) {
 	// these two are for adding an extra move to the animation to make it pretty
 	lastVal := -1
 	extraMov := 0
-	for i, val := range b.board[rowIndex] {
+	for i, val := range b.matrix[rowIndex] {
 		if val != 0 {
 			if val == lastVal {
 				extraMov++
@@ -107,15 +107,15 @@ func compactTiles(rowIndex int, b *Board, beforeMerge bool) {
 			if beforeMerge {
 				b.game.animation.arrayOfChange[rowIndex][i] = (i - insertPos) + extraMov // delta movement to the left
 			}
-			(b.board[rowIndex])[insertPos] = val
+			(b.matrix[rowIndex])[insertPos] = val
 			insertPos++
 			lastVal = val
 
 		}
 	}
 	// Fill the rest with 0s
-	for i := insertPos; i < len(b.board[rowIndex]); i++ {
-		b.board[rowIndex][i] = 0
+	for i := insertPos; i < len(b.matrix[rowIndex]); i++ {
+		b.matrix[rowIndex][i] = 0
 	}
 }
 

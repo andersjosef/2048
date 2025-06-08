@@ -13,7 +13,7 @@ func TestEmptyBoard(t *testing.T) {
 	board := Board{}
 	want := [co.BOARDSIZE][co.BOARDSIZE]int{}
 
-	assert.Equal(t, want, board.board)
+	assert.Equal(t, want, board.matrix)
 }
 
 func TestInitializeGame(t *testing.T) {
@@ -21,9 +21,9 @@ func TestInitializeGame(t *testing.T) {
 	count := 0
 
 	// counts the number of pieces on the board
-	for x := 0; x < len(game.board.board); x++ {
-		for y := 0; y < len(game.board.board[0]); y++ {
-			if game.board.board[x][y] != 0 {
+	for x := 0; x < len(game.board.matrix); x++ {
+		for y := 0; y < len(game.board.matrix[0]); y++ {
+			if game.board.matrix[x][y] != 0 {
 				count++
 			}
 		}
@@ -43,7 +43,7 @@ func TestMoveDown(t *testing.T) {
 
 	assert.NoError(t, err)
 
-	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
+	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 2, 0, 0},
 		{0, 2, 0, 0},
 		{0, 0, 2, 0},
@@ -57,9 +57,9 @@ func TestMoveDown(t *testing.T) {
 	}
 
 	game.board.moveDown()
-	assert.Equal(t, want, game.board.board)
+	assert.Equal(t, want, game.board.matrix)
 
-	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
+	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
@@ -72,7 +72,7 @@ func TestMoveDown(t *testing.T) {
 		{2, 4, 4, 2},
 	}
 	game.board.moveDown()
-	assert.Equal(t, want, game.board.board)
+	assert.Equal(t, want, game.board.matrix)
 
 }
 
@@ -80,7 +80,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 	game, err := NewGame()
 
 	assert.NoError(t, err)
-	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
+	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 2, 2, 0},
 		{0, 2, 0, 0},
 		{0, 2, 2, 0},
@@ -88,28 +88,28 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 	}
 	game.board.moveDown()
 	count := 0
-	for x := 0; x < len(game.board.board); x++ {
-		for y := 0; y < len(game.board.board[0]); y++ {
-			if game.board.board[x][y] != 0 {
+	for x := 0; x < len(game.board.matrix); x++ {
+		for y := 0; y < len(game.board.matrix[0]); y++ {
+			if game.board.matrix[x][y] != 0 {
 				count++
 			}
 		}
 	}
 	assert.Equal(t, 6, count)
 
-	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
+	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 2, 2, 2},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 		{0, 0, 0, 0},
 	}
-	game.board.boardBeforeChange = game.board.board
+	game.board.matrixBeforeChange = game.board.matrix
 	game.board.moveUp()
 	game.board.addNewRandomPieceIfBoardChanged()
 	count = 0
-	for x := 0; x < len(game.board.board); x++ {
-		for y := 0; y < len(game.board.board[0]); y++ {
-			if game.board.board[x][y] != 0 {
+	for x := 0; x < len(game.board.matrix); x++ {
+		for y := 0; y < len(game.board.matrix[0]); y++ {
+			if game.board.matrix[x][y] != 0 {
 				count++
 			}
 		}
@@ -131,7 +131,7 @@ func TestScore(t *testing.T) {
 	game, err := NewGame()
 	assert.NoError(t, err)
 
-	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
+	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{8, 16, 2, 0},
 		{0, 0, 2, 0},
 		{0, 0, 0, 0},
@@ -148,35 +148,35 @@ func TestFullBoard(t *testing.T) {
 	game, err := NewGame()
 	assert.NoError(t, err)
 
-	game.board.board = [co.BOARDSIZE][co.BOARDSIZE]int{
+	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
 		{2, 8, 2, 8},
 		{8, 2, 8, 2},
 		{2, 8, 2, 8},
 		{8, 2, 8, 2},
 	}
-	game.board.boardBeforeChange = game.board.board
+	game.board.matrixBeforeChange = game.board.matrix
 
-	want := game.board.board
+	want := game.board.matrix
 
 	game.board.moveDown()
 	game.board.addNewRandomPieceIfBoardChanged()
 
-	assert.Equal(t, want, game.board.board)
+	assert.Equal(t, want, game.board.matrix)
 
 	game.board.moveUp()
 	game.board.addNewRandomPieceIfBoardChanged()
 
-	assert.Equal(t, want, game.board.board)
+	assert.Equal(t, want, game.board.matrix)
 
 	game.board.moveLeft()
 	game.board.addNewRandomPieceIfBoardChanged()
 
-	assert.Equal(t, want, game.board.board)
+	assert.Equal(t, want, game.board.matrix)
 
 	game.board.moveRight()
 	game.board.addNewRandomPieceIfBoardChanged()
 
-	assert.Equal(t, want, game.board.board)
+	assert.Equal(t, want, game.board.matrix)
 }
 
 func TestMoves(t *testing.T) {
@@ -331,9 +331,9 @@ func TestMoves(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			game, err := NewGame()
 			assert.NoError(t, err)
-			game.board.board = tc.initialBoard
+			game.board.matrix = tc.initialBoard
 			tc.moveFunc(game.board)
-			assert.Equal(t, tc.want, game.board.board)
+			assert.Equal(t, tc.want, game.board.matrix)
 			assert.Equal(t, tc.wantedScore, game.score)
 		})
 	}
@@ -418,7 +418,7 @@ func TestIsGameOver(t *testing.T) {
 			game, err := NewGame()
 			assert.NoError(t, err)
 
-			game.board.board = tc.board
+			game.board.matrix = tc.board
 			assert.Equal(t, tc.want, game.board.isGameOver())
 		})
 	}

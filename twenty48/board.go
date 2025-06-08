@@ -76,12 +76,12 @@ func (s *Sizes) scaleBoard() {
 }
 
 type Board struct {
-	board             [co.BOARDSIZE][co.BOARDSIZE]int // 2d array for the board :)
-	game              *Game
-	sizes             *Sizes
-	boardBeforeChange [co.BOARDSIZE][co.BOARDSIZE]int
-	boardImage        *ebiten.Image
-	boardImageOptions *ebiten.DrawImageOptions
+	matrix             [co.BOARDSIZE][co.BOARDSIZE]int // 2d array for the board :)
+	matrixBeforeChange [co.BOARDSIZE][co.BOARDSIZE]int
+	game               *Game
+	sizes              *Sizes
+	boardImage         *ebiten.Image
+	boardImageOptions  *ebiten.DrawImageOptions
 
 	boardForEndScreen *ebiten.Image
 }
@@ -110,7 +110,7 @@ func (b *Board) registerEvents() {
 	b.game.GetBusHandler().Register(
 		eventhandler.EventResetGame,
 		func(_ eventhandler.Event) {
-			b.board = [co.BOARDSIZE][co.BOARDSIZE]int{}
+			b.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{}
 			b.randomNewPiece()
 			b.randomNewPiece()
 
@@ -125,7 +125,7 @@ func (b *Board) initBoardForEndScreen() {
 
 func (b *Board) randomNewPiece() {
 
-	var x, y int = len(b.board), len(b.board[0])
+	var x, y int = len(b.matrix), len(b.matrix[0])
 
 	// Will start at a random position, then check every available spot after
 	// until all tiles are checked
@@ -133,11 +133,11 @@ func (b *Board) randomNewPiece() {
 	for ; count < count+x*y-1; count++ {
 		var posX int = count % x
 		var posY int = (count / y) % y
-		if b.board[posX][posY] == 0 {
+		if b.matrix[posX][posY] == 0 {
 			if rand.Float32() > 0.16 {
-				b.board[posX][posY] = 2 // 84%
+				b.matrix[posX][posY] = 2 // 84%
 			} else {
-				b.board[posX][posY] = 4 // 16% chance of 4 spawning
+				b.matrix[posX][posY] = 4 // 16% chance of 4 spawning
 			}
 			break
 		}
@@ -149,9 +149,9 @@ func (b *Board) Draw(screen *ebiten.Image) {
 	b.boardForEndScreen.DrawImage(b.boardImage, b.boardImageOptions)
 
 	// draw tiles
-	for y := range len(b.board) {
-		for x := range len(b.board[0]) {
-			b.DrawTile(b.boardForEndScreen, b.sizes.startPosX, b.sizes.startPosY, x, y, b.board[y][x], 0, 0)
+	for y := range len(b.matrix) {
+		for x := range len(b.matrix[0]) {
+			b.DrawTile(b.boardForEndScreen, b.sizes.startPosX, b.sizes.startPosY, x, y, b.matrix[y][x], 0, 0)
 		}
 	}
 	if !b.game.gameOver {
@@ -243,7 +243,7 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 
 // the functions for adding a random piece if the board is
 func (b *Board) addNewRandomPieceIfBoardChanged() {
-	if b.boardBeforeChange != b.board { // there will only be a new piece if it is a change
+	if b.matrixBeforeChange != b.matrix { // there will only be a new piece if it is a change
 		b.randomNewPiece()
 	}
 }
@@ -272,7 +272,7 @@ func (b *Board) isGameOver() bool {
 	// Check if there are any empty spaces left, meaning its possible to play
 	for i := range co.BOARDSIZE {
 		for j := range co.BOARDSIZE {
-			if b.board[i][j] == 0 {
+			if b.matrix[i][j] == 0 {
 				return false
 			}
 		}
@@ -281,7 +281,7 @@ func (b *Board) isGameOver() bool {
 	// Check for vertical merges
 	for i := range co.BOARDSIZE - 1 {
 		for j := range co.BOARDSIZE {
-			if b.board[i][j] == b.board[i+1][j] {
+			if b.matrix[i][j] == b.matrix[i+1][j] {
 				return false
 			}
 		}
@@ -290,7 +290,7 @@ func (b *Board) isGameOver() bool {
 	// Check for horisontal merges
 	for i := range co.BOARDSIZE {
 		for j := range co.BOARDSIZE - 1 {
-			if b.board[i][j] == b.board[i][j+1] {
+			if b.matrix[i][j] == b.matrix[i][j+1] {
 				return false
 			}
 		}

@@ -43,8 +43,8 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 	progress := min(float32(timeSinceStart.Seconds())/a.animationLength, 1)
 
 	// Draw tiles for animation
-	for y := range len(a.game.board.board) {
-		for x := range len(a.game.board.board[0]) {
+	for y := range len(a.game.board.matrix) {
+		for x := range len(a.game.board.matrix[0]) {
 			var (
 				movingDistX float32 = progress * float32(a.directionMap[a.currentDir][0]) * float32(co.BOARDSIZE-1)
 				movingDistY float32 = progress * float32(a.directionMap[a.currentDir][1]) * float32(co.BOARDSIZE-1)
@@ -53,7 +53,7 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.arrayOfChange[y][x])
 				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.arrayOfChange[y][x])
 			}
-			a.game.board.DrawTile(screen, a.game.board.sizes.startPosX, a.game.board.sizes.startPosY, x, y, a.game.board.boardBeforeChange[y][x], movingDistX, movingDistY)
+			a.game.board.DrawTile(screen, a.game.board.sizes.startPosX, a.game.board.sizes.startPosY, x, y, a.game.board.matrixBeforeChange[y][x], movingDistX, movingDistY)
 		}
 	}
 
