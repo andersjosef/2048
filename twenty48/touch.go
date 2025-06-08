@@ -18,6 +18,7 @@ import (
 	_ "image/jpeg"
 	"math"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -132,8 +133,8 @@ func (g *TouchInput) TouchUpdate() error {
 		shouldTriggerMove, dx, dy := t.shouldTriggerTouchMove()
 
 		if shouldTriggerMove && g.canSwipe {
-			if g.input.game.state == StateMainMenu {
-				g.input.game.state = StateRunning
+			if g.input.game.state == co.StateMainMenu {
+				g.input.game.state = co.StateRunning
 			}
 			g.input.SelectMoveDelta(dx, dy)
 			g.canSwipe = false

@@ -3,6 +3,7 @@ package twenty48
 import (
 	"math"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -39,8 +40,8 @@ type ActionFunc func(*Input)
 const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
 
 // buttons
-var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
-	StateRunning: { // Main loop
+var keyActions = map[co.GameState]map[ebiten.Key]ActionFunc{
+	co.StateRunning: { // Main loop
 		ebiten.KeyArrowRight: (*Input).moveRight,
 		ebiten.KeyD:          (*Input).moveRight,
 		ebiten.KeyArrowLeft:  (*Input).moveLeft,
@@ -57,7 +58,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyMinus:      ScaleWindowUp,
 		ebiten.KeyPeriod:     ScaleWindowDown,
 	},
-	StateMainMenu: { // Menu
+	co.StateMainMenu: { // Menu
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      toggleTheme,
@@ -65,7 +66,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyMinus:  ScaleWindowUp,
 		ebiten.KeyPeriod: ScaleWindowDown,
 	},
-	StateInstructions: { // Instructions
+	co.StateInstructions: { // Instructions
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      toggleTheme,
@@ -73,7 +74,7 @@ var keyActions = map[GameState]map[ebiten.Key]ActionFunc{
 		ebiten.KeyMinus:  ScaleWindowUp,
 		ebiten.KeyPeriod: ScaleWindowDown,
 	},
-	StateGameOver: { // Game Over
+	co.StateGameOver: { // Game Over
 		ebiten.KeyEscape: CloseGame,
 		ebiten.KeyF:      ToggleFullScreen,
 		ebiten.KeyQ:      toggleTheme,
@@ -108,8 +109,8 @@ func (i *Input) handleKeyboardInput() error {
 		if actionMap, ok := keyActions[i.game.state]; ok { // Check if actionmap exist for current game state
 			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
 				action(i)
-			} else if i.game.state == StateMainMenu { // If button is not in map and state is main menu
-				i.game.state = StateRunning
+			} else if i.game.state == co.StateMainMenu { // If button is not in map and state is main menu
+				i.game.state = co.StateRunning
 			}
 		}
 
@@ -129,8 +130,8 @@ func (i *Input) handleMouseInput() {
 
 	// Cursor movement updates
 	if pressed {
-		if i.game.state == StateMainMenu { // If in main menu click will trigger game state
-			i.game.state = StateRunning
+		if i.game.state == co.StateMainMenu { // If in main menu click will trigger game state
+			i.game.state = co.StateRunning
 		} else { // If not in menu update only end cursor coordinate
 			i.endCursorPos[0], i.endCursorPos[1] = ebiten.CursorPosition()
 		}
@@ -196,9 +197,9 @@ func ResetGame(i *Input) {
 	i.game.board.game.score = 0
 	i.game.board.randomNewPiece()
 	i.game.board.randomNewPiece()
-	i.game.board.game.state = StateMainMenu // Swap to main menu
+	i.game.board.game.state = co.StateMainMenu // Swap to main menu
 	shadertools.ResetTimesMapsDissolve()
-	i.game.menu.titleInFullView = false
+	i.game.menu.TitleInFullView = false
 	i.game.gameOver = false
 }
 
@@ -224,7 +225,7 @@ func ToggleFullScreen(i *Input) {
 func (i *Input) screenChanging() {
 	i.game.screenControl.UpdateActualDimentions()
 	i.game.board.sizes.scaleBoard()
-	i.game.menu.initTitle()
+	i.game.menu.InitTitle()
 	i.updatePauseButtonLocation()
 	val := int(i.game.board.sizes.baseTileSize)
 	shadertools.UpdateScaleNoiseImage(val, val)
@@ -292,13 +293,13 @@ func (i *Input) moveDown() {
 func toggleInfo(i *Input) {
 
 	switch i.game.state {
-	case StateMainMenu:
-		i.game.state = StateInstructions
-		i.game.previousState = StateMainMenu
-	case StateRunning:
-		i.game.state = StateInstructions
-		i.game.previousState = StateRunning
-	case StateInstructions:
+	case co.StateMainMenu:
+		i.game.state = co.StateInstructions
+		i.game.previousState = co.StateMainMenu
+	case co.StateRunning:
+		i.game.state = co.StateInstructions
+		i.game.previousState = co.StateRunning
+	case co.StateInstructions:
 		i.game.state = i.game.previousState
 	}
 
@@ -327,7 +328,7 @@ func ScaleWindow(i *Input) {
 	i.game.screenControl.UpdateActualDimentions()
 	i.game.updateFonts()
 	i.game.board.sizes.scaleBoard()
-	i.game.menu.initTitle()
+	i.game.menu.InitTitle()
 	i.updatePauseButtonLocation()
 	i.game.buttonManager.UpdateFontsForButtons()
 	ebiten.SetWindowSize(LOGICAL_WIDTH*int(i.game.scale), LOGICAL_HEIGHT*int(i.game.scale))

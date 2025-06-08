@@ -1,6 +1,7 @@
 package twenty48
 
 import (
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -11,11 +12,11 @@ import (
 */
 
 // // GameProvider ////
-func (g *Game) GetState() GameState {
+func (g *Game) GetState() co.GameState {
 	return g.state
 }
 
-func (g *Game) GetPreviousState() GameState {
+func (g *Game) GetPreviousState() co.GameState {
 	return g.previousState
 }
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -133,7 +134,7 @@ func (b *Board) drawBoard(screen *ebiten.Image) {
 		newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
 		if isDone {
 			// After animation go to game over state
-			b.game.state = StateGameOver
+			b.game.state = co.StateGameOver
 		}
 		screen.DrawImage(newImage, &ebiten.DrawImageOptions{})
 	}

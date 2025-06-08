@@ -1,8 +1,9 @@
-package twenty48
+package menu
 
 import (
 	"fmt"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -13,7 +14,7 @@ type Menu struct {
 	dynamicText map[string]string
 
 	titleImage      *ebiten.Image
-	titleInFullView bool
+	TitleInFullView bool
 }
 
 // Initialize menu
@@ -21,7 +22,7 @@ func NewMenu(v GameView) *Menu {
 	var m *Menu = &Menu{
 		view: v,
 	}
-	m.initTitle() // Inits title image to menu parameter
+	m.InitTitle() // Inits title image to menu parameter
 	m.dynamicText = map[string]string{
 		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.view.IsFullScreen()),
 		"Press Q to toggle theme:":     fmt.Sprintf("Press Q to toggle theme: %v", m.view.GetCurrentTheme().Name),
@@ -32,9 +33,9 @@ func NewMenu(v GameView) *Menu {
 
 func (m *Menu) Draw(screen *ebiten.Image) {
 	switch m.view.GetState() {
-	case StateMainMenu:
+	case co.StateMainMenu:
 		m.DrawMainMenu(screen)
-	case StateInstructions:
+	case co.StateInstructions:
 		m.DrawInstructions(screen)
 	default:
 		ebitenutil.DebugPrint(screen, "Undefined Menu State")
@@ -109,9 +110,9 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 
 	// Add a back button
 	returnButtonText := "Press I to return"
-	if m.view.GetPreviousState() == StateMainMenu {
+	if m.view.GetPreviousState() == co.StateMainMenu {
 		returnButtonText += " to Main Menu"
-	} else if m.view.GetPreviousState() == StateRunning {
+	} else if m.view.GetPreviousState() == co.StateRunning {
 		returnButtonText += " to Game"
 	}
 
@@ -131,7 +132,7 @@ func (m *Menu) UpdateDynamicText() {
 	m.dynamicText["Press Q to toggle theme:"] = fmt.Sprintf("Press Q to toggle theme: %v", m.view.GetCurrentTheme().Name)
 }
 
-func (m *Menu) initTitle() {
+func (m *Menu) InitTitle() {
 	xPos, yPos := m.view.GetActualSize()
 
 	newImage := ebiten.NewImage(xPos, yPos)
@@ -151,10 +152,10 @@ func (m *Menu) initTitle() {
 // Drawing the title and using shader when animating
 func (m *Menu) drawTitle(screen *ebiten.Image) {
 
-	if !m.titleInFullView {
+	if !m.TitleInFullView {
 		shaderImage, isDone := shadertools.GetImageFadeIn(m.titleImage)
 		if isDone {
-			m.titleInFullView = true
+			m.TitleInFullView = true
 		}
 		screen.DrawImage(shaderImage, &ebiten.DrawImageOptions{})
 

@@ -5,6 +5,8 @@ import (
 	"image/color"
 	"math"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/menu"
 	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -19,28 +21,18 @@ const (
 	BOARDSIZE      int = 4
 )
 
-// Gamestates Enum style
-type GameState int
-
-const (
-	StateRunning GameState = iota + 1
-	StateMainMenu
-	StateInstructions
-	StateGameOver
-)
-
 type Game struct {
 	board             *Board
 	screenControl     *ScreenControl
 	animation         *Animation
-	menu              *Menu
+	menu              *menu.Menu
 	input             *Input
 	buttonManager     *ButtonManager
 	fontSet           *theme.FontSet
 	themePicker       *theme.ThemePicker
 	renderer          *renderer.Renderer
-	state             GameState // Game is in menu, running, etc
-	previousState     GameState
+	state             co.GameState // Game is in menu, running, etc
+	previousState     co.GameState
 	score             int
 	shouldClose       bool // If yes will close the game
 	scale             float64
@@ -52,8 +44,8 @@ type Game struct {
 func NewGame() (*Game, error) {
 	// init game struct
 	g := &Game{
-		state:         StateMainMenu,
-		previousState: StateMainMenu,
+		state:         co.StateMainMenu,
+		previousState: co.StateMainMenu,
 		shouldClose:   false,
 		// scale:             ebiten.Monitor().DeviceScaleFactor(),
 		scale:             1,
@@ -75,7 +67,7 @@ func NewGame() (*Game, error) {
 	g.screenControl = InitScreenControl(g)
 	g.board, err = NewBoard(g)
 	g.renderer = renderer.InitRenderer(g.fontSet)
-	g.menu = NewMenu(g)
+	g.menu = menu.NewMenu(g)
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)
 
@@ -101,17 +93,17 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(g.currentTheme.ColorScreenBackground)
 	switch g.state {
-	case StateRunning: //game is running loop
+	case co.StateRunning: //game is running loop
 		if g.animation.isAnimating { // show animation
 			g.animation.DrawAnimation(screen)
 		} else { // draw normal borad
 			g.board.drawBoard(screen)
 		}
 		DrawScore(screen, g)
-	case StateMainMenu, StateInstructions: //game is in menu
+	case co.StateMainMenu, co.StateInstructions: //game is in menu
 		g.menu.Draw(screen)
 
-	case StateGameOver:
+	case co.StateGameOver:
 		g.DrawGameOverScreen(screen)
 
 	}

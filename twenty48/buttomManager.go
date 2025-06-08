@@ -3,6 +3,7 @@ package twenty48
 import (
 	"image/color"
 
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -11,7 +12,7 @@ import (
 // // Button Manager ////
 type ButtonManager struct {
 	game           *Game
-	buttonArrayMap map[GameState][]*Button
+	buttonArrayMap map[co.GameState][]*Button
 	buttonKeyMap   map[string]*Button
 	buttonPressed  bool
 }
@@ -19,7 +20,7 @@ type ButtonManager struct {
 func InitButtonManager(g *Game) *ButtonManager {
 	var bm *ButtonManager = &ButtonManager{
 		game:           g,
-		buttonArrayMap: make(map[GameState][]*Button),
+		buttonArrayMap: make(map[co.GameState][]*Button),
 		buttonKeyMap:   make(map[string]*Button),
 	}
 
@@ -42,7 +43,7 @@ func (bm *ButtonManager) initButtons() {
 		bm.game.fontSet.Mini,
 		FontMini,
 		toggleInfo,
-		StateMainMenu,
+		co.StateMainMenu,
 	)
 
 	// Instructions
@@ -53,7 +54,7 @@ func (bm *ButtonManager) initButtons() {
 		bm.game.fontSet.Mini,
 		FontMini,
 		ResetGame,
-		StateInstructions,
+		co.StateInstructions,
 	)
 
 	bm.AddButton(
@@ -63,7 +64,7 @@ func (bm *ButtonManager) initButtons() {
 		bm.game.fontSet.Mini,
 		FontMini,
 		ToggleFullScreen,
-		StateInstructions,
+		co.StateInstructions,
 	)
 
 	bm.AddButton(
@@ -73,7 +74,7 @@ func (bm *ButtonManager) initButtons() {
 		bm.game.fontSet.Mini,
 		FontMini,
 		toggleTheme,
-		StateInstructions,
+		co.StateInstructions,
 	)
 
 	bm.AddButton(
@@ -83,7 +84,7 @@ func (bm *ButtonManager) initButtons() {
 		bm.game.fontSet.Mini,
 		FontMini,
 		CloseGame,
-		StateInstructions,
+		co.StateInstructions,
 	)
 
 	bm.AddButton(
@@ -93,7 +94,7 @@ func (bm *ButtonManager) initButtons() {
 		bm.game.fontSet.Mini,
 		FontMini,
 		toggleInfo,
-		StateInstructions,
+		co.StateInstructions,
 	)
 
 	// Running loop
@@ -104,7 +105,7 @@ func (bm *ButtonManager) initButtons() {
 		bm.game.fontSet.Mini,
 		-1, // Something not in enum for now, needs update to size
 		toggleInfo,
-		StateRunning,
+		co.StateRunning,
 	)
 
 	// Game Over
@@ -116,7 +117,7 @@ func (bm *ButtonManager) initButtons() {
 		bm.game.fontSet.Mini,
 		FontMini,
 		ResetGame,
-		StateGameOver,
+		co.StateGameOver,
 	)
 
 }
@@ -182,7 +183,7 @@ func (bm *ButtonManager) checkButtons() bool {
 	return false
 }
 
-func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, fontType FontType, actionFunction ActionFunc, state GameState) {
+func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, fontType FontType, actionFunction ActionFunc, state co.GameState) {
 	// Create new button obj
 	newButton := &Button{
 		game:           bm.game,

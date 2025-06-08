@@ -1,6 +1,7 @@
-package twenty48
+package menu
 
 import (
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -14,8 +15,8 @@ type GameView interface {
 }
 
 type GameProvider interface {
-	GetState() GameState
-	GetPreviousState() GameState
+	GetState() co.GameState
+	GetPreviousState() co.GameState
 	GetCurrentTheme() theme.Theme
 	GetFontSet() theme.FontSet
 }
