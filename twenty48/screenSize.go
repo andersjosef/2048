@@ -3,7 +3,7 @@ package twenty48
 import "github.com/hajimehoshi/ebiten/v2"
 
 type ScreenControl struct {
-	fullscreen   bool
+	isFullscreen bool
 	game         *Game
 	actualWidth  int
 	actualHeight int
@@ -11,8 +11,8 @@ type ScreenControl struct {
 
 func InitScreenControl(g *Game) *ScreenControl {
 	sc := &ScreenControl{
-		fullscreen: false,
-		game:       g,
+		isFullscreen: false,
+		game:         g,
 	}
 
 	sc.UpdateActualDimentions()
@@ -21,7 +21,7 @@ func InitScreenControl(g *Game) *ScreenControl {
 
 func (sc *ScreenControl) UpdateActualDimentions() {
 	dpiScale := ebiten.Monitor().DeviceScaleFactor() // Accounting for high dpi monitors
-	if sc.fullscreen {
+	if sc.isFullscreen {
 		sc.actualWidth, sc.actualHeight = ebiten.Monitor().Size()
 		sc.actualWidth *= int(dpiScale)
 		sc.actualHeight *= int(dpiScale)

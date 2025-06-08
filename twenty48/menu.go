@@ -23,7 +23,7 @@ func NewMenu(g *Game) *Menu {
 	}
 	m.initTitle() // Inits title image to menu parameter
 	m.dynamicText = map[string]string{
-		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen),
+		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.isFullscreen),
 		"Press Q to toggle theme:":     fmt.Sprintf("Press Q to toggle theme: %v", m.game.currentTheme.Name),
 	}
 
@@ -99,7 +99,7 @@ func (m *Menu) DrawInstructions(screen *ebiten.Image) {
 }
 
 func (m *Menu) UpdateDynamicText() {
-	m.dynamicText["Press F to toggle Fullscreen"] = fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.fullscreen)
+	m.dynamicText["Press F to toggle Fullscreen"] = fmt.Sprintf("Press F to toggle Fullscreen: %v", m.game.screenControl.isFullscreen)
 	m.dynamicText["Press Q to toggle theme:"] = fmt.Sprintf("Press Q to toggle theme: %v", m.game.currentTheme.Name)
 }
 

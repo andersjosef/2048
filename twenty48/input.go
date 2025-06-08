@@ -207,13 +207,13 @@ func CloseGame(i *Input) {
 }
 
 func ToggleFullScreen(i *Input) {
-	if i.game.screenControl.fullscreen {
+	if i.game.screenControl.isFullscreen {
 		ebiten.SetFullscreen(false)
-		i.game.screenControl.fullscreen = false
+		i.game.screenControl.isFullscreen = false
 		i.screenChanging()
 	} else {
 		ebiten.SetFullscreen(true)
-		i.game.screenControl.fullscreen = true
+		i.game.screenControl.isFullscreen = true
 		i.screenChanging()
 	}
 	i.game.screenSizeChanged = true
