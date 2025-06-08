@@ -48,6 +48,8 @@ func InitSizes(b *Board) *Sizes {
 		eventhandler.EventScreenChanged,
 		func(evt eventhandler.Event) {
 			sfb.scaleBoard()
+			val := int(sfb.baseTileSize)
+			shadertools.UpdateScaleNoiseImage(val, val)
 		},
 	)
 

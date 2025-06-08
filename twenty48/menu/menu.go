@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -26,6 +27,14 @@ func NewMenu(v GameView) *Menu {
 		"Press F to toggle Fullscreen": fmt.Sprintf("Press F to toggle Fullscreen: %v", m.view.IsFullScreen()),
 		"Press Q to toggle theme:":     fmt.Sprintf("Press Q to toggle theme: %v", m.view.GetCurrentTheme().Name),
 	}
+
+	// Register events
+	v.GetBusHandler().Register(
+		eventhandler.EventScreenChanged,
+		func(evt eventhandler.Event) {
+			m.UpdateCenteredTitle()
+		},
+	)
 
 	return m
 }

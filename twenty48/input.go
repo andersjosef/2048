@@ -4,6 +4,7 @@ import (
 	"math"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -31,6 +32,13 @@ func InitInput(g *Game) *Input {
 	i.touchInput = newTouchInput(i)
 
 	i.movementThreshold = 20 // Set how much the mouse has to move to reappear
+
+	i.game.GetBusHandler().Register(
+		eventhandler.EventScreenChanged,
+		func(_ eventhandler.Event) {
+			i.updatePauseButtonLocation()
+		},
+	)
 
 	return i
 }
@@ -209,17 +217,6 @@ func CloseGame(i *Input) {
 
 func ToggleFullScreen(i *Input) {
 	i.game.screenControl.ToggleFullScreen()
-	i.screenChanging()
-}
-
-// Helper function for toggle screen
-// Contains everything that is the same for full screen and windowed
-func (i *Input) screenChanging() {
-	// i.game.board.sizes.scaleBoard()
-	i.game.menu.UpdateCenteredTitle()
-	i.updatePauseButtonLocation()
-	val := int(i.game.board.sizes.baseTileSize)
-	shadertools.UpdateScaleNoiseImage(val, val)
 }
 
 // Helper functions for toggeling mouse being displayed or not
@@ -309,7 +306,6 @@ func ScaleWindowUp(i *Input) {
 
 func ScaleWindowDown(i *Input) {
 	if i.game.screenControl.DecrementScale() {
-
 		ScaleWindow(i)
 	}
 }

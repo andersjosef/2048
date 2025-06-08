@@ -2,6 +2,7 @@ package menu
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -20,6 +21,7 @@ type GameProvider interface {
 	GetCurrentTheme() theme.Theme
 	GetFontSet() theme.FontSet
 	GetScore() int
+	GetBusHandler() *eventhandler.EventBus
 }
 
 type ButtonManagerProvider interface {
