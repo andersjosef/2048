@@ -38,20 +38,17 @@ func (a *Animation) ResetArray() {
 	a.arrayOfChange = [co.BOARDSIZE][co.BOARDSIZE]int{}
 }
 
-func (a *Animation) DrawAnimation(screen *ebiten.Image) {
+func (a *Animation) Draw(screen *ebiten.Image) {
 	// Draw the backgroundimage of the game
 	screen.DrawImage(a.game.board.boardImage, a.game.board.boardImageOptions)
 
 	// Calculate animation progress based on time since start
 	timeSinceStart := time.Since(a.startTime)
-	progress := float32(timeSinceStart.Seconds()) / a.animationLength
-	if progress > 1 {
-		progress = 1 // Cap at 100%
-	}
+	progress := min(float32(timeSinceStart.Seconds())/a.animationLength, 1)
 
 	// Draw tiles for animation
-	for y := 0; y < len(a.game.board.board); y++ {
-		for x := 0; x < len(a.game.board.board[0]); x++ {
+	for y := range len(a.game.board.board) {
+		for x := range len(a.game.board.board[0]) {
 			var (
 				movingDistX float32 = progress * float32(a.directionMap[a.currentDir][0]) * float32(co.BOARDSIZE-1)
 				movingDistY float32 = progress * float32(a.directionMap[a.currentDir][1]) * float32(co.BOARDSIZE-1)
@@ -75,5 +72,4 @@ func (a *Animation) ActivateAnimation(direction string) {
 	a.currentDir = direction
 	a.isAnimating = true
 	a.startTime = time.Now()
-
 }

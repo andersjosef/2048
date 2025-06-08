@@ -93,9 +93,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	switch g.state {
 	case co.StateRunning: //game is running loop
 		if g.animation.isAnimating { // show animation
-			g.animation.DrawAnimation(screen)
+			g.animation.Draw(screen)
 		} else { // draw normal borad
-			g.board.drawBoard(screen)
+			g.board.Draw(screen)
 		}
 		DrawScore(screen, g)
 	}

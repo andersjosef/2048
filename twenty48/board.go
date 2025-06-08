@@ -144,7 +144,7 @@ func (b *Board) randomNewPiece() {
 	}
 }
 
-func (b *Board) drawBoard(screen *ebiten.Image) {
+func (b *Board) Draw(screen *ebiten.Image) {
 	// draw the backgroundimage of the game
 	b.boardForEndScreen.DrawImage(b.boardImage, b.boardImageOptions)
 
