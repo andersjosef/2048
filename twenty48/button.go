@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
@@ -80,4 +81,19 @@ func (bu *Button) GetDimentions() (int, int, error) {
 
 func (bu *Button) OnTrigger() {
 	bu.actionFunction(bu.game.input)
+}
+
+func (bu *Button) Draw(screen *ebiten.Image) {
+	startX, startY := bu.startPos[0], bu.startPos[1]
+	// width, height := bu.endPos[0]-startX, bu.endPos[1]-startY
+
+	bu.game.DrawDoubleText(
+		screen,
+		bu.text,
+		startX,
+		startY,
+		bu.offset,
+		bu.font,
+		false,
+	)
 }

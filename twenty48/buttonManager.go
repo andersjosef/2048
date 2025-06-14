@@ -1,12 +1,9 @@
 package twenty48
 
 import (
-	"image/color"
-
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 // // Button Manager ////
@@ -126,19 +123,7 @@ func (bm *ButtonManager) initButtons() {
 func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {
 
 	for _, button := range bm.buttonArrayMap[bm.game.state] {
-		startX, startY := button.startPos[0], button.startPos[1]
-		width, height := button.endPos[0]-startX, button.endPos[1]-startY
-
-		// Button background
-		vector.DrawFilledRect(screen,
-			float32(startX), float32(startY),
-			float32(width), float32(height),
-			color.RGBA{0, 0, 0, 0}, false)
-
-		bm.game.renderer.DrawDoubleText(screen,
-			button.text,
-			startX, startY, button.offset, button.font, false)
-
+		button.Draw(screen)
 	}
 }
 
