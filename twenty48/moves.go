@@ -2,187 +2,104 @@ package twenty48
 
 import (
 	"github.com/andersjosef/2048/twenty48/animations"
-	co "github.com/andersjosef/2048/twenty48/constants"
 )
+
+type Direction int
+
+const (
+	Left Direction = iota
+	Right
+	Up
+	Down
+)
+
+func (d *Direction) String() string {
+	str := ""
+	switch *d {
+	case Left:
+		str = "LEFT"
+	case Up:
+		str = "UP"
+	case Right:
+		str = "RIGHT"
+	case Down:
+		str = "DOWN"
+	}
+	return str
+}
 
 func (b *Board) updateBoardBeforeChange() {
 	b.matrixBeforeChange = b.matrix
 }
 
-func (b *Board) moveLeft() {
+func (b *Board) move(dir Direction) {
 	b.updateBoardBeforeChange()
 
-	var allDeltas []animations.MoveDelta
-	var newMatrix [4][4]int
+	var snap [4][4]int
+	copy(snap[:], b.matrix[:])
+	apply := getTransform(dir)
+	apply.pre(&snap) // Do pre matrix manipulation
 
-	for rowIndex, row := range b.matrix {
+	var newMat [4][4]int
+	var allDeltas []animations.MoveDelta
+	for rowIndex, row := range snap {
 		newRow, d1, scoreGain := processRow(rowIndex, row)
 		b.game.score += scoreGain
-
-		// Write to new matrix
-		newMatrix[rowIndex] = newRow
-
-		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
-
+		newMat[rowIndex] = newRow
 	}
-	b.game.animation.Play(allDeltas, "LEFT")
 
-	b.matrix = newMatrix
+	apply.post(&newMat)                            // Do post matrix manipulations
+	b.game.animation.Play(allDeltas, dir.String()) // Trigger animation
+	b.matrix = newMat                              // Set matrix to what has been manipulated
 	b.addNewRandomPieceIfBoardChanged()
 	b.game.gameOver = b.isGameOver()
+
+}
+
+func (b *Board) moveLeft() {
+	b.move(Left)
 }
 
 func (b *Board) moveUp() {
-	b.updateBoardBeforeChange()
-	var snapShot [4][4]int
-	copy(snapShot[:], b.matrix[:])
-
-	var allDeltas []animations.MoveDelta
-	var newMatrix [4][4]int
-
-	transpose(&snapShot)
-	for rowIndex, row := range snapShot {
-		newRow, d1, scoreGain := processRow(rowIndex, row)
-		b.game.score += scoreGain
-
-		// Write to new matrix
-		newMatrix[rowIndex] = newRow
-
-		// Collect all deltas
-		allDeltas = append(allDeltas, d1...)
-
-	}
-	transpose(&newMatrix)
-	b.game.animation.Play(allDeltas, "UP")
-
-	b.matrix = newMatrix
-	b.addNewRandomPieceIfBoardChanged()
-	b.game.gameOver = b.isGameOver()
+	b.move(Up)
 }
 
 func (b *Board) moveRight() {
-	b.updateBoardBeforeChange()
-	var snapShot [4][4]int
-	copy(snapShot[:], b.matrix[:])
-
-	var allDeltas []animations.MoveDelta
-	var newMatrix [4][4]int
-
-	for rowIndex, row := range snapShot {
-		reverseRow(&row)
-
-		newRow, d1, scoreGain := processRow(rowIndex, row)
-		b.game.score += scoreGain
-
-		reverseRow(&newRow)
-
-		// Write to new matrix
-		newMatrix[rowIndex] = newRow
-
-		// Collect all deltas
-		allDeltas = append(allDeltas, d1...)
-
-	}
-	b.game.animation.Play(allDeltas, "RIGHT")
-
-	b.matrix = newMatrix
-	b.addNewRandomPieceIfBoardChanged()
-	b.game.gameOver = b.isGameOver()
+	b.move(Right)
 }
 
 func (b *Board) moveDown() {
-	b.updateBoardBeforeChange()
-	var snapShot [4][4]int
-	copy(snapShot[:], b.matrix[:])
-
-	var allDeltas []animations.MoveDelta
-	var newMatrix [4][4]int
-
-	transpose(&snapShot)
-	for rowIndex, row := range snapShot {
-		reverseRow(&row)
-		newRow, d1, scoreGain := processRow(rowIndex, row)
-		b.game.score += scoreGain
-
-		reverseRow(&newRow)
-
-		// Write to new matrix
-		newMatrix[rowIndex] = newRow
-
-		// Collect all deltas
-		allDeltas = append(allDeltas, d1...)
-
-	}
-	transpose(&newMatrix)
-	b.matrix = newMatrix
-	b.game.animation.Play(allDeltas, "DOWN")
-
-	b.addNewRandomPieceIfBoardChanged()
-	b.game.gameOver = b.isGameOver()
+	b.move(Down)
 }
 
-func reverseRow(row *[co.BOARDSIZE]int) {
-	for i, j := 0, len(*row)-1; i < j; i, j = i+1, j-1 {
-		(*row)[i], (*row)[j] = (*row)[j], (*row)[i]
+type transform struct {
+	pre  func(*[4][4]int)
+	post func(*[4][4]int)
+}
+
+func getTransform(dir Direction) transform {
+	switch dir {
+	case Left:
+		return transform{noop, noop}
+	case Up:
+		return transform{transpose, transpose}
+	case Right:
+		return transform{reverseAllRows, reverseAllRows}
+	case Down:
+		return transform{
+			func(m *[4][4]int) { transpose(m); reverseAllRows(m) },
+			func(m *[4][4]int) { reverseAllRows(m); transpose(m) },
+		}
+	default:
+		return transform{noop, noop}
 	}
 }
 
-// Swap cols and rows
-func transpose(board *[co.BOARDSIZE][co.BOARDSIZE]int) {
-	for i := range len(*board) {
-		for j := i; j < len((*board)[0]); j++ {
-			(*board)[i][j], (*board)[j][i] = (*board)[j][i], (*board)[i][j]
-		}
+func noop(_ *[4][4]int) {}
+
+func reverseAllRows(m *[4][4]int) {
+	for i := range m {
+		reverseRow(&m[i])
 	}
-}
-
-func compactRow(rowIndex int, row [4]int, applyExtra bool) (newRow [4]int, deltas []animations.MoveDelta) {
-	insertPos, lastVal, extraMov := 0, -1, 0
-
-	for col, val := range row {
-		if val == 0 {
-			continue
-		}
-		if val == lastVal {
-			extraMov++
-		}
-
-		// Record how far it will slide
-		if applyExtra {
-			delta := animations.MoveDelta{
-				FromRow:    rowIndex,
-				FromCol:    col,
-				ToRow:      rowIndex,
-				ToCol:      insertPos,
-				ValueMoved: val,
-			}
-
-			if extraMov > 0 {
-				delta.ToCol -= extraMov
-			}
-			// Append the delta to deltas for animation
-			deltas = append(deltas, delta)
-		}
-
-		newRow[insertPos] = val
-		insertPos++
-		lastVal = val
-	}
-
-	return newRow, deltas
-}
-
-func mergeRow(row [4]int) (newRow [4]int, scoreGain int) {
-	copy(newRow[:], row[:]) // Copy row info over in new row
-
-	for i := range 3 {
-		if newRow[i] != 0 && newRow[i] == newRow[i+1] {
-			newRow[i] *= 2         // Update number
-			scoreGain += newRow[i] // Update score
-			newRow[i+1] = 0        // Remove value that was merged into current val
-			i++                    // Skip to next possible val spot
-		}
-	}
-	return newRow, scoreGain
 }
