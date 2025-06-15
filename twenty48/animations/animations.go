@@ -8,7 +8,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-// Describes a single tile moving or merging from one tile to another
+// Describes a single tile moving from one tile to another
 type MoveDelta struct {
 	FromRow, FromCol int
 	ToRow, ToCol     int
@@ -21,8 +21,8 @@ type Animation struct {
 	isAnimating     bool
 	deltas          []MoveDelta
 	currentDir      string
-	animationLength float32           //seconds
-	directionMap    map[string][2]int // multiply this to get x y movement of tiles
+	animationLength float32           // Seconds
+	directionMap    map[string][2]int // Multiply this to get x y movement of tiles
 	startTime       time.Time
 }
 

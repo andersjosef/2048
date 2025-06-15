@@ -16,15 +16,11 @@ func (b *Board) moveLeft() {
 	var newMatrix [4][4]int
 
 	for rowIndex, row := range b.matrix {
-		slideRow, d1 := compactRow(rowIndex, row, true)
-
-		mergedRow, scoreGain := mergeRow(slideRow)
+		newRow, d1, scoreGain := processRow(rowIndex, row)
 		b.game.score += scoreGain
 
-		finalRow, _ := compactRow(rowIndex, mergedRow, false)
-
 		// Write to new matrix
-		newMatrix[rowIndex] = finalRow
+		newMatrix[rowIndex] = newRow
 
 		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
@@ -47,15 +43,11 @@ func (b *Board) moveUp() {
 
 	transpose(&snapShot)
 	for rowIndex, row := range snapShot {
-		slideRow, d1 := compactRow(rowIndex, row, true)
-
-		mergedRow, scoreGain := mergeRow(slideRow)
+		newRow, d1, scoreGain := processRow(rowIndex, row)
 		b.game.score += scoreGain
 
-		finalRow, _ := compactRow(rowIndex, mergedRow, false)
-
 		// Write to new matrix
-		newMatrix[rowIndex] = finalRow
+		newMatrix[rowIndex] = newRow
 
 		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
@@ -79,17 +71,14 @@ func (b *Board) moveRight() {
 
 	for rowIndex, row := range snapShot {
 		reverseRow(&row)
-		slideRow, d1 := compactRow(rowIndex, row, true)
 
-		mergedRow, scoreGain := mergeRow(slideRow)
+		newRow, d1, scoreGain := processRow(rowIndex, row)
 		b.game.score += scoreGain
 
-		finalRow, _ := compactRow(rowIndex, mergedRow, false)
-
-		reverseRow(&finalRow)
+		reverseRow(&newRow)
 
 		// Write to new matrix
-		newMatrix[rowIndex] = finalRow
+		newMatrix[rowIndex] = newRow
 
 		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
@@ -113,17 +102,13 @@ func (b *Board) moveDown() {
 	transpose(&snapShot)
 	for rowIndex, row := range snapShot {
 		reverseRow(&row)
-		slideRow, d1 := compactRow(rowIndex, row, true)
-
-		mergedRow, scoreGain := mergeRow(slideRow)
+		newRow, d1, scoreGain := processRow(rowIndex, row)
 		b.game.score += scoreGain
 
-		finalRow, _ := compactRow(rowIndex, mergedRow, false)
-
-		reverseRow(&finalRow)
+		reverseRow(&newRow)
 
 		// Write to new matrix
-		newMatrix[rowIndex] = finalRow
+		newMatrix[rowIndex] = newRow
 
 		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
