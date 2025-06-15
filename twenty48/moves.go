@@ -1,141 +1,102 @@
 package twenty48
 
-import co "github.com/andersjosef/2048/twenty48/constants"
+import (
+	"github.com/andersjosef/2048/twenty48/eventhandler"
+	"github.com/andersjosef/2048/twenty48/shared"
+)
+
+type Direction int
+
+const (
+	Left Direction = iota
+	Right
+	Up
+	Down
+)
+
+func (d *Direction) String() string {
+	str := ""
+	switch *d {
+	case Left:
+		str = "LEFT"
+	case Up:
+		str = "UP"
+	case Right:
+		str = "RIGHT"
+	case Down:
+		str = "DOWN"
+	}
+	return str
+}
 
 func (b *Board) updateBoardBeforeChange() {
 	b.matrixBeforeChange = b.matrix
 }
 
-func (b *Board) moveLeft() {
+func (b *Board) move(dir Direction) {
 	b.updateBoardBeforeChange()
-	for i := range b.matrix {
-		// Shift tiles to the left
-		compactTiles(i, b, true)
-		// Merge tiles and shift again if needed
-		mergeTiles(&b.matrix[i], b)
-		compactTiles(i, b, false)
-	}
-	b.game.animation.ActivateAnimation("LEFT")
 
-	b.addNewRandomPieceIfBoardChanged()
+	var snap [4][4]int
+	copy(snap[:], b.matrix[:])
+	apply := getTransform(dir)
+	apply.pre(&snap) // Do pre matrix manipulation
 
-	b.game.gameOver = b.isGameOver()
-}
-
-func (b *Board) moveUp() {
-	b.updateBoardBeforeChange()
-	transpose(&b.matrix)
-	for i := range b.matrix {
-		// Shift tiles "left" (actually up, due to transposition)
-		compactTiles(i, b, true)
-		// Merge tiles and shift again if needed
-		mergeTiles(&b.matrix[i], b)
-		compactTiles(i, b, false)
-	}
-	transpose(&b.matrix) // Transpose back to the original orientation
-	transpose(&b.game.animation.ArrayOfChange)
-	b.game.animation.ActivateAnimation("UP")
-
-	b.addNewRandomPieceIfBoardChanged()
-
-	b.game.gameOver = b.isGameOver()
-}
-
-// TODO separate out logic on all these...
-func (b *Board) moveRight() {
-	b.updateBoardBeforeChange()
-	for i := range b.matrix {
-		// Reverse the row to treat the right end as the left
-		reverseRow(&b.matrix[i])
-		// Shift tiles "left" (actually right, due to reversal)
-		compactTiles(i, b, true)
-		// Merge tiles and shift again if needed
-		mergeTiles(&b.matrix[i], b)
-		compactTiles(i, b, false)
-		// Reverse back to original orientation
-		reverseRow(&b.matrix[i])
-		reverseRow(&b.game.animation.ArrayOfChange[i])
-
-		b.game.animation.ActivateAnimation("RIGHT")
+	var newMat [4][4]int
+	var allDeltas []shared.MoveDelta
+	var allScoreGained int
+	for rowIndex, row := range snap {
+		newRow, d1, scoreGain := processRow(rowIndex, row)
+		allScoreGained += scoreGain
+		allDeltas = append(allDeltas, d1...)
+		newMat[rowIndex] = newRow
 	}
 
-	b.addNewRandomPieceIfBoardChanged()
+	apply.post(&newMat) // Do post matrix manipulations
 
-	b.game.gameOver = b.isGameOver()
-}
-func (b *Board) moveDown() {
-	b.updateBoardBeforeChange()
-	transpose(&b.matrix)
-	for i := range b.matrix {
-		// Reverse the row (which is actually a column due to transposition)
-		reverseRow(&b.matrix[i])
-		// Shift tiles "left" (actually down, due to reversal and transposition)
-		compactTiles(i, b, true)
-		// Merge tiles and shift again if needed
-		mergeTiles(&b.matrix[i], b)
-		compactTiles(i, b, false)
-		// Reverse back to treat the bottom as the top
-		reverseRow(&b.matrix[i])
-		reverseRow(&b.game.animation.ArrayOfChange[i])
-	}
-	transpose(&b.matrix) // Transpose back to the original orientation
-	transpose(&b.game.animation.ArrayOfChange)
-	b.game.animation.ActivateAnimation("DOWN")
+	b.game.eventBus.Emit(
+		eventhandler.Event{
+			Type: eventhandler.EventMoveMade,
+			Data: shared.MoveData{
+				ScoreGain:  allScoreGained,
+				IsGameOver: b.isGameOver(),
+				MoveDeltas: allDeltas,
+				Dir:        dir.String(),
+				NewBoard:   newMat,
+			},
+		},
+	)
+	// Dispatch immediatley to prevent false states
+	b.GetBusHandler().Dispatch()
 
-	b.addNewRandomPieceIfBoardChanged()
-
-	b.game.gameOver = b.isGameOver()
 }
 
-func reverseRow(row *[co.BOARDSIZE]int) {
-	for i, j := 0, len(*row)-1; i < j; i, j = i+1, j-1 {
-		(*row)[i], (*row)[j] = (*row)[j], (*row)[i]
-	}
+type transform struct {
+	pre  func(*[4][4]int)
+	post func(*[4][4]int)
 }
 
-// Moves all tiles to the left
-func compactTiles(rowIndex int, b *Board, beforeMerge bool) {
-	insertPos := 0
-
-	// these two are for adding an extra move to the animation to make it pretty
-	lastVal := -1
-	extraMov := 0
-	for i, val := range b.matrix[rowIndex] {
-		if val != 0 {
-			if val == lastVal {
-				extraMov++
-			}
-			if beforeMerge {
-				b.game.animation.ArrayOfChange[rowIndex][i] = (i - insertPos) + extraMov // delta movement to the left
-			}
-			(b.matrix[rowIndex])[insertPos] = val
-			insertPos++
-			lastVal = val
-
+func getTransform(dir Direction) transform {
+	switch dir {
+	case Left:
+		return transform{noop, noop}
+	case Up:
+		return transform{transpose, transpose}
+	case Right:
+		return transform{reverseAllRows, reverseAllRows}
+	case Down:
+		return transform{
+			func(m *[4][4]int) { transpose(m); reverseAllRows(m) },
+			func(m *[4][4]int) { reverseAllRows(m); transpose(m) },
 		}
-	}
-	// Fill the rest with 0s
-	for i := insertPos; i < len(b.matrix[rowIndex]); i++ {
-		b.matrix[rowIndex][i] = 0
+	default:
+		return transform{noop, noop}
 	}
 }
 
-func mergeTiles(row *[co.BOARDSIZE]int, b *Board) {
-	for i := 0; i < len(*row)-1; i++ {
-		if (*row)[i] == (*row)[i+1] && (*row)[i] != 0 {
-			(*row)[i] *= 2
-			b.game.score += (*row)[i]
-			(*row)[i+1] = 0
-			i++ // Skip next tile as it has been merged and set to 0
-		}
-	}
-}
+func noop(_ *[4][4]int) {}
 
-// Swap cols and rows
-func transpose(board *[co.BOARDSIZE][co.BOARDSIZE]int) {
-	for i := range len(*board) {
-		for j := i; j < len((*board)[0]); j++ {
-			(*board)[i][j], (*board)[j][i] = (*board)[j][i], (*board)[i][j]
-		}
+func reverseAllRows(m *[4][4]int) {
+	for i := range m {
+		reverseRow(&m[i])
 	}
 }

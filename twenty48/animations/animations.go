@@ -5,16 +5,18 @@ import (
 	"time"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
+	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Animation struct {
-	isAnimating     bool
-	ArrayOfChange   [co.BOARDSIZE][co.BOARDSIZE]int // TMP exposure!
 	view            View
+	isAnimating     bool
+	deltas          []shared.MoveDelta
 	currentDir      string
-	animationLength float32           //seconds
-	directionMap    map[string][2]int // multiply this to get x y movement of tiles
+	animationLength float32           // Seconds
+	directionMap    map[string][2]int // Multiply this to get x y movement of tiles
 	startTime       time.Time
 }
 
@@ -31,50 +33,99 @@ func InitAnimation(g View) *Animation {
 		},
 	}
 
+	a.view.GetBusHandler().Register(
+		eventhandler.EventMoveMade,
+		func(e eventhandler.Event) {
+			moveData, ok := e.Data.(shared.MoveData)
+			if !ok {
+				return
+			}
+
+			a.Play(moveData.MoveDeltas, moveData.Dir)
+
+		},
+	)
+
 	return a
 }
 
+func (a *Animation) Play(deltas []shared.MoveDelta, dir string) {
+	for i, d := range deltas {
+		nd := d
+		switch dir {
+		case "RIGHT":
+			nd.FromCol = co.BOARDSIZE - 1 - d.FromCol
+			nd.ToCol = co.BOARDSIZE - 1 - d.ToCol
+
+		case "UP":
+			nd.FromRow, nd.FromCol = d.FromCol, d.FromRow
+			nd.ToRow, nd.ToCol = d.ToCol, d.ToRow
+
+		case "DOWN":
+			nd.FromRow, nd.FromCol = d.FromCol, d.FromRow
+			nd.ToRow, nd.ToCol = d.ToCol, d.ToRow
+			nd.FromRow = co.BOARDSIZE - 1 - nd.FromRow
+			nd.ToRow = co.BOARDSIZE - 1 - nd.ToRow
+		}
+		deltas[i] = nd
+	}
+
+	a.deltas = deltas
+	a.currentDir = dir
+	a.isAnimating = true
+	a.startTime = time.Now()
+}
+
 func (a *Animation) Draw(screen *ebiten.Image) {
-	// Draw the backgroundimage of the game
 	a.view.DrawBackgoundBoard(screen)
 
-	// Calculate animation progress based on time since start
-	timeSinceStart := time.Since(a.startTime)
-	progress := min(float32(timeSinceStart.Seconds())/a.animationLength, 1)
+	elapsed := float32(time.Since(a.startTime).Seconds())
+	progress := float32(min(float64(elapsed/a.animationLength), 1))
 
-	// Draw tiles for animation
-	mWidth, mHeight := a.view.GetBoardDimentions()
-	for y := range mHeight {
-		for x := range mWidth {
-			var (
-				movingDistX float32 = progress * float32(a.directionMap[a.currentDir][0]) * float32(co.BOARDSIZE-1)
-				movingDistY float32 = progress * float32(a.directionMap[a.currentDir][1]) * float32(co.BOARDSIZE-1)
-			)
-			if math.Abs(float64(movingDistX)) >= float64(a.ArrayOfChange[y][x]) || math.Abs(float64(movingDistY)) >= float64(a.ArrayOfChange[y][x]) {
-				movingDistX = float32(a.directionMap[a.currentDir][0]) * float32(a.ArrayOfChange[y][x])
-				movingDistY = float32(a.directionMap[a.currentDir][1]) * float32(a.ArrayOfChange[y][x])
-			}
-			a.view.DrawMovingMatrix(
-				screen,
-				x,
-				y,
-				movingDistX,
-				movingDistY,
-			)
-		}
+	// How far any tile would go if it had to move the full width/height
+	fullDist := float32(co.BOARDSIZE-1) * progress
+
+	for _, d := range a.deltas {
+
+		// Signed cell‐deltas
+		dxCells := d.ToCol - d.FromCol
+		dyCells := d.ToRow - d.FromRow
+
+		dirX := float32(sign(dxCells))
+		dirY := float32(sign(dyCells))
+
+		// How many cells this tile needs in each axis
+		needX := float32(math.Abs(float64(dxCells)))
+		needY := float32(math.Abs(float64(dyCells)))
+
+		// Cap fullDist at each axis need
+		moveX := dirX * min(fullDist, needX)
+		moveY := dirY * min(fullDist, needY)
+
+		a.view.DrawMovingMatrix(
+			screen,
+			d.FromCol,
+			d.FromRow,
+			moveX,
+			moveY,
+		)
 	}
 
 	if progress >= 1 {
 		a.isAnimating = false
 	}
-
 }
 
-// Use this function to activate animations
-func (a *Animation) ActivateAnimation(direction string) {
-	a.currentDir = direction
-	a.isAnimating = true
-	a.startTime = time.Now()
+// Helper to get sign of an int
+func sign(n int) int {
+	switch {
+	case n < 0:
+		return -1
+	case n > 0:
+		return +1
+	default:
+		return 0
+	}
 }
 
 func (a *Animation) IsAnimating() bool {

@@ -7,6 +7,7 @@ import (
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
+	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -114,6 +115,18 @@ func (b *Board) registerEvents() {
 			b.randomNewPiece()
 			b.randomNewPiece()
 
+		},
+	)
+	b.GetBusHandler().Register(
+		eventhandler.EventMoveMade,
+		func(e eventhandler.Event) {
+			moveData, ok := e.Data.(shared.MoveData)
+			if !ok {
+				return
+			}
+			b.matrix = moveData.NewBoard
+			b.addNewRandomPieceIfBoardChanged()
+			b.game.gameOver = b.isGameOver()
 		},
 	)
 }

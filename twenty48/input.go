@@ -250,25 +250,26 @@ func (i *Input) moveRight() {
 	if i.game.gameOver {
 		return
 	}
-	i.game.board.moveRight()
+	i.game.board.move(Right)
+
 }
 func (i *Input) moveLeft() {
 	if i.game.gameOver {
 		return
 	}
-	i.game.board.moveLeft()
+	i.game.board.move(Left)
 }
 func (i *Input) moveUp() {
 	if i.game.gameOver {
 		return
 	}
-	i.game.board.moveUp()
+	i.game.board.move(Up)
 }
 func (i *Input) moveDown() {
 	if i.game.gameOver {
 		return
 	}
-	i.game.board.moveDown()
+	i.game.board.move(Down)
 }
 
 ///// Menu Logic /////
