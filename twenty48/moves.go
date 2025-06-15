@@ -330,3 +330,33 @@ func mergeRow(rowIndex int, row [4]int) (newRow [4]int, deltas []animations.Move
 	}
 	return newRow, deltas, scoreGain
 }
+
+func TransformDeltas(deltas []animations.MoveDelta, dir string) []animations.MoveDelta {
+	out := make([]animations.MoveDelta, 0, len(deltas))
+	for _, d := range deltas {
+		nd := d
+		switch dir {
+		case "LEFT":
+			// Do Nothing
+
+		case "RIGHT":
+			// Reverse cols back
+			nd.FromCol = co.BOARDSIZE - 1 - d.FromCol
+			nd.ToCol = co.BOARDSIZE - 1 - d.ToCol
+
+		case "UP":
+			// Transpose back
+			nd.FromRow, nd.FromCol = d.FromCol, d.FromRow
+			nd.ToRow, nd.ToCol = d.ToCol, d.ToRow
+
+		case "DOWN":
+			// Reverse and transpose
+			nd.FromRow, nd.FromCol = d.FromCol, d.FromRow
+			nd.ToRow, nd.ToCol = d.ToCol, d.ToRow
+			nd.FromRow = co.BOARDSIZE - 1 - nd.FromRow
+			nd.ToRow = co.BOARDSIZE - 1 - nd.ToRow
+		}
+		out = append(out, nd)
+	}
+	return out
+}
