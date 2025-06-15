@@ -5,7 +5,6 @@ import (
 
 	"math/rand"
 
-	"github.com/andersjosef/2048/twenty48/animations"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/stretchr/testify/assert"
 )
@@ -338,22 +337,6 @@ func TestMoves(t *testing.T) {
 			assert.Equal(t, tc.wantedScore, game.score)
 		})
 	}
-}
-
-func TestInitAnimation(t *testing.T) {
-	g := &Game{}
-	a := animations.InitAnimation(g.board)
-
-	wantArrayOfChange := [co.BOARDSIZE][co.BOARDSIZE]int{
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-		{0, 0, 0, 0},
-	}
-
-	assert.Equal(t, false, a.IsAnimating())
-	assert.Equal(t, wantArrayOfChange, a.ArrayOfChange)
-
 }
 
 func TestIsGameOver(t *testing.T) {

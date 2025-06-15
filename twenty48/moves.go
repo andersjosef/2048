@@ -18,18 +18,16 @@ func (b *Board) moveLeft() {
 	for rowIndex, row := range b.matrix {
 		slideRow, d1 := compactRow(rowIndex, row, true)
 
-		mergedRow, d2, scoreGain := mergeRow(slideRow)
+		mergedRow, scoreGain := mergeRow(slideRow)
 		b.game.score += scoreGain
 
-		finalRow, d3 := compactRow(rowIndex, mergedRow, false)
+		finalRow, _ := compactRow(rowIndex, mergedRow, false)
 
 		// Write to new matrix
 		newMatrix[rowIndex] = finalRow
 
 		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
-		allDeltas = append(allDeltas, d2...)
-		allDeltas = append(allDeltas, d3...)
 
 	}
 	b.game.animation.Play(allDeltas, "LEFT")
@@ -51,18 +49,16 @@ func (b *Board) moveUp() {
 	for rowIndex, row := range snapShot {
 		slideRow, d1 := compactRow(rowIndex, row, true)
 
-		mergedRow, d2, scoreGain := mergeRow(slideRow)
+		mergedRow, scoreGain := mergeRow(slideRow)
 		b.game.score += scoreGain
 
-		finalRow, d3 := compactRow(rowIndex, mergedRow, false)
+		finalRow, _ := compactRow(rowIndex, mergedRow, false)
 
 		// Write to new matrix
 		newMatrix[rowIndex] = finalRow
 
 		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
-		allDeltas = append(allDeltas, d2...)
-		allDeltas = append(allDeltas, d3...)
 
 	}
 	transpose(&newMatrix)
@@ -85,10 +81,10 @@ func (b *Board) moveRight() {
 		reverseRow(&row)
 		slideRow, d1 := compactRow(rowIndex, row, true)
 
-		mergedRow, d2, scoreGain := mergeRow(slideRow)
+		mergedRow, scoreGain := mergeRow(slideRow)
 		b.game.score += scoreGain
 
-		finalRow, d3 := compactRow(rowIndex, mergedRow, false)
+		finalRow, _ := compactRow(rowIndex, mergedRow, false)
 
 		reverseRow(&finalRow)
 
@@ -97,8 +93,6 @@ func (b *Board) moveRight() {
 
 		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
-		allDeltas = append(allDeltas, d2...)
-		allDeltas = append(allDeltas, d3...)
 
 	}
 	b.game.animation.Play(allDeltas, "RIGHT")
@@ -121,10 +115,10 @@ func (b *Board) moveDown() {
 		reverseRow(&row)
 		slideRow, d1 := compactRow(rowIndex, row, true)
 
-		mergedRow, d2, scoreGain := mergeRow(slideRow)
+		mergedRow, scoreGain := mergeRow(slideRow)
 		b.game.score += scoreGain
 
-		finalRow, d3 := compactRow(rowIndex, mergedRow, false)
+		finalRow, _ := compactRow(rowIndex, mergedRow, false)
 
 		reverseRow(&finalRow)
 
@@ -133,8 +127,6 @@ func (b *Board) moveDown() {
 
 		// Collect all deltas
 		allDeltas = append(allDeltas, d1...)
-		allDeltas = append(allDeltas, d2...)
-		allDeltas = append(allDeltas, d3...)
 
 	}
 	transpose(&newMatrix)
@@ -196,7 +188,7 @@ func compactRow(rowIndex int, row [4]int, applyExtra bool) (newRow [4]int, delta
 	return newRow, deltas
 }
 
-func mergeRow(row [4]int) (newRow [4]int, deltas []animations.MoveDelta, scoreGain int) {
+func mergeRow(row [4]int) (newRow [4]int, scoreGain int) {
 	copy(newRow[:], row[:]) // Copy row info over in new row
 
 	for i := range 3 {
@@ -207,5 +199,5 @@ func mergeRow(row [4]int) (newRow [4]int, deltas []animations.MoveDelta, scoreGa
 			i++                    // Skip to next possible val spot
 		}
 	}
-	return newRow, deltas, scoreGain
+	return newRow, scoreGain
 }

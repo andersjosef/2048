@@ -17,10 +17,9 @@ type MoveDelta struct {
 }
 
 type Animation struct {
-	isAnimating     bool
-	ArrayOfChange   [co.BOARDSIZE][co.BOARDSIZE]int // TMP exposure!
-	deltas          []MoveDelta
 	view            View
+	isAnimating     bool
+	deltas          []MoveDelta
 	currentDir      string
 	animationLength float32           //seconds
 	directionMap    map[string][2]int // multiply this to get x y movement of tiles
