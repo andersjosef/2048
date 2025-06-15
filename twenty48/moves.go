@@ -65,6 +65,8 @@ func (b *Board) move(dir Direction) {
 			},
 		},
 	)
+	// Dispatch immediatley to prevent false states
+	b.GetBusHandler().Dispatch()
 
 }
 
