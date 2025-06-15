@@ -56,7 +56,7 @@ func TestMoveDown(t *testing.T) {
 		{2, 4, 2, 2},
 	}
 
-	game.board.moveDown()
+	game.board.move(Down)
 	assert.Equal(t, want, game.board.matrix)
 
 	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
@@ -71,7 +71,7 @@ func TestMoveDown(t *testing.T) {
 		{0, 2, 0, 0},
 		{2, 4, 4, 2},
 	}
-	game.board.moveDown()
+	game.board.move(Down)
 	assert.Equal(t, want, game.board.matrix)
 
 }
@@ -86,7 +86,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		{0, 2, 2, 0},
 		{0, 0, 0, 2},
 	}
-	game.board.moveDown()
+	game.board.move(Down)
 	count := 0
 	for x := 0; x < len(game.board.matrix); x++ {
 		for y := 0; y < len(game.board.matrix[0]); y++ {
@@ -104,7 +104,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		{0, 0, 0, 0},
 	}
 	game.board.matrixBeforeChange = game.board.matrix
-	game.board.moveUp()
+	game.board.move(Up)
 	game.board.addNewRandomPieceIfBoardChanged()
 	count = 0
 	for x := 0; x < len(game.board.matrix); x++ {
@@ -137,9 +137,9 @@ func TestScore(t *testing.T) {
 		{0, 0, 0, 0},
 		{8, 2, 0, 0},
 	}
-	game.board.moveUp()
+	game.board.move(Up)
 	assert.Equal(t, 20, game.score)
-	game.board.moveLeft()
+	game.board.move(Left)
 	assert.Equal(t, 52, game.score)
 
 }
@@ -158,22 +158,22 @@ func TestFullBoard(t *testing.T) {
 
 	want := game.board.matrix
 
-	game.board.moveDown()
+	game.board.move(Down)
 	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.matrix)
 
-	game.board.moveUp()
+	game.board.move(Up)
 	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.matrix)
 
-	game.board.moveLeft()
+	game.board.move(Left)
 	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.matrix)
 
-	game.board.moveRight()
+	game.board.move(Right)
 	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.matrix)
@@ -202,7 +202,7 @@ func TestMoves(t *testing.T) {
 				{2, 0, 0, 0},
 				{2, 0, 0, 2},
 			},
-			moveFunc:    func(b *Board) { b.moveLeft() },
+			moveFunc:    func(b *Board) { b.move(Left) },
 			wantedScore: 4,
 		},
 		{
@@ -219,7 +219,7 @@ func TestMoves(t *testing.T) {
 				{2, 0, 0, 0},
 				{2, 0, 0, 0},
 			},
-			moveFunc:    func(b *Board) { b.moveLeft() },
+			moveFunc:    func(b *Board) { b.move(Left) },
 			wantedScore: 4,
 		},
 		{
@@ -236,7 +236,7 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 2},
 				{0, 0, 0, 2},
 			},
-			moveFunc:    func(b *Board) { b.moveRight() },
+			moveFunc:    func(b *Board) { b.move(Right) },
 			wantedScore: 4,
 		},
 		{
@@ -253,7 +253,7 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 4},
 				{0, 0, 0, 2},
 			},
-			moveFunc:    func(b *Board) { b.moveRight() },
+			moveFunc:    func(b *Board) { b.move(Right) },
 			wantedScore: 8,
 		},
 		{
@@ -270,7 +270,7 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 0},
 				{0, 0, 2, 0},
 			},
-			moveFunc:    func(b *Board) { b.moveUp() },
+			moveFunc:    func(b *Board) { b.move(Up) },
 			wantedScore: 4,
 		},
 		{
@@ -287,7 +287,7 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 0},
 				{0, 0, 0, 0},
 			},
-			moveFunc:    func(b *Board) { b.moveUp() },
+			moveFunc:    func(b *Board) { b.move(Up) },
 			wantedScore: 8,
 		},
 		{
@@ -304,7 +304,7 @@ func TestMoves(t *testing.T) {
 				{0, 0, 0, 0},
 				{2, 4, 2, 2},
 			},
-			moveFunc:    func(b *Board) { b.moveDown() },
+			moveFunc:    func(b *Board) { b.move(Down) },
 			wantedScore: 4,
 		},
 		{
@@ -321,7 +321,7 @@ func TestMoves(t *testing.T) {
 				{2, 2, 0, 0},
 				{2, 4, 4, 2},
 			},
-			moveFunc:    func(b *Board) { b.moveDown() },
+			moveFunc:    func(b *Board) { b.move(Down) },
 			wantedScore: 8,
 		},
 	}

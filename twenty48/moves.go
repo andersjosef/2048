@@ -57,21 +57,21 @@ func (b *Board) move(dir Direction) {
 
 }
 
-func (b *Board) moveLeft() {
-	b.move(Left)
-}
+// func (b *Board) moveLeft() {
+// 	b.move(Left)
+// }
 
-func (b *Board) moveUp() {
-	b.move(Up)
-}
+// func (b *Board) moveUp() {
+// 	b.move(Up)
+// }
 
-func (b *Board) moveRight() {
-	b.move(Right)
-}
+// func (b *Board) moveRight() {
+// 	b.move(Right)
+// }
 
-func (b *Board) moveDown() {
-	b.move(Down)
-}
+// func (b *Board) moveDown() {
+// 	b.move(Down)
+// }
 
 type transform struct {
 	pre  func(*[4][4]int)
