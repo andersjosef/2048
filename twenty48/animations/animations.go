@@ -5,21 +5,15 @@ import (
 	"time"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
+	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/hajimehoshi/ebiten/v2"
 )
-
-// Describes a single tile moving from one tile to another
-type MoveDelta struct {
-	FromRow, FromCol int
-	ToRow, ToCol     int
-	ValueMoved       int
-	Merged           bool
-}
 
 type Animation struct {
 	view            View
 	isAnimating     bool
-	deltas          []MoveDelta
+	deltas          []shared.MoveDelta
 	currentDir      string
 	animationLength float32           // Seconds
 	directionMap    map[string][2]int // Multiply this to get x y movement of tiles
@@ -39,10 +33,23 @@ func InitAnimation(g View) *Animation {
 		},
 	}
 
+	a.view.GetBusHandler().Register(
+		eventhandler.EventMoveMade,
+		func(e eventhandler.Event) {
+			moveData, ok := e.Data.(shared.MoveData)
+			if !ok {
+				return
+			}
+
+			a.Play(moveData.MoveDeltas, moveData.Dir)
+
+		},
+	)
+
 	return a
 }
 
-func (a *Animation) Play(deltas []MoveDelta, dir string) {
+func (a *Animation) Play(deltas []shared.MoveDelta, dir string) {
 	for i, d := range deltas {
 		nd := d
 		switch dir {

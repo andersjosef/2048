@@ -1,7 +1,8 @@
 package twenty48
 
 import (
-	"github.com/andersjosef/2048/twenty48/animations"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
+	"github.com/andersjosef/2048/twenty48/shared"
 )
 
 type Direction int
@@ -41,37 +42,31 @@ func (b *Board) move(dir Direction) {
 	apply.pre(&snap) // Do pre matrix manipulation
 
 	var newMat [4][4]int
-	var allDeltas []animations.MoveDelta
+	var allDeltas []shared.MoveDelta
+	var allScoreGained int
 	for rowIndex, row := range snap {
 		newRow, d1, scoreGain := processRow(rowIndex, row)
-		b.game.score += scoreGain
+		allScoreGained += scoreGain
 		allDeltas = append(allDeltas, d1...)
 		newMat[rowIndex] = newRow
 	}
 
-	apply.post(&newMat)                            // Do post matrix manipulations
-	b.game.animation.Play(allDeltas, dir.String()) // Trigger animation
-	b.matrix = newMat                              // Set matrix to what has been manipulated
-	b.addNewRandomPieceIfBoardChanged()
-	b.game.gameOver = b.isGameOver()
+	apply.post(&newMat) // Do post matrix manipulations
+
+	b.game.eventBus.Emit(
+		eventhandler.Event{
+			Type: eventhandler.EventMoveMade,
+			Data: shared.MoveData{
+				ScoreGain:  allScoreGained,
+				IsGameOver: b.isGameOver(),
+				MoveDeltas: allDeltas,
+				Dir:        dir.String(),
+				NewBoard:   newMat,
+			},
+		},
+	)
 
 }
-
-// func (b *Board) moveLeft() {
-// 	b.move(Left)
-// }
-
-// func (b *Board) moveUp() {
-// 	b.move(Up)
-// }
-
-// func (b *Board) moveRight() {
-// 	b.move(Right)
-// }
-
-// func (b *Board) moveDown() {
-// 	b.move(Down)
-// }
 
 type transform struct {
 	pre  func(*[4][4]int)

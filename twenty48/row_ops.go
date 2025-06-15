@@ -1,11 +1,11 @@
 package twenty48
 
 import (
-	"github.com/andersjosef/2048/twenty48/animations"
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/shared"
 )
 
-func processRow(rowIndex int, row [4]int) (outRow [4]int, deltas []animations.MoveDelta, scoreGain int) {
+func processRow(rowIndex int, row [4]int) (outRow [4]int, deltas []shared.MoveDelta, scoreGain int) {
 	compacted, deltas := compactRow(rowIndex, row, true)
 	merged, scoreGain := mergeRow(compacted)
 	outRow, _ = compactRow(rowIndex, merged, false)
@@ -27,7 +27,7 @@ func transpose(board *[co.BOARDSIZE][co.BOARDSIZE]int) {
 	}
 }
 
-func compactRow(rowIndex int, row [4]int, applyExtra bool) (newRow [4]int, deltas []animations.MoveDelta) {
+func compactRow(rowIndex int, row [4]int, applyExtra bool) (newRow [4]int, deltas []shared.MoveDelta) {
 	insertPos, lastVal, extraMov := 0, -1, 0
 
 	for col, val := range row {
@@ -40,7 +40,7 @@ func compactRow(rowIndex int, row [4]int, applyExtra bool) (newRow [4]int, delta
 
 		// Record how far it will slide
 		if applyExtra {
-			delta := animations.MoveDelta{
+			delta := shared.MoveDelta{
 				FromRow:    rowIndex,
 				FromCol:    col,
 				ToRow:      rowIndex,

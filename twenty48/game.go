@@ -12,6 +12,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/screencontrol"
 	"github.com/andersjosef/2048/twenty48/shadertools"
+	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -156,6 +157,18 @@ func (g *Game) registerEvents() {
 			g.gameOver = false
 			shadertools.ResetTimesMapsDissolve()
 
+		},
+	)
+	g.eventBus.Register(
+		eventhandler.EventMoveMade,
+		func(e eventhandler.Event) {
+			data, ok := e.Data.(shared.MoveData)
+			if !ok {
+				return
+			}
+
+			g.score += data.ScoreGain
+			g.gameOver = data.IsGameOver
 		},
 	)
 }

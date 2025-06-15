@@ -1,6 +1,9 @@
 package twenty48
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/andersjosef/2048/twenty48/eventhandler"
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 func (b *Board) DrawBackgoundBoard(screen *ebiten.Image) {
 	screen.DrawImage(b.boardImage, b.boardImageOptions)
@@ -31,4 +34,8 @@ func (b *Board) DrawMovingMatrix(
 		movDistY,
 	)
 
+}
+
+func (b *Board) GetBusHandler() *eventhandler.EventBus {
+	return b.game.GetBusHandler()
 }

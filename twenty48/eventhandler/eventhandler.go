@@ -5,6 +5,7 @@ type EventType int
 const (
 	EventScreenChanged EventType = iota
 	EventResetGame
+	EventMoveMade
 )
 
 type Event struct {
