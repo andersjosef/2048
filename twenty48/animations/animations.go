@@ -33,7 +33,7 @@ func InitAnimation(g View) *Animation {
 		},
 	}
 
-	a.view.GetBusHandler().Register(
+	a.view.Register(
 		eventhandler.EventMoveMade,
 		func(e eventhandler.Event) {
 			moveData, ok := e.Data.(shared.MoveData)

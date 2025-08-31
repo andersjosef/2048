@@ -36,6 +36,6 @@ func (b *Board) DrawMovingMatrix(
 
 }
 
-func (b *Board) GetBusHandler() *eventhandler.EventBus {
-	return b.game.GetBusHandler()
+func (b *Board) Register(eventType eventhandler.EventType, handler func(eventhandler.Event)) {
+	b.game.eventBus.Register(eventType, handler)
 }

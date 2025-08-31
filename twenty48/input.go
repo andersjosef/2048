@@ -32,7 +32,7 @@ func InitInput(g *Game) *Input {
 
 	i.movementThreshold = 20 // Set how much the mouse has to move to reappear
 
-	i.game.GetBusHandler().Register(
+	i.game.Register(
 		eventhandler.EventScreenChanged,
 		func(_ eventhandler.Event) {
 			i.updatePauseButtonLocation()
@@ -201,7 +201,7 @@ func (i *Input) SelectMoveDelta(dx, dy int) {
 ///// Utilities //////
 
 func ResetGame(i *Input) {
-	i.game.GetBusHandler().Emit(eventhandler.Event{
+	i.game.Emit(eventhandler.Event{
 		Type: eventhandler.EventResetGame,
 	})
 }
