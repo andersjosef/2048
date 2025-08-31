@@ -3,7 +3,6 @@ package twenty48
 import "github.com/andersjosef/2048/twenty48/screencontrol"
 
 type ScreenControl interface {
-	UpdateActualDimentions()
 	GetActualSize() (x, y int)
 	ToggleFullScreen()
 	IsFullScreen() bool

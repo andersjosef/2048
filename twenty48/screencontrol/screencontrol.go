@@ -21,11 +21,11 @@ func New(d Deps) *ScreenControl {
 		scale:        1,
 	}
 
-	sc.UpdateActualDimentions()
+	sc.updateActualDimentions()
 	return sc
 }
 
-func (sc *ScreenControl) UpdateActualDimentions() {
+func (sc *ScreenControl) updateActualDimentions() {
 	dpiScale := ebiten.Monitor().DeviceScaleFactor() // Accounting for high dpi monitors
 	if sc.isFullscreen {
 		sc.actualWidth, sc.actualHeight = ebiten.Monitor().Size()
@@ -53,7 +53,7 @@ func (sc *ScreenControl) ToggleFullScreen() {
 
 func (sc *ScreenControl) setFullScreen(val bool) {
 	sc.isFullscreen = val
-	sc.UpdateActualDimentions()
+	sc.updateActualDimentions()
 }
 
 func (sc *ScreenControl) IsFullScreen() bool {
@@ -66,13 +66,13 @@ func (sc *ScreenControl) GetScale() float64 {
 
 func (sc *ScreenControl) IncrementScale() {
 	sc.scale++
-	sc.UpdateActualDimentions()
+	sc.updateActualDimentions()
 }
 
 func (sc *ScreenControl) DecrementScale() bool {
 	if sc.scale > 1 {
 		sc.scale--
-		sc.UpdateActualDimentions()
+		sc.updateActualDimentions()
 		return true
 	}
 	return false
