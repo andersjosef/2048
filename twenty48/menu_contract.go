@@ -11,6 +11,24 @@ type Menu interface {
 	UpdateCenteredTitle()
 }
 
-func NewMenu(v menu.View) Menu {
-	return menu.New(v)
+func NewMenu(g *Game) Menu {
+	d := &menu.Deps{
+		Renderer:     g,
+		Buttons:      g,
+		EventHandler: g,
+		GetSnapShot: func() menu.Snapshot {
+			w, h := g.GetActualSize()
+			return menu.Snapshot{
+				State:         g.GetState(),
+				PreviousState: g.GetPreviousState(),
+				CurrentTheme:  g.GetCurrentTheme(),
+				Fonts:         g.GetFontSet(),
+				Score:         g.GetScore(),
+				Widht:         w,
+				Height:        h,
+				IsFullScreen:  g.IsFullScreen(),
+			}
+		},
+	}
+	return menu.New(d)
 }
