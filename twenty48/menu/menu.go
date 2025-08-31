@@ -29,7 +29,7 @@ func New(v View) *Menu {
 	}
 
 	// Register events
-	v.GetBusHandler().Register(
+	v.Register(
 		eventhandler.EventScreenChanged,
 		func(evt eventhandler.Event) {
 			m.UpdateCenteredTitle()
@@ -42,7 +42,7 @@ func New(v View) *Menu {
 }
 
 func (m *Menu) registerEvents() {
-	m.view.GetBusHandler().Register(
+	m.view.Register(
 		eventhandler.EventResetGame,
 		func(_ eventhandler.Event) {
 			m.titleInFullView = false

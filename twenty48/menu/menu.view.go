@@ -13,6 +13,7 @@ type View interface {
 	ButtonManagerProvider
 	ScreenControlProvider
 	RendererProvider
+	EventHandler
 }
 
 type GameProvider interface {
@@ -21,7 +22,10 @@ type GameProvider interface {
 	GetCurrentTheme() theme.Theme
 	GetFontSet() theme.FontSet
 	GetScore() int
-	GetBusHandler() *eventhandler.EventBus
+}
+
+type EventHandler interface {
+	Register(eventType eventhandler.EventType, handler func(eventhandler.Event))
 }
 
 type ButtonManagerProvider interface {

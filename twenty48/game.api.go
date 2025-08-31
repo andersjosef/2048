@@ -81,6 +81,14 @@ func (g *Game) DrawDoubleText(screen *ebiten.Image, message string, xpos int, yp
 }
 
 // // bus ////
-func (g *Game) GetBusHandler() *eventhandler.EventBus {
-	return g.eventBus
+func (g *Game) Register(eventType eventhandler.EventType, handler func(eventhandler.Event)) {
+	g.eventBus.Register(eventType, handler)
+}
+
+func (g *Game) Emit(event eventhandler.Event) {
+	g.eventBus.Emit(event)
+}
+
+func (g *Game) Dispatch() {
+	g.eventBus.Dispatch()
 }

@@ -13,5 +13,5 @@ type BoardProvider interface {
 	DrawBackgoundBoard(screen *ebiten.Image)
 	GetBoardDimentions() (x, y int)
 	DrawMovingMatrix(screen *ebiten.Image, x, y int, movDistX, movDistY float32)
-	GetBusHandler() *eventhandler.EventBus
+	Register(eventType eventhandler.EventType, handler func(eventhandler.Event))
 }

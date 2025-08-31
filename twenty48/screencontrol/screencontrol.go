@@ -46,7 +46,7 @@ func (sc *ScreenControl) ToggleFullScreen() {
 	sc.SetFullScreen(!sc.isFullscreen)
 
 	// Trigger screen changed event
-	sc.view.GetBusHandler().Emit(eventhandler.Event{
+	sc.view.Emit(eventhandler.Event{
 		Type: eventhandler.EventScreenChanged,
 	})
 }

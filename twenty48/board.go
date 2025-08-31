@@ -45,7 +45,7 @@ func InitSizes(b *Board) *Sizes {
 		startPosY:      START_POS_Y * float32(dpiScale),
 	}
 
-	sfb.board.game.GetBusHandler().Register(
+	sfb.board.game.Register(
 		eventhandler.EventScreenChanged,
 		func(evt eventhandler.Event) {
 			sfb.scaleBoard()
@@ -108,7 +108,7 @@ func NewBoard(g *Game) (*Board, error) {
 }
 
 func (b *Board) registerEvents() {
-	b.game.GetBusHandler().Register(
+	b.game.Register(
 		eventhandler.EventResetGame,
 		func(_ eventhandler.Event) {
 			b.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{}
@@ -117,7 +117,7 @@ func (b *Board) registerEvents() {
 
 		},
 	)
-	b.GetBusHandler().Register(
+	b.game.Register(
 		eventhandler.EventMoveMade,
 		func(e eventhandler.Event) {
 			moveData, ok := e.Data.(shared.MoveData)
