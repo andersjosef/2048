@@ -20,9 +20,9 @@ type Menu struct {
 }
 
 // Initialize menu
-func New(v *Deps) *Menu {
+func New(d *Deps) *Menu {
 	var m *Menu = &Menu{
-		d: *v,
+		d: *d,
 	}
 	snap := m.d.GetSnapshot()
 	m.lastSnap = snap
