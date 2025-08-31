@@ -18,7 +18,7 @@ type Menu struct {
 }
 
 // Initialize menu
-func NewMenu(v View) *Menu {
+func New(v View) *Menu {
 	var m *Menu = &Menu{
 		view: v,
 	}

@@ -8,7 +8,6 @@ import (
 	"github.com/andersjosef/2048/twenty48/animations"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
-	"github.com/andersjosef/2048/twenty48/menu"
 	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/screencontrol"
 	"github.com/andersjosef/2048/twenty48/shadertools"
@@ -22,7 +21,7 @@ type Game struct {
 	board         *Board
 	screenControl *screencontrol.ScreenControl
 	animation     *animations.Animation
-	menu          *menu.Menu
+	menu          Menu
 	input         *Input
 	buttonManager *ButtonManager
 	fontSet       *theme.FontSet
@@ -61,7 +60,7 @@ func NewGame() (*Game, error) {
 	g.board, err = NewBoard(g)
 	g.animation = animations.InitAnimation(g.board)
 	g.renderer = renderer.InitRenderer(g.fontSet)
-	g.menu = menu.NewMenu(g)
+	g.menu = NewMenu(g)
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)
 
