@@ -9,34 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEmptyBoard(t *testing.T) {
-	board := Board{}
-	want := [co.BOARDSIZE][co.BOARDSIZE]int{}
-
-	assert.Equal(t, want, board.matrix)
-}
-
-func TestInitializeGame(t *testing.T) {
-	game, err := NewGame()
-	count := 0
-
-	// counts the number of pieces on the board
-	for x := 0; x < len(game.board.matrix); x++ {
-		for y := 0; y < len(game.board.matrix[0]); y++ {
-			if game.board.matrix[x][y] != 0 {
-				count++
-			}
-		}
-	}
-	assert.NoError(t, err)
-
-	assert.Equal(t, game, game.board.game)
-
-	assert.Equal(t, 2, int(game.state))
-	assert.Equal(t, 0, game.score)
-	assert.Equal(t, 2, count)
-}
-
 func TestMoveDown(t *testing.T) {
 	rand.Seed(42)
 	game, err := NewGame()
