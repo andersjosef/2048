@@ -8,16 +8,16 @@ import (
 
 type ScreenControl struct {
 	isFullscreen bool
-	view         View
+	d            Deps
 	actualWidth  int
 	actualHeight int
 	scale        float64
 }
 
-func InitScreenControl(g View) *ScreenControl {
+func New(d Deps) *ScreenControl {
 	sc := &ScreenControl{
 		isFullscreen: false,
-		view:         g,
+		d:            d,
 		scale:        1,
 	}
 
@@ -43,15 +43,15 @@ func (sc *ScreenControl) GetActualSize() (x, y int) {
 
 func (sc *ScreenControl) ToggleFullScreen() {
 	ebiten.SetFullscreen(!sc.isFullscreen)
-	sc.SetFullScreen(!sc.isFullscreen)
+	sc.setFullScreen(!sc.isFullscreen)
 
 	// Trigger screen changed event
-	sc.view.Emit(eventhandler.Event{
+	sc.d.Emit(eventhandler.Event{
 		Type: eventhandler.EventScreenChanged,
 	})
 }
 
-func (sc *ScreenControl) SetFullScreen(val bool) {
+func (sc *ScreenControl) setFullScreen(val bool) {
 	sc.isFullscreen = val
 	sc.UpdateActualDimentions()
 }

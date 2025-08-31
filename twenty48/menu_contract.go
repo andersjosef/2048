@@ -12,7 +12,7 @@ type Menu interface {
 }
 
 func NewMenu(g *Game) Menu {
-	d := &menu.Deps{
+	d := menu.Deps{
 		Renderer:     g.renderer,
 		Buttons:      g.buttonManager,
 		EventHandler: g.eventBus,
