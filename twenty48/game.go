@@ -9,7 +9,6 @@ import (
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/renderer"
-	"github.com/andersjosef/2048/twenty48/screencontrol"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -19,7 +18,7 @@ import (
 
 type Game struct {
 	board         *Board
-	screenControl *screencontrol.ScreenControl
+	screenControl ScreenControl
 	animation     *animations.Animation
 	menu          Menu
 	input         *Input
@@ -47,7 +46,7 @@ func NewGame() (*Game, error) {
 	g.eventBus = eventhandler.NewEventBus()
 	g.themePicker = theme.NewThemePicker()
 	g.currentTheme = g.themePicker.GetCurrentTheme()
-	g.screenControl = screencontrol.InitScreenControl(g)
+	g.screenControl = NewScreenControl(g)
 
 	// initialize text
 	var err error
