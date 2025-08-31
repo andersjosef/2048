@@ -208,3 +208,32 @@ func (bm *ButtonManager) UpdateFontsForButtons() {
 		}
 	}
 }
+
+// Providing
+func (bm *ButtonManager) ButtonExists(keyName string) (exists bool) {
+	_, exists = bm.buttonKeyMap[keyName]
+	return
+}
+
+func (bm *ButtonManager) UpdatePosForButton(keyName string, posX, posY int) (exists bool) {
+	if button, doExist := bm.buttonKeyMap[keyName]; doExist {
+		button.UpdatePos(posX, posY)
+		return true
+	}
+	return false
+}
+
+func (bm *ButtonManager) UpdateTextForButton(keyName, newText string) (exists bool) {
+	if button, doExist := bm.buttonKeyMap[keyName]; doExist {
+		button.UpdateText(newText)
+		return true
+	}
+	return false
+}
+
+func (bm *ButtonManager) GetButton(identifier string) (button *Button, exists bool) {
+	if button, doExist := bm.buttonKeyMap[identifier]; doExist {
+		return button, true
+	}
+	return nil, false
+}

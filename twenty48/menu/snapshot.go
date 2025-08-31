@@ -11,6 +11,6 @@ type Snapshot struct {
 	CurrentTheme  theme.Theme
 	Fonts         theme.FontSet
 	Score         int
-	Widht, Height int
+	Width, Height int
 	IsFullScreen  bool
 }

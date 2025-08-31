@@ -13,10 +13,10 @@ type Menu interface {
 
 func NewMenu(g *Game) Menu {
 	d := &menu.Deps{
-		Renderer:     g,
-		Buttons:      g,
-		EventHandler: g,
-		GetSnapShot: func() menu.Snapshot {
+		Renderer:     g.renderer,
+		Buttons:      g.buttonManager,
+		EventHandler: g.eventBus,
+		GetSnapshot: func() menu.Snapshot {
 			w, h := g.GetActualSize()
 			return menu.Snapshot{
 				State:         g.GetState(),
@@ -24,7 +24,7 @@ func NewMenu(g *Game) Menu {
 				CurrentTheme:  g.GetCurrentTheme(),
 				Fonts:         g.GetFontSet(),
 				Score:         g.GetScore(),
-				Widht:         w,
+				Width:         w,
 				Height:        h,
 				IsFullScreen:  g.IsFullScreen(),
 			}

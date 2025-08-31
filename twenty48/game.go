@@ -60,9 +60,9 @@ func NewGame() (*Game, error) {
 	g.board, err = NewBoard(g)
 	g.animation = animations.InitAnimation(g.board)
 	g.renderer = renderer.InitRenderer(g.fontSet)
-	g.menu = NewMenu(g)
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)
+	g.menu = NewMenu(g)
 
 	if err != nil {
 		return nil, err

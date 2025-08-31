@@ -37,35 +37,6 @@ func (g *Game) GetScale() float64 {
 	return g.screenControl.GetScale()
 }
 
-// // ButtonManagerProvider ////
-func (g *Game) ButtonExists(keyName string) (exists bool) {
-	_, exists = g.buttonManager.buttonKeyMap[keyName]
-	return
-}
-
-func (g *Game) UpdatePosForButton(keyName string, posX, posY int) (exists bool) {
-	if button, doExist := g.buttonManager.buttonKeyMap[keyName]; doExist {
-		button.UpdatePos(posX, posY)
-		return true
-	}
-	return false
-}
-
-func (g *Game) UpdateTextForButton(keyName, newText string) (exists bool) {
-	if button, doExist := g.buttonManager.buttonKeyMap[keyName]; doExist {
-		button.UpdateText(newText)
-		return true
-	}
-	return false
-}
-
-func (g *Game) GetButton(identifier string) (button *Button, exists bool) {
-	if button, doExist := g.buttonManager.buttonKeyMap[identifier]; doExist {
-		return button, true
-	}
-	return nil, false
-}
-
 // // ScreenControlProvider ////
 func (g *Game) GetActualSize() (x, y int) {
 	return g.screenControl.GetActualSize()

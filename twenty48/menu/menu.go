@@ -24,7 +24,7 @@ func New(v *Deps) *Menu {
 	var m *Menu = &Menu{
 		d: *v,
 	}
-	snap := m.d.GetSnapShot()
+	snap := m.d.GetSnapshot()
 	m.lastSnap = snap
 
 	m.UpdateCenteredTitle() // Inits title image to menu parameter
@@ -56,7 +56,7 @@ func (m *Menu) registerEvents() {
 }
 
 func (m *Menu) Draw(screen *ebiten.Image) {
-	m.lastSnap = m.d.GetSnapShot()
+	m.lastSnap = m.d.GetSnapshot()
 	switch m.lastSnap.State {
 	case co.StateMainMenu:
 		m.drawMainMenu(screen)
@@ -73,7 +73,7 @@ func (m *Menu) drawMainMenu(screen *ebiten.Image) {
 	m.drawTitle(screen)
 
 	// Instruction key info
-	width, height := m.lastSnap.Widht, m.lastSnap.Height
+	width, height := m.lastSnap.Width, m.lastSnap.Height
 
 	insX := width / 2
 	insY := (height / 2) + height/10
@@ -84,7 +84,7 @@ func (m *Menu) drawMainMenu(screen *ebiten.Image) {
 
 func (m *Menu) drawInstructions(screen *ebiten.Image) {
 
-	width, height := m.lastSnap.Widht, m.lastSnap.Height
+	width, height := m.lastSnap.Width, m.lastSnap.Height
 
 	// Title
 	m.d.DrawDoubleText(
@@ -154,14 +154,14 @@ func (m *Menu) drawInstructions(screen *ebiten.Image) {
 }
 
 func (m *Menu) UpdateDynamicText() {
-	snap := m.d.GetSnapShot()
+	snap := m.d.GetSnapshot()
 	m.dynamicText["Press F to toggle Fullscreen"] = fmt.Sprintf("Press F to toggle Fullscreen: %v", snap.IsFullScreen)
 	m.dynamicText["Press Q to toggle theme:"] = fmt.Sprintf("Press Q to toggle theme: %v", snap.CurrentTheme.Name)
 }
 
 // Resenter title on change
 func (m *Menu) UpdateCenteredTitle() {
-	xPos, yPos := m.lastSnap.Widht, m.lastSnap.Height
+	xPos, yPos := m.lastSnap.Width, m.lastSnap.Height
 
 	newImage := ebiten.NewImage(xPos, yPos)
 	m.d.DrawDoubleText(
@@ -197,7 +197,7 @@ func (m *Menu) drawTitle(screen *ebiten.Image) {
 func (m *Menu) drawGameOverScreen(screen *ebiten.Image) {
 	scoreString := fmt.Sprintf("Score: %v", m.lastSnap.Score)
 
-	width, height := m.lastSnap.Widht, m.lastSnap.Height
+	width, height := m.lastSnap.Width, m.lastSnap.Height
 
 	m.d.DrawDoubleText(
 		screen,

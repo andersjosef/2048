@@ -11,7 +11,7 @@ type Deps struct {
 	Renderer
 	EventHandler
 
-	GetSnapShot func() Snapshot
+	GetSnapshot func() Snapshot
 }
 
 type EventHandler interface {
