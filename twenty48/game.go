@@ -17,7 +17,7 @@ import (
 )
 
 type Game struct {
-	board         *Board
+	board         Board
 	screenControl ScreenControl
 	animation     *animations.Animation
 	menu          Menu
@@ -56,7 +56,7 @@ func NewGame() (*Game, error) {
 	}
 
 	// initialize new board
-	g.board, err = NewBoard(g)
+	g.board = NewBoard(g)
 	g.animation = animations.InitAnimation(g.board)
 	g.renderer = renderer.InitRenderer(g.fontSet)
 	g.input = InitInput(g)
@@ -78,7 +78,7 @@ func NewGame() (*Game, error) {
 
 func (g *Game) Update() error {
 	g.eventBus.Dispatch()
-	g.input.UpdateInput(g.board)
+	g.input.UpdateInput()
 
 	if g.shouldClose { // quit game check
 		return ebiten.Termination

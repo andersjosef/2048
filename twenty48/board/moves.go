@@ -1,4 +1,4 @@
-package twenty48
+package board
 
 import (
 	"github.com/andersjosef/2048/twenty48/eventhandler"
@@ -33,7 +33,7 @@ func (b *Board) updateBoardBeforeChange() {
 	b.matrixBeforeChange = b.matrix
 }
 
-func (b *Board) move(dir Direction) {
+func (b *Board) Move(dir Direction) {
 	b.updateBoardBeforeChange()
 
 	var snap [4][4]int
@@ -53,7 +53,7 @@ func (b *Board) move(dir Direction) {
 
 	apply.post(&newMat) // Do post matrix manipulations
 
-	b.game.eventBus.Emit(
+	b.d.Emit(
 		eventhandler.Event{
 			Type: eventhandler.EventMoveMade,
 			Data: shared.MoveData{
@@ -66,7 +66,7 @@ func (b *Board) move(dir Direction) {
 		},
 	)
 	// Dispatch immediatley to prevent false states
-	b.game.Dispatch()
+	b.d.Dispatch()
 
 }
 

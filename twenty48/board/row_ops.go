@@ -1,4 +1,4 @@
-package twenty48
+package board
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
