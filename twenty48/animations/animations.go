@@ -11,7 +11,7 @@ import (
 )
 
 type Animation struct {
-	view            View
+	d               Deps
 	isAnimating     bool
 	deltas          []shared.MoveDelta
 	currentDir      string
@@ -20,10 +20,10 @@ type Animation struct {
 	startTime       time.Time
 }
 
-func InitAnimation(g View) *Animation {
+func New(d Deps) *Animation {
 	a := &Animation{
 		isAnimating:     false,
-		view:            g,
+		d:               d,
 		animationLength: 0.20, // Animation duration in seconds
 		directionMap: map[string][2]int{
 			"UP":    {0, -1},
@@ -33,7 +33,7 @@ func InitAnimation(g View) *Animation {
 		},
 	}
 
-	a.view.Register(
+	a.d.Register(
 		eventhandler.EventMoveMade,
 		func(e eventhandler.Event) {
 			moveData, ok := e.Data.(shared.MoveData)
@@ -41,15 +41,14 @@ func InitAnimation(g View) *Animation {
 				return
 			}
 
-			a.Play(moveData.MoveDeltas, moveData.Dir)
-
+			a.play(moveData.MoveDeltas, moveData.Dir)
 		},
 	)
 
 	return a
 }
 
-func (a *Animation) Play(deltas []shared.MoveDelta, dir string) {
+func (a *Animation) play(deltas []shared.MoveDelta, dir string) {
 	for i, d := range deltas {
 		nd := d
 		switch dir {
@@ -77,7 +76,7 @@ func (a *Animation) Play(deltas []shared.MoveDelta, dir string) {
 }
 
 func (a *Animation) Draw(screen *ebiten.Image) {
-	a.view.DrawBackgoundBoard(screen)
+	a.d.DrawBackgoundBoard(screen)
 
 	elapsed := float32(time.Since(a.startTime).Seconds())
 	progress := float32(min(float64(elapsed/a.animationLength), 1))
@@ -102,7 +101,7 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 		moveX := dirX * min(fullDist, needX)
 		moveY := dirY * min(fullDist, needY)
 
-		a.view.DrawMovingMatrix(
+		a.d.DrawMovingMatrix(
 			screen,
 			d.FromCol,
 			d.FromRow,

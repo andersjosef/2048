@@ -1,7 +1,6 @@
 package board
 
 import (
-	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -34,10 +33,6 @@ func (b *Board) DrawMovingMatrix(
 		movDistY,
 	)
 
-}
-
-func (b *Board) Register(eventType eventhandler.EventType, handler func(eventhandler.Event)) {
-	b.d.Register(eventType, handler)
 }
 
 // Should be temporary

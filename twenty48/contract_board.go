@@ -3,7 +3,6 @@ package twenty48
 import (
 	"github.com/andersjosef/2048/twenty48/board"
 	co "github.com/andersjosef/2048/twenty48/constants"
-	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -19,7 +18,6 @@ type Board interface {
 		movDistX,
 		movDistY float32,
 	)
-	Register(eventType eventhandler.EventType, handler func(eventhandler.Event)) // ??
 	CreateBoardImage()
 	ScaleBoard()
 	Move(dir board.Direction)

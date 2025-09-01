@@ -5,10 +5,8 @@ import (
 	"image/color"
 	"math"
 
-	"github.com/andersjosef/2048/twenty48/animations"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
-	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -19,13 +17,14 @@ import (
 type Game struct {
 	board         Board
 	screenControl ScreenControl
-	animation     *animations.Animation
+	animation     Animation
 	menu          Menu
+	renderer      Renderer
 	input         *Input
 	buttonManager *ButtonManager
 	fontSet       *theme.FontSet
 	themePicker   *theme.ThemePicker
-	renderer      *renderer.Renderer
+	utils         Utils
 	eventBus      *eventhandler.EventBus
 	state         co.GameState // Game is in menu, running, etc
 	previousState co.GameState
@@ -57,8 +56,9 @@ func NewGame() (*Game, error) {
 
 	// initialize new board
 	g.board = NewBoard(g)
-	g.animation = animations.InitAnimation(g.board)
-	g.renderer = renderer.InitRenderer(g.fontSet)
+	g.animation = NewAnimation(g)
+	g.renderer = NewRenderer(g)
+	g.utils = NewUtils()
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)
 	g.menu = NewMenu(g)
@@ -88,11 +88,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(g.currentTheme.ColorScreenBackground)
 	switch g.state {
 	case co.StateRunning: //game is running loop
-		if g.animation.IsAnimating() { // show animation
-			g.animation.Draw(screen)
-		} else { // draw normal borad
-			g.board.Draw(screen)
-		}
+		g.renderer.Draw(screen)
 		DrawScore(screen, g)
 	}
 	g.buttonManager.drawButtons(screen)

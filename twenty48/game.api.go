@@ -48,7 +48,7 @@ func (g *Game) IsFullScreen() bool {
 
 // // RendererProvider ////
 func (g *Game) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
-	g.renderer.DrawDoubleText(screen, message, xpos, ypos, offset, fontUsed, isCentered)
+	g.utils.DrawDoubleText(screen, message, xpos, ypos, offset, fontUsed, isCentered)
 }
 
 // // bus ////
