@@ -161,6 +161,7 @@ func (m *Menu) UpdateDynamicText() {
 
 // Resenter title on change
 func (m *Menu) UpdateCenteredTitle() {
+	m.lastSnap = m.d.GetSnapshot()
 	xPos, yPos := m.lastSnap.Width, m.lastSnap.Height
 
 	newImage := ebiten.NewImage(xPos, yPos)
