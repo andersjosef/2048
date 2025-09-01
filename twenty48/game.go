@@ -60,10 +60,12 @@ func NewGame() (*Game, error) {
 	g.animation = NewAnimation(g)
 	g.renderer = NewRenderer(g)
 	g.utils = NewUtils()
-	g.input = InitInput(g)
-	g.buttonManager = InitButtonManager(g)
-	g.menu = NewMenu(g)
 
+	cmds := NewCommands(g)
+	g.input = InitInput(g, cmds)
+	g.buttonManager = InitButtonManager(g)
+
+	g.menu = NewMenu(g)
 	ebiten.SetWindowSize(
 		co.LOGICAL_WIDTH*int(g.screenControl.GetScale()),
 		co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()),
