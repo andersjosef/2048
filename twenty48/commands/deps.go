@@ -13,6 +13,7 @@ type Deps struct {
 	SetCloseGame          func(bool)
 	IncrementCurrentTheme func()
 	ToggleInfo            func()
+	ScaleWindow           func() // Should only be temporary
 }
 
 type Board interface {
@@ -28,4 +29,6 @@ type EventHandler interface {
 
 type ScreenControl interface {
 	ToggleFullScreen()
+	IncrementScale()
+	DecrementScale() bool
 }

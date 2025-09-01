@@ -285,7 +285,6 @@ func (i *Input) moveDown() {
 ///// Menu Logic /////
 
 func toggleInfo(i *Input) {
-
 	switch i.game.state {
 	case co.StateMainMenu:
 		i.game.state = co.StateInstructions
@@ -297,43 +296,6 @@ func toggleInfo(i *Input) {
 		i.game.state = i.game.previousState
 	}
 
-}
-
-func ScaleWindowUp(i *Input) {
-	// Oob Check to stop the growth somewhere
-	mw, mh := ebiten.Monitor().Size()
-	ww, wh := ebiten.WindowSize()
-	if ww >= mw || wh >= mh {
-		return
-	}
-	i.game.screenControl.IncrementScale()
-	ScaleWindow(i)
-}
-
-func ScaleWindowDown(i *Input) {
-	if i.game.screenControl.DecrementScale() {
-		ScaleWindow(i)
-	}
-}
-
-// Helper function for scaling image, contains what is equal for up and down
-func ScaleWindow(i *Input) {
-	i.game.updateFonts()
-	i.game.board.ScaleBoard()
-	i.game.menu.UpdateCenteredTitle()
-	i.updatePauseButtonLocation()
-	i.game.buttonManager.UpdateFontsForButtons()
-	ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(i.game.screenControl.GetScale()), co.LOGICAL_HEIGHT*int(i.game.screenControl.GetScale()))
-	i.centerWindow()
-
-}
-
-// Will center the image to the new size
-// when scaling the screen up and down
-func (i *Input) centerWindow() {
-	mw, mh := ebiten.Monitor().Size()
-	ww, wh := ebiten.WindowSize()
-	ebiten.SetWindowPosition(mw/2-ww/2, mh/2-wh/2)
 }
 
 // Helper function for updating the pause button location
