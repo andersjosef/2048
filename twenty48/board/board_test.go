@@ -61,46 +61,28 @@ func TestInitializeBoard(t *testing.T) {
 	assert.Equal(t, 2, count)
 }
 
-// func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
-// 	game, err := NewGame()
+func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
+	d := Deps{
+		EventHandler:    MockEventHandler{},
+		GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
+		ScreenControl:   MockScreenControl{},
+	}
+	board, err := New(d)
 
-// 	assert.NoError(t, err)
-// 	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
-// 		{2, 2, 2, 0},
-// 		{0, 2, 0, 0},
-// 		{0, 2, 2, 0},
-// 		{0, 0, 0, 2},
-// 	}
-// 	game.board.move(Down)
-// 	count := 0
-// 	for x := 0; x < len(game.board.matrix); x++ {
-// 		for y := 0; y < len(game.board.matrix[0]); y++ {
-// 			if game.board.matrix[x][y] != 0 {
-// 				count++
-// 			}
-// 		}
-// 	}
-// 	assert.Equal(t, 6, count)
+	board.randomNewPiece()
 
-// 	game.board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
-// 		{2, 2, 2, 2},
-// 		{0, 0, 0, 0},
-// 		{0, 0, 0, 0},
-// 		{0, 0, 0, 0},
-// 	}
-// 	game.board.matrixBeforeChange = game.board.matrix
-// 	game.board.move(Up)
-// 	game.board.addNewRandomPieceIfBoardChanged()
-// 	count = 0
-// 	for x := 0; x < len(game.board.matrix); x++ {
-// 		for y := 0; y < len(game.board.matrix[0]); y++ {
-// 			if game.board.matrix[x][y] != 0 {
-// 				count++
-// 			}
-// 		}
-// 	}
-// 	assert.Equal(t, 4, count)
-// }
+	count := 0
+	for x := range len(board.matrix) {
+		for y := range len(board.matrix[0]) {
+			if board.matrix[x][y] != 0 {
+				count++
+			}
+		}
+	}
+
+	assert.NoError(t, err)
+	assert.Equal(t, 3, count)
+}
 
 func TestMoves(t *testing.T) {
 	rand.Seed(42)
@@ -278,6 +260,81 @@ func TestMoves(t *testing.T) {
 			assert.NoError(t, err)
 			assert.Equal(t, tc.want, board.matrix)
 			assert.Equal(t, tc.wantedScore, gotScore)
+		})
+	}
+}
+
+func TestIsGameOver(t *testing.T) {
+	var tests = []struct {
+		name  string
+		board [co.BOARDSIZE][co.BOARDSIZE]int
+		want  bool
+	}{
+		{
+			name: "Empty",
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+				{0, 0, 0, 0},
+			},
+			want: false,
+		},
+		{
+			name: "Full",
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+			},
+			want: true,
+		},
+		{
+			name: "Only UP/DOWN",
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{8, 4, 2, 4},
+				{8, 2, 4, 2},
+			},
+			want: false,
+		},
+		{
+			name: "Only RIGHT/LEFT",
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
+				{2, 4, 2, 4},
+				{4, 2, 4, 2},
+				{2048, 2048, 2, 4},
+				{4, 2, 4, 2},
+			},
+			want: false,
+		},
+		{
+			name: "X",
+			board: [co.BOARDSIZE][co.BOARDSIZE]int{
+				{2, 0, 0, 4},
+				{0, 2, 4, 0},
+				{0, 4, 2, 0},
+				{4, 0, 0, 2},
+			},
+			want: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			d := Deps{
+				EventHandler:    MockEventHandler{},
+				GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
+				ScreenControl:   MockScreenControl{},
+				SetGameOver:     func(_ bool) {},
+			}
+			board, err := New(d)
+			assert.NoError(t, err)
+
+			board.matrix = tc.board
+			assert.Equal(t, tc.want, board.isGameOver())
 		})
 	}
 }

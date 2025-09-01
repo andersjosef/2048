@@ -9,9 +9,10 @@ import (
 
 func TestReset(t *testing.T) {
 	game, err := NewGame()
+
+	game.score = 1000
+
 	assert.NoError(t, err)
-	game.board.randomNewPiece()
-	game.board.randomNewPiece()
 	ResetGame(game.input)
 
 	assert.Equal(t, 0, game.score)
@@ -67,73 +68,4 @@ func TestFullBoard(t *testing.T) {
 	game.board.addNewRandomPieceIfBoardChanged()
 
 	assert.Equal(t, want, game.board.matrix)
-}
-
-func TestIsGameOver(t *testing.T) {
-	var tests = []struct {
-		name  string
-		board [co.BOARDSIZE][co.BOARDSIZE]int
-		want  bool
-	}{
-		{
-			name: "Empty",
-			board: [co.BOARDSIZE][co.BOARDSIZE]int{
-				{0, 0, 0, 0},
-				{0, 0, 0, 0},
-				{0, 0, 0, 0},
-				{0, 0, 0, 0},
-			},
-			want: false,
-		},
-		{
-			name: "Full",
-			board: [co.BOARDSIZE][co.BOARDSIZE]int{
-				{2, 4, 2, 4},
-				{4, 2, 4, 2},
-				{2, 4, 2, 4},
-				{4, 2, 4, 2},
-			},
-			want: true,
-		},
-		{
-			name: "Only UP/DOWN",
-			board: [co.BOARDSIZE][co.BOARDSIZE]int{
-				{2, 4, 2, 4},
-				{4, 2, 4, 2},
-				{8, 4, 2, 4},
-				{8, 2, 4, 2},
-			},
-			want: false,
-		},
-		{
-			name: "Only RIGHT/LEFT",
-			board: [co.BOARDSIZE][co.BOARDSIZE]int{
-				{2, 4, 2, 4},
-				{4, 2, 4, 2},
-				{2048, 2048, 2, 4},
-				{4, 2, 4, 2},
-			},
-			want: false,
-		},
-		{
-			name: "X",
-			board: [co.BOARDSIZE][co.BOARDSIZE]int{
-				{2, 0, 0, 4},
-				{0, 2, 4, 0},
-				{0, 4, 2, 0},
-				{4, 0, 0, 2},
-			},
-			want: false,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			game, err := NewGame()
-			assert.NoError(t, err)
-
-			game.board.matrix = tc.board
-			assert.Equal(t, tc.want, game.board.isGameOver())
-		})
-	}
 }
