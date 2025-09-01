@@ -10,7 +10,6 @@ func NewCommands(g *Game) commands.Commands {
 		Board:         g.board,
 		EventHandler:  g.eventBus,
 		ScreenControl: g.screenControl,
-		Menu:          g.menu,
 
 		SetCloseGame: func(b bool) { g.shouldClose = b },
 		IncrementCurrentTheme: func() { // Change this

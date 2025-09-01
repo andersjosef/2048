@@ -53,6 +53,13 @@ func (m *Menu) registerEvents() {
 			m.titleInFullView = false
 		},
 	)
+
+	m.d.Register(
+		eventhandler.EventThemeChanged,
+		func(_ eventhandler.Event) {
+			m.UpdateDynamicText()
+		},
+	)
 }
 
 func (m *Menu) Draw(screen *ebiten.Image) {

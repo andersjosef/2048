@@ -30,7 +30,10 @@ func BuildCommands(d Deps) Commands {
 		ToggleTheme: func() {
 			d.IncrementCurrentTheme()
 			d.Board.CreateBoardImage()
-			d.Menu.UpdateDynamicText()
+			d.EventHandler.Emit(eventhandler.Event{
+				Type: eventhandler.EventThemeChanged,
+			})
+			// d.Menu.UpdateDynamicText()
 		},
 		ToggleInfo: func() { d.ToggleInfo() },
 

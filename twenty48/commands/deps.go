@@ -9,7 +9,6 @@ type Deps struct {
 	Board
 	EventHandler
 	ScreenControl
-	Menu
 
 	SetCloseGame          func(bool)
 	IncrementCurrentTheme func()
@@ -29,8 +28,4 @@ type EventHandler interface {
 
 type ScreenControl interface {
 	ToggleFullScreen()
-}
-
-type Menu interface {
-	UpdateDynamicText()
 }
