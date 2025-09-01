@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-// Change centerWindwo and Scale Window
+// TODO: Change centerWindwo and Scale Window
 func NewCommands(g *Game) commands.Commands {
 	centerWindow := func() {
 		mw, mh := ebiten.Monitor().Size()

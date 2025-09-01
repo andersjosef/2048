@@ -3,13 +3,14 @@ package twenty48
 import (
 	"math"
 
-	"github.com/andersjosef/2048/twenty48/board"
 	"github.com/andersjosef/2048/twenty48/commands"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
+
+const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
 
 type Input struct {
 	game              *Game
@@ -44,18 +45,13 @@ func InitInput(g *Game, cmds commands.Commands) *Input {
 		},
 	)
 
-	i.addKeyActions()
+	i.addKeyBindings()
 
 	return i
 }
 
-type ActionFunc func(*Input)
-
-const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
-
-func (i *Input) addKeyActions() {
-
-	// buttons
+// Keybindings
+func (i *Input) addKeyBindings() {
 	i.keyActions = map[co.GameState]map[ebiten.Key]func(){
 		co.StateRunning: { // Main loop
 			ebiten.KeyArrowRight: i.Cmds.MoveRight,
@@ -188,41 +184,26 @@ func (i *Input) performMove() {
 }
 
 func (i *Input) SelectMoveDelta(dx, dy int) {
+	if i.game.gameOver {
+		return
+	}
 	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
 		if dx > 0 {
-			i.moveRight()
+			i.Cmds.MoveRight()
 		} else {
-			i.moveLeft()
+			i.Cmds.MoveLeft()
 		}
 	} else { // Y-axis largest
 		if dy > 0 {
-			i.moveDown()
+			i.Cmds.MoveDown()
 		} else {
-			i.moveUp()
+			i.Cmds.MoveUp()
 		}
 	}
 
 }
 
-////////////////////////////////////////////////
-//				Actions						  //
-////////////////////////////////////////////////
-
 ///// Utilities //////
-
-func ResetGame(i *Input) {
-	i.game.Emit(eventhandler.Event{
-		Type: eventhandler.EventResetGame,
-	})
-}
-
-func CloseGame(i *Input) {
-	i.game.shouldClose = true
-}
-
-func ToggleFullScreen(i *Input) {
-	i.game.screenControl.ToggleFullScreen()
-}
 
 // Helper functions for toggeling mouse being displayed or not
 func (i *Input) checkForMakingCursorVisible() {
@@ -248,58 +229,9 @@ func (i *Input) checkForMakingCursorHidden() {
 	}
 }
 
-func toggleTheme(i *Input) {
-	i.game.currentTheme = i.game.themePicker.IncrementCurrentTheme()
-	i.game.board.CreateBoardImage()
-	i.game.menu.UpdateDynamicText()
-}
-
-///// Main game logic action /////
-
-func (i *Input) moveRight() {
-	if i.game.gameOver {
-		return
-	}
-	i.game.board.Move(board.Right)
-
-}
-func (i *Input) moveLeft() {
-	if i.game.gameOver {
-		return
-	}
-	i.game.board.Move(board.Left)
-}
-func (i *Input) moveUp() {
-	if i.game.gameOver {
-		return
-	}
-	i.game.board.Move(board.Up)
-}
-func (i *Input) moveDown() {
-	if i.game.gameOver {
-		return
-	}
-	i.game.board.Move(board.Down)
-}
-
-///// Menu Logic /////
-
-func toggleInfo(i *Input) {
-	switch i.game.state {
-	case co.StateMainMenu:
-		i.game.state = co.StateInstructions
-		i.game.previousState = co.StateMainMenu
-	case co.StateRunning:
-		i.game.state = co.StateInstructions
-		i.game.previousState = co.StateRunning
-	case co.StateInstructions:
-		i.game.state = i.game.previousState
-	}
-
-}
-
 // Helper function for updating the pause button location
 // When changing screen size
+// TODO: Move this
 func (i *Input) updatePauseButtonLocation() {
 	width, _ := i.game.GetActualSize()
 	i.game.buttonManager.buttonKeyMap["II"].UpdatePos(width-20, 20)

@@ -13,7 +13,7 @@ type Deps struct {
 	SetCloseGame          func(bool)
 	IncrementCurrentTheme func()
 	ToggleInfo            func()
-	ScaleWindow           func() // Should only be temporary
+	ScaleWindow           func()
 }
 
 type Board interface {

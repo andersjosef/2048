@@ -34,7 +34,6 @@ func BuildCommands(d Deps) Commands {
 			d.EventHandler.Emit(eventhandler.Event{
 				Type: eventhandler.EventThemeChanged,
 			})
-			// d.Menu.UpdateDynamicText()
 		},
 		ToggleInfo: func() { d.ToggleInfo() },
 

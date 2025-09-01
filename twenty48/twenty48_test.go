@@ -9,10 +9,12 @@ import (
 func TestReset(t *testing.T) {
 	g, err := NewGame()
 	assert.NoError(t, err)
+	cmds := NewCommands(g)
 
 	g.score = 1000
 
-	ResetGame(g.input)
+	cmds.ResetGame()
+
 	g.eventBus.Dispatch()
 
 	assert.Equal(t, 0, g.score)

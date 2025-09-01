@@ -108,7 +108,7 @@ func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64)
 func DrawScore(screen *ebiten.Image, g *Game) {
 	myFont := g.fontSet.Smaller
 
-	//TODO make more dynamig IG
+	//TODO: make more dynamic
 	margin := 10
 	var shadowOffsett int = 2
 	var score_text string = fmt.Sprintf("%v", g.score)
