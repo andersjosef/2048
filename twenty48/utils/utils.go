@@ -1,23 +1,22 @@
-package renderer
+package utils
 
 import (
 	"image/color"
 
-	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
-type Renderer struct {
+type Utils struct {
 }
 
-func InitRenderer(fontSet *theme.FontSet) *Renderer {
-	r := &Renderer{}
+func New() *Utils {
+	r := &Utils{}
 
 	return r
 }
 
-func (r *Renderer) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
+func (r *Utils) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
 
 	// Calculate text dimensions
 	textWidth, textHeight := text.Measure(message, fontUsed, 0)

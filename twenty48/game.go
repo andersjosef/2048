@@ -7,7 +7,6 @@ import (
 
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
-	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -24,7 +23,7 @@ type Game struct {
 	buttonManager *ButtonManager
 	fontSet       *theme.FontSet
 	themePicker   *theme.ThemePicker
-	renderer      *renderer.Renderer
+	renderer      Utils
 	eventBus      *eventhandler.EventBus
 	state         co.GameState // Game is in menu, running, etc
 	previousState co.GameState
@@ -57,7 +56,7 @@ func NewGame() (*Game, error) {
 	// initialize new board
 	g.board = NewBoard(g)
 	g.animation = NewAnimation(g)
-	g.renderer = renderer.InitRenderer(g.fontSet)
+	g.renderer = NewUtils()
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)
 	g.menu = NewMenu(g)
