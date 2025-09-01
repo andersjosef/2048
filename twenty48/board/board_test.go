@@ -2,6 +2,7 @@ package board
 
 import (
 	"math/rand"
+	"strconv"
 	"testing"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
@@ -44,6 +45,8 @@ func TestInitializeBoard(t *testing.T) {
 	sum := 0
 
 	board, err := New(d)
+	assert.NoError(t, err)
+
 	// counts the number of pieces on the board
 	for x := range len(board.matrix) {
 		for y := range len(board.matrix[0]) {
@@ -55,7 +58,6 @@ func TestInitializeBoard(t *testing.T) {
 		}
 	}
 
-	assert.NoError(t, err)
 	assert.GreaterOrEqual(t, sum, 0)
 	assert.LessOrEqual(t, sum, 8)
 	assert.Equal(t, 2, count)
@@ -68,6 +70,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		ScreenControl:   MockScreenControl{},
 	}
 	board, err := New(d)
+	assert.NoError(t, err)
 
 	board.randomNewPiece()
 
@@ -80,7 +83,6 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		}
 	}
 
-	assert.NoError(t, err)
 	assert.Equal(t, 3, count)
 }
 
@@ -254,10 +256,11 @@ func TestMoves(t *testing.T) {
 				SetGameOver:     func(_ bool) {},
 			}
 			board, err := New(d)
+			assert.NoError(t, err)
+
 			board.matrix = tc.initialBoard
 			tc.moveFunc(board)
 
-			assert.NoError(t, err)
 			assert.Equal(t, tc.want, board.matrix)
 			assert.Equal(t, tc.wantedScore, gotScore)
 		})
@@ -337,4 +340,77 @@ func TestIsGameOver(t *testing.T) {
 			assert.Equal(t, tc.want, board.isGameOver())
 		})
 	}
+}
+
+func TestFullBoard(t *testing.T) {
+	tests := []struct {
+		direction Direction
+	}{
+		{Down},
+		{Up},
+		{Left},
+		{Right},
+	}
+
+	for i, tc := range tests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			d := Deps{
+				EventHandler:    MockEventHandler{},
+				GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
+				ScreenControl:   MockScreenControl{},
+				SetGameOver:     func(_ bool) {},
+			}
+			board, err := New(d)
+			assert.NoError(t, err)
+
+			board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
+				{2, 8, 2, 8},
+				{8, 2, 8, 2},
+				{2, 8, 2, 8},
+				{8, 2, 8, 2},
+			}
+			want := board.matrix
+
+			board.Move(tc.direction)
+			board.addNewRandomPieceIfBoardChanged()
+
+			assert.Equal(t, want, board.matrix)
+		})
+	}
+}
+
+func TestScore(t *testing.T) {
+	eventHandler := eventhandler.NewEventBus()
+
+	// Listen to score given
+	gotScore := 0
+	eventHandler.Register(eventhandler.EventMoveMade, func(e eventhandler.Event) {
+		data, ok := e.Data.(shared.MoveData)
+		if !ok {
+			return
+		}
+
+		gotScore += data.ScoreGain
+	})
+
+	d := Deps{
+		EventHandler:    eventHandler,
+		GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
+		ScreenControl:   MockScreenControl{},
+		SetGameOver:     func(_ bool) {},
+	}
+	board, err := New(d)
+	assert.NoError(t, err)
+
+	board.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{
+		{8, 16, 2, 0},
+		{0, 0, 2, 0},
+		{0, 0, 0, 0},
+		{8, 2, 0, 0},
+	}
+
+	board.Move(Up)
+	assert.Equal(t, 20, gotScore)
+	board.Move(Left)
+	assert.Equal(t, 52, gotScore)
 }
