@@ -1,6 +1,7 @@
 package twenty48
 
 import (
+	"github.com/andersjosef/2048/twenty48/commands"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -9,14 +10,16 @@ import (
 // // Button Manager ////
 type ButtonManager struct {
 	game           *Game
+	Cmds           commands.Commands
 	buttonArrayMap map[co.GameState][]*Button
 	buttonKeyMap   map[string]*Button
 	buttonPressed  bool
 }
 
-func InitButtonManager(g *Game) *ButtonManager {
+func InitButtonManager(g *Game, cmds commands.Commands) *ButtonManager {
 	var bm *ButtonManager = &ButtonManager{
 		game:           g,
+		Cmds:           cmds,
 		buttonArrayMap: make(map[co.GameState][]*Button),
 		buttonKeyMap:   make(map[string]*Button),
 	}
@@ -40,7 +43,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		FontMini,
-		toggleInfo,
+		bm.Cmds.ToggleInfo,
 		co.StateMainMenu,
 	)
 
@@ -51,7 +54,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		FontMini,
-		ResetGame,
+		bm.Cmds.ResetGame,
 		co.StateInstructions,
 	)
 
@@ -61,7 +64,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		FontMini,
-		ToggleFullScreen,
+		bm.Cmds.ToggleFullscreen,
 		co.StateInstructions,
 	)
 
@@ -71,7 +74,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		FontMini,
-		toggleTheme,
+		bm.Cmds.ToggleTheme,
 		co.StateInstructions,
 	)
 
@@ -81,7 +84,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		FontMini,
-		CloseGame,
+		bm.Cmds.CloseGame,
 		co.StateInstructions,
 	)
 
@@ -91,7 +94,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		FontMini,
-		toggleInfo,
+		bm.Cmds.ToggleInfo,
 		co.StateInstructions,
 	)
 
@@ -102,7 +105,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		-1, // Something not in enum for now, needs update to size
-		toggleInfo,
+		bm.Cmds.ToggleInfo,
 		co.StateRunning,
 	)
 
@@ -114,7 +117,7 @@ func (bm *ButtonManager) initButtons() {
 		smallOffsett,
 		bm.game.fontSet.Mini,
 		FontMini,
-		ResetGame,
+		bm.Cmds.ResetGame,
 		co.StateGameOver,
 	)
 
@@ -169,7 +172,7 @@ func (bm *ButtonManager) checkButtons() bool {
 	return false
 }
 
-func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, fontType FontType, actionFunction ActionFunc, state co.GameState) {
+func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, fontType FontType, actionFunction func(), state co.GameState) {
 	// Create new button obj
 	newButton := &Button{
 		game:           bm.game,

@@ -27,7 +27,7 @@ type Button struct {
 	font           *text.GoTextFace
 	fontType       FontType
 	offset         float64
-	actionFunction ActionFunc
+	actionFunction func()
 }
 
 // Use when wanting to move a button
@@ -80,7 +80,7 @@ func (bu *Button) GetDimentions() (int, int, error) {
 }
 
 func (bu *Button) OnTrigger() {
-	bu.actionFunction(bu.game.input)
+	bu.actionFunction()
 }
 
 func (bu *Button) Draw(screen *ebiten.Image) {

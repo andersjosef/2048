@@ -63,7 +63,7 @@ func NewGame() (*Game, error) {
 
 	cmds := NewCommands(g)
 	g.input = InitInput(g, cmds)
-	g.buttonManager = InitButtonManager(g)
+	g.buttonManager = InitButtonManager(g, cmds)
 
 	g.menu = NewMenu(g)
 	ebiten.SetWindowSize(
