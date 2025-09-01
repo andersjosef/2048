@@ -5,7 +5,6 @@ import (
 	"image/color"
 	"math"
 
-	"github.com/andersjosef/2048/twenty48/animations"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/renderer"
@@ -19,7 +18,7 @@ import (
 type Game struct {
 	board         Board
 	screenControl ScreenControl
-	animation     *animations.Animation
+	animation     Animation
 	menu          Menu
 	input         *Input
 	buttonManager *ButtonManager
@@ -57,7 +56,7 @@ func NewGame() (*Game, error) {
 
 	// initialize new board
 	g.board = NewBoard(g)
-	g.animation = animations.InitAnimation(g.board)
+	g.animation = NewAnimation(g)
 	g.renderer = renderer.InitRenderer(g.fontSet)
 	g.input = InitInput(g)
 	g.buttonManager = InitButtonManager(g)
