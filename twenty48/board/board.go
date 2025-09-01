@@ -98,7 +98,7 @@ func New(d Deps) (*Board, error) {
 		b.randomNewPiece()
 	}
 
-	// create baordImage
+	// create boardImage
 	b.CreateBoardImage()
 
 	b.registerEvents()
