@@ -10,13 +10,7 @@ import (
 type Utils struct {
 }
 
-func New() *Utils {
-	r := &Utils{}
-
-	return r
-}
-
-func (r *Utils) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
+func (Utils) DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool) {
 
 	// Calculate text dimensions
 	textWidth, textHeight := text.Measure(message, fontUsed, 0)

@@ -11,5 +11,5 @@ type Utils interface {
 }
 
 func NewUtils() Utils {
-	return utils.New()
+	return utils.Utils{}
 }

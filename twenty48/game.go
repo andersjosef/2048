@@ -26,6 +26,7 @@ type Game struct {
 	themePicker   *theme.ThemePicker
 	utils         Utils
 	eventBus      *eventhandler.EventBus
+
 	state         co.GameState // Game is in menu, running, etc
 	previousState co.GameState
 	score         int
