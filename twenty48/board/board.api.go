@@ -1,4 +1,4 @@
-package twenty48
+package board
 
 import (
 	"github.com/andersjosef/2048/twenty48/eventhandler"
@@ -37,5 +37,10 @@ func (b *Board) DrawMovingMatrix(
 }
 
 func (b *Board) Register(eventType eventhandler.EventType, handler func(eventhandler.Event)) {
-	b.game.eventBus.Register(eventType, handler)
+	b.d.Register(eventType, handler)
+}
+
+// Should be temporary
+func (b *Board) ScaleBoard() {
+	b.sizes.scaleBoard()
 }

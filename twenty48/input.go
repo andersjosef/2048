@@ -3,6 +3,7 @@ package twenty48
 import (
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/board"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -93,7 +94,7 @@ var keyActions = map[co.GameState]map[ebiten.Key]ActionFunc{
 	},
 }
 
-func (i *Input) UpdateInput(b *Board) error {
+func (i *Input) UpdateInput() error {
 	// Keyboard and Mouse input handling
 	if i.game.buttonManager.checkButtons() {
 		return nil
@@ -207,7 +208,7 @@ func ResetGame(i *Input) {
 }
 
 func CloseGame(i *Input) {
-	i.game.board.game.shouldClose = true
+	i.game.shouldClose = true
 }
 
 func ToggleFullScreen(i *Input) {
@@ -240,7 +241,7 @@ func (i *Input) checkForMakingCursorHidden() {
 
 func toggleTheme(i *Input) {
 	i.game.currentTheme = i.game.themePicker.IncrementCurrentTheme()
-	i.game.board.createBoardImage()
+	i.game.board.CreateBoardImage()
 	i.game.menu.UpdateDynamicText()
 }
 
@@ -250,26 +251,26 @@ func (i *Input) moveRight() {
 	if i.game.gameOver {
 		return
 	}
-	i.game.board.move(Right)
+	i.game.board.Move(board.Right)
 
 }
 func (i *Input) moveLeft() {
 	if i.game.gameOver {
 		return
 	}
-	i.game.board.move(Left)
+	i.game.board.Move(board.Left)
 }
 func (i *Input) moveUp() {
 	if i.game.gameOver {
 		return
 	}
-	i.game.board.move(Up)
+	i.game.board.Move(board.Up)
 }
 func (i *Input) moveDown() {
 	if i.game.gameOver {
 		return
 	}
-	i.game.board.move(Down)
+	i.game.board.Move(board.Down)
 }
 
 ///// Menu Logic /////
@@ -309,7 +310,7 @@ func ScaleWindowDown(i *Input) {
 // Helper function for scaling image, contains what is equal for up and down
 func ScaleWindow(i *Input) {
 	i.game.updateFonts()
-	i.game.board.sizes.scaleBoard()
+	i.game.board.ScaleBoard()
 	i.game.menu.UpdateCenteredTitle()
 	i.updatePauseButtonLocation()
 	i.game.buttonManager.UpdateFontsForButtons()

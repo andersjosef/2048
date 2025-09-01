@@ -1,4 +1,4 @@
-package twenty48
+package board
 
 import (
 	"fmt"
@@ -45,7 +45,7 @@ func InitSizes(b *Board) *Sizes {
 		startPosY:      START_POS_Y * float32(dpiScale),
 	}
 
-	sfb.board.game.Register(
+	sfb.board.d.Register(
 		eventhandler.EventScreenChanged,
 		func(evt eventhandler.Event) {
 			sfb.scaleBoard()
@@ -58,13 +58,13 @@ func InitSizes(b *Board) *Sizes {
 }
 
 func (s *Sizes) scaleBoard() {
-	scale := s.board.game.screenControl.GetScale()
+	scale := s.board.d.GetScale()
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 
 	s.tileSize = s.baseTileSize * float32(scale) * float32(dpiScale)
 	s.bordersize = s.baseBorderSize * float32(scale) * float32(dpiScale)
 
-	width, height := s.board.game.GetActualSize()
+	width, height := s.board.d.GetActualSize()
 
 	s.startPosX = float32((width - (co.BOARDSIZE * int(s.tileSize))) / 2)
 	s.startPosY = float32((height - (co.BOARDSIZE * int(s.tileSize))) / 2)
@@ -73,13 +73,13 @@ func (s *Sizes) scaleBoard() {
 	newOpt.GeoM.Translate(float64(s.startPosX), float64(s.startPosY))
 	s.board.boardImageOptions = newOpt
 
-	s.board.createBoardImage()
+	s.board.CreateBoardImage()
 }
 
 type Board struct {
 	matrix             [co.BOARDSIZE][co.BOARDSIZE]int // 2d array for the board :)
 	matrixBeforeChange [co.BOARDSIZE][co.BOARDSIZE]int
-	game               *Game
+	d                  Deps
 	sizes              *Sizes
 	boardImage         *ebiten.Image
 	boardImageOptions  *ebiten.DrawImageOptions
@@ -87,10 +87,10 @@ type Board struct {
 	boardForEndScreen *ebiten.Image
 }
 
-func NewBoard(g *Game) (*Board, error) {
+func New(d Deps) (*Board, error) {
 
 	b := &Board{}
-	b.game = g
+	b.d = d
 	b.sizes = InitSizes(b)
 
 	// add the two start pieces
@@ -99,7 +99,7 @@ func NewBoard(g *Game) (*Board, error) {
 	}
 
 	// create baordImage
-	b.createBoardImage()
+	b.CreateBoardImage()
 
 	b.registerEvents()
 
@@ -108,7 +108,7 @@ func NewBoard(g *Game) (*Board, error) {
 }
 
 func (b *Board) registerEvents() {
-	b.game.Register(
+	b.d.Register(
 		eventhandler.EventResetGame,
 		func(_ eventhandler.Event) {
 			b.matrix = [co.BOARDSIZE][co.BOARDSIZE]int{}
@@ -117,7 +117,7 @@ func (b *Board) registerEvents() {
 
 		},
 	)
-	b.game.Register(
+	b.d.Register(
 		eventhandler.EventMoveMade,
 		func(e eventhandler.Event) {
 			moveData, ok := e.Data.(shared.MoveData)
@@ -126,13 +126,13 @@ func (b *Board) registerEvents() {
 			}
 			b.matrix = moveData.NewBoard
 			b.addNewRandomPieceIfBoardChanged()
-			b.game.gameOver = b.isGameOver()
+			b.d.SetGameOver(b.isGameOver())
 		},
 	)
 }
 
 func (b *Board) initBoardForEndScreen() {
-	width, height := b.game.GetActualSize()
+	width, height := b.d.GetActualSize()
 	b.boardForEndScreen = ebiten.NewImage(width, height)
 }
 
@@ -167,14 +167,14 @@ func (b *Board) Draw(screen *ebiten.Image) {
 			b.DrawTile(b.boardForEndScreen, b.sizes.startPosX, b.sizes.startPosY, x, y, b.matrix[y][x], 0, 0)
 		}
 	}
-	if !b.game.gameOver {
+	if !b.d.IsGameOver() {
 		screen.DrawImage(b.boardForEndScreen, &ebiten.DrawImageOptions{})
 
 	} else {
 		newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
 		if isDone {
 			// After animation go to game over state
-			b.game.state = co.StateGameOver
+			b.d.SetGameState(co.StateGameOver)
 		}
 		screen.DrawImage(newImage, &ebiten.DrawImageOptions{})
 	}
@@ -189,7 +189,7 @@ func (b *Board) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int,
 
 	if value != 0 {
 		// Set tile color to default color
-		colorMap := b.game.currentTheme.ColorMap
+		colorMap := b.d.GetCurrentTheme().ColorMap
 
 		val, ok := colorMap[value] // checks if num in map, if it is make the background else draw normal
 
@@ -205,9 +205,9 @@ func (b *Board) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
 	var sizeInside float32 = (b.sizes.tileSize - b.sizes.bordersize)
 
 	vector.DrawFilledRect(screen, xpos, ypos,
-		sizeBorder, sizeBorder, b.game.currentTheme.ColorBorder, false) //outer
+		sizeBorder, sizeBorder, b.d.GetCurrentTheme().ColorBorder, false) //outer
 	vector.DrawFilledRect(screen, xpos+b.sizes.bordersize, ypos+b.sizes.bordersize,
-		sizeInside, sizeInside, b.game.currentTheme.ColorBackgroundTile, false) // inner
+		sizeInside, sizeInside, b.d.GetCurrentTheme().ColorBackgroundTile, false) // inner
 }
 
 // background of a number, since they have colors
@@ -222,7 +222,7 @@ func (b *Board) DrawNumberBackground(screen *ebiten.Image, startX, startY float3
 }
 
 func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, value int) {
-	fontSet := b.game.fontSet
+	fontSet := b.d.GetCurrentFontSet()
 	msg := fmt.Sprintf("%v", value)
 
 	var fontUsed *text.GoTextFace
@@ -242,7 +242,7 @@ func (b *Board) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, val
 
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(float64(textPosX), float64(textPosY))
-	op.ColorScale.ScaleWithColor(b.game.GetCurrentTheme().ColorText)
+	op.ColorScale.ScaleWithColor(b.d.GetCurrentTheme().ColorText)
 	text.Draw(screen, msg, fontUsed, op)
 }
 
@@ -253,7 +253,7 @@ func (b *Board) addNewRandomPieceIfBoardChanged() {
 	}
 }
 
-func (b *Board) createBoardImage() {
+func (b *Board) CreateBoardImage() {
 	var (
 		sizeX int = int(float64((co.BOARDSIZE * int(b.sizes.tileSize)) + (int(b.sizes.bordersize) * 2)))
 		sizeY     = sizeX
