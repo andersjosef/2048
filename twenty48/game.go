@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/buttons"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
@@ -22,7 +23,7 @@ type Game struct {
 	menu          Menu
 	renderer      Renderer
 	input         *input.Input
-	buttonManager *ButtonManager
+	buttonManager *buttons.ButtonManager
 	fontSet       *theme.FontSet
 	themePicker   *theme.ThemePicker
 	utils         Utils
@@ -56,15 +57,16 @@ func NewGame() (*Game, error) {
 		return nil, fmt.Errorf("failed to initialize fonts: %v", err)
 	}
 
-	// initialize new board
 	g.board = NewBoard(g)
 	g.animation = NewAnimation(g)
 	g.renderer = NewRenderer(g)
 	g.utils = NewUtils()
 
 	cmds := NewCommands(g)
-	g.buttonManager = InitButtonManager(g, cmds)
 	g.input = NewInput(g, cmds)
+	g.buttonManager = NewButtonManager(g, cmds)
+	g.input.GiveButtons(g.buttonManager)
+	g.buttonManager.GiveInput(g.input)
 
 	g.menu = NewMenu(g)
 	ebiten.SetWindowSize(
@@ -95,7 +97,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		g.renderer.Draw(screen)
 		DrawScore(screen, g)
 	}
-	g.buttonManager.drawButtons(screen)
+	g.buttonManager.Draw(screen)
 	g.menu.Draw(screen)
 }
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }

@@ -45,7 +45,7 @@ func (t *touch) shouldTriggerTouchMove() (bool, int, int) {
 	return int(math.Abs(float64(dx))) > MOVE_THRESHOLD || int(math.Abs(float64(dy))) > MOVE_THRESHOLD, dx, dy
 }
 
-type tap struct {
+type Tap struct {
 	X, Y int
 }
 
@@ -54,7 +54,7 @@ type TouchInput struct {
 
 	touchIDs []ebiten.TouchID
 	touches  map[ebiten.TouchID]*touch
-	taps     []tap
+	taps     []Tap
 	tapped   bool
 
 	canSwipe bool
@@ -85,7 +85,7 @@ func (g *TouchInput) TouchUpdate() error {
 			// to be 500ms), or moved far, then it's a tap.
 			diff := distance(t.originX, t.originY, t.currX, t.currY)
 			if !t.wasPinch && !t.isPan && (t.duration <= 30 || diff < 2) {
-				g.taps = append(g.taps, tap{
+				g.taps = append(g.taps, Tap{
 					X: t.currX,
 					Y: t.currY,
 				})
@@ -141,7 +141,7 @@ func (i *Input) CheckTapped() bool {
 	}
 }
 
-func (i *Input) GetTaps() []tap {
+func (i *Input) GetTaps() []Tap {
 	return i.touchInput.taps
 }
 

@@ -32,8 +32,8 @@ type Input struct {
 
 func New(d Deps) *Input {
 	var i = &Input{d: d}
-	i.touchInput = newTouchInput(i)
 
+	i.touchInput = newTouchInput(i)
 	i.movementThreshold = 20 // Set how much the mouse has to move to reappear
 
 	i.d.Register(
@@ -46,6 +46,10 @@ func New(d Deps) *Input {
 	i.addKeyBindings()
 
 	return i
+}
+
+func (i *Input) GiveButtons(b Buttons) {
+	i.d.Buttons = b
 }
 
 // Keybindings
