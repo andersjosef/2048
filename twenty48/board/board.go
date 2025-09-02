@@ -137,15 +137,13 @@ func (b *Board) initBoardForEndScreen() {
 }
 
 func (b *Board) randomNewPiece() {
-
-	var x, y int = len(b.matrix), len(b.matrix[0])
+	x, y := len(b.matrix), len(b.matrix[0])
 
 	// Will start at a random position, then check every available spot after
 	// until all tiles are checked
-	var count int = rand.Intn(x * y)
-	for ; count < count+x*y-1; count++ {
-		var posX int = count % x
-		var posY int = (count / y) % y
+	for count := rand.Intn(x * y); count < count+x*y-1; count++ {
+		posX := count % x
+		posY := (count / y) % y
 		if b.matrix[posX][posY] == 0 {
 			if rand.Float32() > 0.16 {
 				b.matrix[posX][posY] = 2 // 84%

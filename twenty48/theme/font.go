@@ -28,7 +28,7 @@ const (
 //go:embed fonts/Rubik-Regular.ttf
 var rubikTTF []byte
 
-func InitFonts(scale float64) (*FontSet, error) {
+func InitFonts(scale float64) *FontSet {
 	faceSource, err := text.NewGoTextFaceSource(bytes.NewReader(rubikTTF))
 	if err != nil {
 		log.Fatal(err)
@@ -51,5 +51,5 @@ func InitFonts(scale float64) (*FontSet, error) {
 		Smaller: initializeFont(fontSizeSmall),
 		Mini:    initializeFont(fontSizeMini),
 		Big:     initializeFont(fontSizeBig),
-	}, nil
+	}
 }

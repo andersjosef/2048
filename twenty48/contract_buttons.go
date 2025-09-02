@@ -1,0 +1,21 @@
+package twenty48
+
+import (
+	"github.com/andersjosef/2048/twenty48/buttons"
+	"github.com/andersjosef/2048/twenty48/commands"
+	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/theme"
+)
+
+func NewButtonManager(g *Game, cmds commands.Commands) *buttons.ButtonManager {
+	deps := buttons.Deps{
+		ScreenControl: g.screenControl,
+		Input:         g.input,
+		Utils:         g.utils,
+
+		GetFontSet: func() theme.FontSet { return *g.fontSet },
+		GetState:   func() co.GameState { return g.GetState() },
+	}
+
+	return buttons.NewButtonManager(deps, cmds)
+}

@@ -1,4 +1,4 @@
-package twenty48
+package buttons
 
 import (
 	"fmt"
@@ -19,7 +19,8 @@ const (
 
 // // Button ////
 type Button struct {
-	game           *Game
+	// game           *Game
+	d              Deps
 	startPos       [2]int
 	endPos         [2]int
 	identifier     string
@@ -27,7 +28,7 @@ type Button struct {
 	font           *text.GoTextFace
 	fontType       FontType
 	offset         float64
-	actionFunction ActionFunc
+	actionFunction func()
 }
 
 // Use when wanting to move a button
@@ -80,14 +81,14 @@ func (bu *Button) GetDimentions() (int, int, error) {
 }
 
 func (bu *Button) OnTrigger() {
-	bu.actionFunction(bu.game.input)
+	bu.actionFunction()
 }
 
 func (bu *Button) Draw(screen *ebiten.Image) {
 	startX, startY := bu.startPos[0], bu.startPos[1]
 	// width, height := bu.endPos[0]-startX, bu.endPos[1]-startY
 
-	bu.game.DrawDoubleText(
+	bu.d.Utils.DrawDoubleText(
 		screen,
 		bu.text,
 		startX,

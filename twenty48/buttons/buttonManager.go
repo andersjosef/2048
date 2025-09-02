@@ -1,6 +1,7 @@
-package twenty48
+package buttons
 
 import (
+	"github.com/andersjosef/2048/twenty48/commands"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -8,15 +9,17 @@ import (
 
 // // Button Manager ////
 type ButtonManager struct {
-	game           *Game
+	d              Deps
+	Cmds           commands.Commands
 	buttonArrayMap map[co.GameState][]*Button
 	buttonKeyMap   map[string]*Button
 	buttonPressed  bool
 }
 
-func InitButtonManager(g *Game) *ButtonManager {
-	var bm *ButtonManager = &ButtonManager{
-		game:           g,
+func NewButtonManager(d Deps, cmds commands.Commands) *ButtonManager {
+	bm := &ButtonManager{
+		d:              d,
+		Cmds:           cmds,
 		buttonArrayMap: make(map[co.GameState][]*Button),
 		buttonKeyMap:   make(map[string]*Button),
 	}
@@ -27,20 +30,24 @@ func InitButtonManager(g *Game) *ButtonManager {
 	return bm
 }
 
+func (bm *ButtonManager) GiveInput(i Input) {
+	bm.d.Input = i
+}
+
 // Initiaze buttons here with Addbutton
 func (bm *ButtonManager) initButtons() {
 
 	smallOffsett := 1.0
-	width, _ := bm.game.GetActualSize()
+	width, _ := bm.d.GetActualSize()
 
 	// Main Menu
 	bm.AddButton(
 		"I: Instructions",
 		[2]int{0, 0},
 		smallOffsett,
-		bm.game.fontSet.Mini,
+		bm.d.GetFontSet().Mini,
 		FontMini,
-		toggleInfo,
+		bm.Cmds.ToggleInfo,
 		co.StateMainMenu,
 	)
 
@@ -49,9 +56,9 @@ func (bm *ButtonManager) initButtons() {
 		"Press R to restart",
 		[2]int{0, 0},
 		smallOffsett,
-		bm.game.fontSet.Mini,
+		bm.d.GetFontSet().Mini,
 		FontMini,
-		ResetGame,
+		bm.Cmds.ResetGame,
 		co.StateInstructions,
 	)
 
@@ -59,9 +66,9 @@ func (bm *ButtonManager) initButtons() {
 		"Press F to toggle Fullscreen",
 		[2]int{0, 0},
 		smallOffsett,
-		bm.game.fontSet.Mini,
+		bm.d.GetFontSet().Mini,
 		FontMini,
-		ToggleFullScreen,
+		bm.Cmds.ToggleFullscreen,
 		co.StateInstructions,
 	)
 
@@ -69,9 +76,9 @@ func (bm *ButtonManager) initButtons() {
 		"Press Q to toggle theme:",
 		[2]int{0, 0},
 		smallOffsett,
-		bm.game.fontSet.Mini,
+		bm.d.GetFontSet().Mini,
 		FontMini,
-		toggleTheme,
+		bm.Cmds.ToggleTheme,
 		co.StateInstructions,
 	)
 
@@ -79,9 +86,9 @@ func (bm *ButtonManager) initButtons() {
 		"Press Escape to quit",
 		[2]int{0, 0},
 		smallOffsett,
-		bm.game.fontSet.Mini,
+		bm.d.GetFontSet().Mini,
 		FontMini,
-		CloseGame,
+		bm.Cmds.CloseGame,
 		co.StateInstructions,
 	)
 
@@ -89,9 +96,9 @@ func (bm *ButtonManager) initButtons() {
 		"Press I to return",
 		[2]int{0, 0},
 		smallOffsett,
-		bm.game.fontSet.Mini,
+		bm.d.GetFontSet().Mini,
 		FontMini,
-		toggleInfo,
+		bm.Cmds.ToggleInfo,
 		co.StateInstructions,
 	)
 
@@ -100,9 +107,9 @@ func (bm *ButtonManager) initButtons() {
 		"II",
 		[2]int{width - 20, 20},
 		smallOffsett,
-		bm.game.fontSet.Mini,
+		bm.d.GetFontSet().Mini,
 		-1, // Something not in enum for now, needs update to size
-		toggleInfo,
+		bm.Cmds.ToggleInfo,
 		co.StateRunning,
 	)
 
@@ -112,30 +119,31 @@ func (bm *ButtonManager) initButtons() {
 		"R: Play again",
 		[2]int{0, 0},
 		smallOffsett,
-		bm.game.fontSet.Mini,
+		bm.d.GetFontSet().Mini,
 		FontMini,
-		ResetGame,
+		bm.Cmds.ResetGame,
 		co.StateGameOver,
 	)
 
 }
 
-func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {
+func (bm *ButtonManager) Draw(screen *ebiten.Image) {
 
-	for _, button := range bm.buttonArrayMap[bm.game.state] {
+	for _, button := range bm.buttonArrayMap[bm.d.GetState()] {
 		button.Draw(screen)
 	}
 }
 
-func (bm *ButtonManager) checkButtons() bool {
+func (bm *ButtonManager) CheckButtons() bool {
 	// On mouse click loop over every button in array
 	// If cursor is within range of some button do the buttons action
-	tapped := bm.game.input.touchInput.checkTapped()
+	tapped := bm.d.Input.CheckTapped()
 
 	// Can left, right or wheel click
-	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
+	pressed := ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
 		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
-		ebiten.IsMouseButtonPressed(ebiten.MouseButton2) || tapped
+		ebiten.IsMouseButtonPressed(ebiten.MouseButton2) ||
+		tapped
 
 	// Dont check if button isnt pressed
 	if !pressed {
@@ -150,13 +158,13 @@ func (bm *ButtonManager) checkButtons() bool {
 
 	curX, curY := ebiten.CursorPosition()
 
-	buttonArray := bm.buttonArrayMap[bm.game.state]
+	buttonArray := bm.buttonArrayMap[bm.d.GetState()]
 	for _, button := range buttonArray {
 		var tapWithin bool
-		for _, tap := range bm.game.input.touchInput.taps {
+		for _, tap := range bm.d.Input.GetTaps() {
 			if button.CursorWithin(tap.X, tap.Y) {
 				tapWithin = true
-				bm.game.input.touchInput.taps = bm.game.input.touchInput.taps[:0]
+				bm.d.Input.ClearTaps()
 				break
 			}
 		}
@@ -169,10 +177,10 @@ func (bm *ButtonManager) checkButtons() bool {
 	return false
 }
 
-func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, fontType FontType, actionFunction ActionFunc, state co.GameState) {
+func (bm *ButtonManager) AddButton(buttonText string, startPos [2]int, offset float64, font *text.GoTextFace, fontType FontType, actionFunction func(), state co.GameState) {
 	// Create new button obj
 	newButton := &Button{
-		game:           bm.game,
+		d:              Deps{Utils: bm.d.Utils},
 		identifier:     buttonText,
 		text:           buttonText,
 		font:           font,
@@ -197,13 +205,13 @@ func (bm *ButtonManager) UpdateFontsForButtons() {
 			// Check fonts and update them
 			switch button.fontType {
 			case FontMini:
-				button.font = bm.game.fontSet.Mini
+				button.font = bm.d.GetFontSet().Mini
 			case FontSmaller:
-				button.font = bm.game.fontSet.Smaller
+				button.font = bm.d.GetFontSet().Smaller
 			case FontNormal:
-				button.font = bm.game.fontSet.Normal
+				button.font = bm.d.GetFontSet().Normal
 			case FontBig:
-				button.font = bm.game.fontSet.Big
+				button.font = bm.d.GetFontSet().Big
 			}
 		}
 	}

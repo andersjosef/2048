@@ -6,6 +6,7 @@ const (
 	EventScreenChanged EventType = iota
 	EventResetGame
 	EventMoveMade
+	EventThemeChanged
 )
 
 type Event struct {

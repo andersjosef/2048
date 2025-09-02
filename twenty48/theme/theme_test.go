@@ -8,8 +8,7 @@ import (
 
 func TestInitFontsSuccess(t *testing.T) {
 	scale := 1.0
-	fontSet, err := InitFonts(scale)
-	assert.NoError(t, err, "fonts initialization should not return an error")
+	fontSet := InitFonts(scale)
 	assert.NotNil(t, fontSet, "font set should not be nil")
 
 	// Individual font faces
@@ -23,8 +22,7 @@ func TestInitFontsSuccess(t *testing.T) {
 func TestInitFontsScaling(t *testing.T) {
 	scale := 2.0 // Simulate high DPI
 
-	fontSet, err := InitFonts(scale)
-	assert.NoError(t, err)
+	fontSet := InitFonts(scale)
 	assert.NotNil(t, fontSet)
 
 }

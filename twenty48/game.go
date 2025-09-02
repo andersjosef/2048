@@ -5,8 +5,10 @@ import (
 	"image/color"
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/buttons"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
+	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -20,8 +22,8 @@ type Game struct {
 	animation     Animation
 	menu          Menu
 	renderer      Renderer
-	input         *Input
-	buttonManager *ButtonManager
+	input         *input.Input
+	buttonManager *buttons.ButtonManager
 	fontSet       *theme.FontSet
 	themePicker   *theme.ThemePicker
 	utils         Utils
@@ -49,21 +51,20 @@ func NewGame() (*Game, error) {
 	g.screenControl = NewScreenControl(g)
 
 	// initialize text
-	var err error
-	g.fontSet, err = theme.InitFonts(g.screenControl.GetScale())
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize fonts: %v", err)
-	}
+	g.fontSet = theme.InitFonts(g.screenControl.GetScale())
 
-	// initialize new board
 	g.board = NewBoard(g)
 	g.animation = NewAnimation(g)
 	g.renderer = NewRenderer(g)
 	g.utils = NewUtils()
-	g.input = InitInput(g)
-	g.buttonManager = InitButtonManager(g)
-	g.menu = NewMenu(g)
 
+	cmds := NewCommands(g)
+	g.input = NewInput(g, cmds)
+	g.buttonManager = NewButtonManager(g, cmds)
+	g.input.GiveButtons(g.buttonManager)
+	g.buttonManager.GiveInput(g.input)
+
+	g.menu = NewMenu(g)
 	ebiten.SetWindowSize(
 		co.LOGICAL_WIDTH*int(g.screenControl.GetScale()),
 		co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()),
@@ -92,7 +93,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		g.renderer.Draw(screen)
 		DrawScore(screen, g)
 	}
-	g.buttonManager.drawButtons(screen)
+	g.buttonManager.Draw(screen)
 	g.menu.Draw(screen)
 }
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
@@ -106,37 +107,28 @@ func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64)
 func DrawScore(screen *ebiten.Image, g *Game) {
 	myFont := g.fontSet.Smaller
 
-	//TODO make more dynamig IG
+	//TODO: make more dynamic
 	margin := 10
-	var shadowOffsett int = 2
-	var score_text string = fmt.Sprintf("%v", g.score)
+	shadowOffsett := 2
+	score_text := fmt.Sprintf("%v", g.score)
 
-	shadowOpt := &text.DrawOptions{}
+	getOpt := func(x, y float64, col color.Color) *text.DrawOptions {
+		opt := &text.DrawOptions{}
+		opt.GeoM.Translate(x, y)
+		opt.ColorScale.ScaleWithColor(col)
+		return opt
+	}
 
-	shadowOpt.GeoM.Translate(
-		float64((shadowOffsett + margin)),
-		0)
-	shadowOpt.ColorScale.ScaleWithColor(color.Black)
-
+	shadowOpt := getOpt(float64((shadowOffsett + margin)), 0, color.Black)
 	text.Draw(screen, score_text, myFont, shadowOpt)
 
-	mainOpt := &text.DrawOptions{}
-	mainOpt.GeoM.Translate(
-		float64(margin),
-		0)
-	mainOpt.ColorScale.ScaleWithColor(color.White)
-
-	text.Draw(screen, score_text, myFont,
-		mainOpt)
+	mainOpt := getOpt(float64(margin), 0, color.White)
+	text.Draw(screen, score_text, myFont, mainOpt)
 }
 
 // For reinitializing a font with a higher dpi
 func (g *Game) updateFonts() {
-	var err error
-	g.fontSet, err = theme.InitFonts(g.screenControl.GetScale())
-	if err != nil {
-		fmt.Println("Error changing fontsiz")
-	}
+	g.fontSet = theme.InitFonts(g.screenControl.GetScale())
 }
 
 func (g *Game) registerEvents() {
