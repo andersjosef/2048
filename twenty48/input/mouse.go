@@ -9,11 +9,12 @@ import (
 )
 
 type MouseInputDeps struct {
-	GetState   func() co.GameState
-	SetState   func(co.GameState)
-	IsGameOver func() bool
-	Cmds       commands.Commands
-
+	State interface {
+		GetState() co.GameState
+		SetState(co.GameState)
+		IsGameOver() bool
+	}
+	Cmds   commands.Commands
 	Cursor interface{ MaybeShow() }
 }
 
@@ -41,8 +42,8 @@ func (i *MouseInput) Update() {
 
 	// Cursor movement updates
 	if pressed {
-		if i.d.GetState() == co.StateMainMenu { // If in main menu click will trigger game state
-			i.d.SetState(co.StateRunning)
+		if i.d.State.GetState() == co.StateMainMenu { // If in main menu click will trigger game state
+			i.d.State.SetState(co.StateRunning)
 		} else { // If not in menu update only end cursor coordinate
 			i.endCursorPos[0], i.endCursorPos[1] = ebiten.CursorPosition()
 		}
@@ -71,7 +72,7 @@ func (m *MouseInput) resetMouseState() {
 }
 
 func (i *MouseInput) performMove() {
-	if i.d.IsGameOver() {
+	if i.d.State.IsGameOver() {
 		return
 	}
 	dx := i.endCursorPos[0] - i.startCursorPos[0]
@@ -81,7 +82,7 @@ func (i *MouseInput) performMove() {
 }
 
 func (i *MouseInput) SelectMoveDelta(dx, dy int) {
-	if i.d.IsGameOver() {
+	if i.d.State.IsGameOver() {
 		return
 	}
 	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest

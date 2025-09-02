@@ -13,6 +13,14 @@ func (g *Game) GetState() co.GameState {
 	return g.state
 }
 
+func (g *Game) SetState(gs co.GameState) {
+	g.state = gs
+}
+
+func (g Game) IsGameOver() bool {
+	return g.gameOver
+}
+
 func (g *Game) GetPreviousState() co.GameState {
 	return g.previousState
 }

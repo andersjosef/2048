@@ -8,10 +8,12 @@ import (
 )
 
 type KeyboardDeps struct {
-	GetState func() co.GameState
-	SetState func(co.GameState)
-	cmds     commands.Commands
-	Cursor   interface{ Hide() }
+	State interface {
+		SetState(co.GameState)
+		GetState() co.GameState
+	}
+	cmds   commands.Commands
+	Cursor interface{ Hide() }
 }
 
 type KeyboardInput struct {
@@ -38,11 +40,11 @@ func (i *KeyboardInput) Update() {
 		key_pressed := i.keys[len(i.keys)-1]
 
 		// Get the appropriate action map based on the current game state
-		if actionMap, ok := i.keyActions[i.d.GetState()]; ok { // Check if actionmap exist for current game state
+		if actionMap, ok := i.keyActions[i.d.State.GetState()]; ok { // Check if actionmap exist for current game state
 			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
 				action()
-			} else if i.d.GetState() == co.StateMainMenu { // If button is not in map and state is main menu
-				i.d.SetState(co.StateRunning)
+			} else if i.d.State.GetState() == co.StateMainMenu { // If button is not in map and state is main menu
+				i.d.State.SetState(co.StateRunning)
 			}
 		}
 

@@ -11,10 +11,12 @@ type Deps struct {
 	Buttons
 	ScreenControl
 
-	Cmds       commands.Commands
-	GetState   func() co.GameState
-	SetState   func(co.GameState)
-	IsGameOver func() bool
+	Cmds  commands.Commands
+	State interface {
+		GetState() co.GameState
+		SetState(co.GameState)
+		IsGameOver() bool
+	}
 }
 
 type EventHandler interface {

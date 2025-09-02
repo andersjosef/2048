@@ -2,8 +2,6 @@ package input
 
 import (
 	"math"
-
-	co "github.com/andersjosef/2048/twenty48/constants"
 )
 
 const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
@@ -28,17 +26,14 @@ func New(d Deps) *Input {
 	}
 
 	i.keyboard = NewKeyboardInput(KeyboardDeps{
-		GetState: func() co.GameState { return d.GetState() },
-		SetState: func(gs co.GameState) { d.SetState(gs) },
-		cmds:     d.Cmds,
-		Cursor:   i.cursor,
+		State:  d.State,
+		cmds:   d.Cmds,
+		Cursor: i.cursor,
 	})
 	i.mouse = NewMouseInput(MouseInputDeps{
-		GetState:   func() co.GameState { return d.GetState() },
-		SetState:   func(gs co.GameState) { d.SetState(gs) },
-		IsGameOver: func() bool { return d.IsGameOver() },
-		Cmds:       d.Cmds,
-		Cursor:     i.cursor,
+		State:  d.State,
+		Cmds:   d.Cmds,
+		Cursor: i.cursor,
 	})
 
 	i.touchInput = newTouchInput(i)
@@ -58,12 +53,12 @@ func (i *Input) UpdateInput() error {
 	}
 	i.keyboard.Update()
 	i.mouse.Update()
-	i.touchInput.TouchUpdate()
+	i.touchInput.Update()
 	return nil
 }
 
 func (i *Input) SelectMoveDelta(dx, dy int) {
-	if i.d.IsGameOver() {
+	if i.d.State.IsGameOver() {
 		return
 	}
 	if math.Abs(float64(dx)) > math.Abs(float64(dy)) { // X-axis largest
