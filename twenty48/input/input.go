@@ -13,8 +13,6 @@ const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
 type Input struct {
 	d        Deps
 	keyboard *KeyboardInput
-	// keys              []ebiten.Key
-	// keyIsBeingPressed bool
 
 	// Cursor positions
 	startCursorPos [2]int
@@ -26,8 +24,6 @@ type Input struct {
 	isHidingMouse     bool
 	lastPosMouse      [2]int
 	movementThreshold float64 // If mouse is moved beyond this show again
-
-	// keyActions map[co.GameState]map[ebiten.Key]func()
 }
 
 func New(d Deps) *Input {
@@ -61,55 +57,6 @@ func (i *Input) GiveButtons(b Buttons) {
 	i.d.Buttons = b
 }
 
-// // Keybindings
-// func (i *Input) addKeyBindings() {
-// 	i.keyActions = map[co.GameState]map[ebiten.Key]func(){
-// 		co.StateRunning: { // Main loop
-// 			ebiten.KeyArrowRight: i.d.Cmds.MoveRight,
-// 			ebiten.KeyD:          i.d.Cmds.MoveRight,
-// 			ebiten.KeyArrowLeft:  i.d.Cmds.MoveLeft,
-// 			ebiten.KeyA:          i.d.Cmds.MoveLeft,
-// 			ebiten.KeyArrowUp:    i.d.Cmds.MoveUp,
-// 			ebiten.KeyW:          i.d.Cmds.MoveUp,
-// 			ebiten.KeyArrowDown:  i.d.Cmds.MoveDown,
-// 			ebiten.KeyS:          i.d.Cmds.MoveDown,
-// 			ebiten.KeyR:          i.d.Cmds.ResetGame,
-// 			ebiten.KeyF:          i.d.Cmds.ToggleFullscreen,
-// 			ebiten.KeyEscape:     i.d.Cmds.CloseGame,
-// 			ebiten.KeyQ:          i.d.Cmds.ToggleTheme,
-// 			ebiten.KeyI:          i.d.Cmds.ToggleInfo,
-// 			ebiten.KeyMinus:      i.d.Cmds.ScaleUp,
-// 			ebiten.KeyPeriod:     i.d.Cmds.ScaleDown,
-// 		},
-// 		co.StateMainMenu: { // Menu
-// 			ebiten.KeyEscape: i.d.Cmds.CloseGame,
-// 			ebiten.KeyF:      i.d.Cmds.ToggleFullscreen,
-// 			ebiten.KeyQ:      i.d.Cmds.ToggleTheme,
-// 			ebiten.KeyI:      i.d.Cmds.ToggleInfo,
-// 			ebiten.KeyMinus:  i.d.Cmds.ScaleUp,
-// 			ebiten.KeyPeriod: i.d.Cmds.ScaleDown,
-// 		},
-// 		co.StateInstructions: { // Instructions
-// 			ebiten.KeyEscape: i.d.Cmds.CloseGame,
-// 			ebiten.KeyF:      i.d.Cmds.ToggleFullscreen,
-// 			ebiten.KeyQ:      i.d.Cmds.ToggleTheme,
-// 			ebiten.KeyI:      i.d.Cmds.ToggleInfo,
-// 			ebiten.KeyMinus:  i.d.Cmds.ScaleUp,
-// 			ebiten.KeyPeriod: i.d.Cmds.ScaleDown,
-// 			ebiten.KeyR:      i.d.Cmds.ResetGame,
-// 		},
-// 		co.StateGameOver: { // Game Over
-// 			ebiten.KeyEscape: i.d.Cmds.CloseGame,
-// 			ebiten.KeyF:      i.d.Cmds.ToggleFullscreen,
-// 			ebiten.KeyQ:      i.d.Cmds.ToggleTheme,
-// 			ebiten.KeyI:      i.d.Cmds.ToggleInfo,
-// 			ebiten.KeyMinus:  i.d.Cmds.ScaleUp,
-// 			ebiten.KeyPeriod: i.d.Cmds.ScaleDown,
-// 			ebiten.KeyR:      i.d.Cmds.ResetGame,
-// 		},
-// 	}
-// }
-
 func (i *Input) UpdateInput() error {
 	// Keyboard and Mouse input handling
 	if i.d.Buttons.CheckButtons() {
@@ -121,30 +68,6 @@ func (i *Input) UpdateInput() error {
 	i.touchInput.TouchUpdate()
 	return nil
 }
-
-// func (i *Input) handleKeyboardInput() error {
-// 	i.keys = inpututil.AppendPressedKeys(i.keys[:0])
-
-// 	// Take key and prevent retriggering
-// 	if len(i.keys) > 0 && !i.keyIsBeingPressed {
-// 		i.checkForMakingCursorHidden()
-// 		i.keyIsBeingPressed = true
-// 		key_pressed := i.keys[len(i.keys)-1]
-
-// 		// Get the appropriate action map based on the current game state
-// 		if actionMap, ok := i.keyActions[i.d.GetState()]; ok { // Check if actionmap exist for current game state
-// 			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
-// 				action()
-// 			} else if i.d.GetState() == co.StateMainMenu { // If button is not in map and state is main menu
-// 				i.d.SetState(co.StateRunning)
-// 			}
-// 		}
-
-// 	} else if len(i.keys) == 0 {
-// 		i.keyIsBeingPressed = false
-// 	}
-// 	return nil
-// }
 
 func (i *Input) handleMouseInput() {
 	i.checkForMakingCursorVisible()
