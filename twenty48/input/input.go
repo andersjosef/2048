@@ -4,7 +4,6 @@ import (
 	"math"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
-	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -40,15 +39,6 @@ func New(d Deps) *Input {
 
 	i.touchInput = newTouchInput(i)
 	i.movementThreshold = 20 // Set how much the mouse has to move to reappear
-
-	i.d.Register(
-		eventhandler.EventScreenChanged,
-		func(_ eventhandler.Event) {
-			i.updatePauseButtonLocation()
-		},
-	)
-
-	// i.addKeyBindings()
 
 	return i
 }
@@ -162,12 +152,4 @@ func (i *Input) checkForMakingCursorHidden() {
 		ebiten.SetCursorMode(ebiten.CursorModeHidden)
 		i.isHidingMouse = true
 	}
-}
-
-// Helper function for updating the pause button location
-// When changing screen size
-// TODO: Move this
-func (i *Input) updatePauseButtonLocation() {
-	width, _ := i.d.ScreenControl.GetActualSize()
-	i.d.Buttons.UpdatePosForButton("II", width-20, 20)
 }

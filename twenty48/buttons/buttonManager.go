@@ -3,6 +3,7 @@ package buttons
 import (
 	"github.com/andersjosef/2048/twenty48/commands"
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
@@ -26,6 +27,13 @@ func NewButtonManager(d Deps, cmds commands.Commands) *ButtonManager {
 
 	// Initialize all buttons
 	bm.initButtons()
+
+	bm.d.Register(
+		eventhandler.EventScreenChanged,
+		func(_ eventhandler.Event) {
+			bm.updatePauseButtonLocation()
+		},
+	)
 
 	return bm
 }
@@ -244,4 +252,11 @@ func (bm *ButtonManager) GetButton(identifier string) (button *Button, exists bo
 		return button, true
 	}
 	return nil, false
+}
+
+// Helper function for updating the pause button location
+// When changing screen size
+func (i *ButtonManager) updatePauseButtonLocation() {
+	width, _ := i.d.ScreenControl.GetActualSize()
+	i.UpdatePosForButton("II", width-20, 20)
 }
