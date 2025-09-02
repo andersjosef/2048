@@ -51,11 +51,7 @@ func NewGame() (*Game, error) {
 	g.screenControl = NewScreenControl(g)
 
 	// initialize text
-	var err error
-	g.fontSet, err = theme.InitFonts(g.screenControl.GetScale())
-	if err != nil {
-		return nil, fmt.Errorf("failed to initialize fonts: %v", err)
-	}
+	g.fontSet = theme.InitFonts(g.screenControl.GetScale())
 
 	g.board = NewBoard(g)
 	g.animation = NewAnimation(g)
@@ -132,11 +128,7 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 
 // For reinitializing a font with a higher dpi
 func (g *Game) updateFonts() {
-	var err error
-	g.fontSet, err = theme.InitFonts(g.screenControl.GetScale())
-	if err != nil {
-		fmt.Println("Error changing fontsiz")
-	}
+	g.fontSet = theme.InitFonts(g.screenControl.GetScale())
 }
 
 func (g *Game) registerEvents() {
