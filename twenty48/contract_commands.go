@@ -40,7 +40,10 @@ func NewCommands(g *Game) commands.Commands {
 			g.updateFonts()
 			g.board.ScaleBoard()
 			g.menu.UpdateCenteredTitle()
-			g.input.updatePauseButtonLocation()
+
+			width, _ := g.screenControl.GetActualSize()
+			g.buttonManager.UpdatePosForButton("II", width-20, 20)
+
 			g.buttonManager.UpdateFontsForButtons()
 			ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(g.screenControl.GetScale()), co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()))
 			centerWindow()

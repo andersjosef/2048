@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package twenty48
+package input
 
 import (
 	_ "image/jpeg"
@@ -116,8 +116,9 @@ func (g *TouchInput) TouchUpdate() error {
 		shouldTriggerMove, dx, dy := t.shouldTriggerTouchMove()
 
 		if shouldTriggerMove && g.canSwipe {
-			if g.input.game.state == co.StateMainMenu {
-				g.input.game.state = co.StateRunning
+			if g.input.d.GetState() == co.StateMainMenu {
+				g.input.d.SetState(co.StateRunning)
+
 			}
 			g.input.SelectMoveDelta(dx, dy)
 			g.canSwipe = false
@@ -128,7 +129,9 @@ func (g *TouchInput) TouchUpdate() error {
 	return nil
 }
 
-func (ti *TouchInput) checkTapped() bool {
+// Todo: fix this
+func (i *Input) CheckTapped() bool {
+	ti := i.touchInput
 	if len(ti.taps) == 0 {
 		ti.tapped = false
 		return false
@@ -136,4 +139,12 @@ func (ti *TouchInput) checkTapped() bool {
 		ti.tapped = true
 		return true
 	}
+}
+
+func (i *Input) GetTaps() []tap {
+	return i.touchInput.taps
+}
+
+func (i *Input) ClearTaps() {
+	i.touchInput.taps = i.touchInput.taps[:0]
 }

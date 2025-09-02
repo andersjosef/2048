@@ -7,6 +7,7 @@ import (
 
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
+	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -20,7 +21,7 @@ type Game struct {
 	animation     Animation
 	menu          Menu
 	renderer      Renderer
-	input         *Input
+	input         *input.Input
 	buttonManager *ButtonManager
 	fontSet       *theme.FontSet
 	themePicker   *theme.ThemePicker
@@ -62,8 +63,8 @@ func NewGame() (*Game, error) {
 	g.utils = NewUtils()
 
 	cmds := NewCommands(g)
-	g.input = InitInput(g, cmds)
 	g.buttonManager = InitButtonManager(g, cmds)
+	g.input = NewInput(g, cmds)
 
 	g.menu = NewMenu(g)
 	ebiten.SetWindowSize(

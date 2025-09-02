@@ -17,7 +17,7 @@ type ButtonManager struct {
 }
 
 func InitButtonManager(g *Game, cmds commands.Commands) *ButtonManager {
-	var bm *ButtonManager = &ButtonManager{
+	bm := &ButtonManager{
 		game:           g,
 		Cmds:           cmds,
 		buttonArrayMap: make(map[co.GameState][]*Button),
@@ -130,10 +130,10 @@ func (bm *ButtonManager) drawButtons(screen *ebiten.Image) {
 	}
 }
 
-func (bm *ButtonManager) checkButtons() bool {
+func (bm *ButtonManager) CheckButtons() bool {
 	// On mouse click loop over every button in array
 	// If cursor is within range of some button do the buttons action
-	tapped := bm.game.input.touchInput.checkTapped()
+	tapped := bm.game.input.CheckTapped()
 
 	// Can left, right or wheel click
 	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
@@ -156,10 +156,10 @@ func (bm *ButtonManager) checkButtons() bool {
 	buttonArray := bm.buttonArrayMap[bm.game.state]
 	for _, button := range buttonArray {
 		var tapWithin bool
-		for _, tap := range bm.game.input.touchInput.taps {
+		for _, tap := range bm.game.input.GetTaps() {
 			if button.CursorWithin(tap.X, tap.Y) {
 				tapWithin = true
-				bm.game.input.touchInput.taps = bm.game.input.touchInput.taps[:0]
+				bm.game.input.ClearTaps()
 				break
 			}
 		}
