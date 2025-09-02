@@ -254,6 +254,7 @@ func TestMoves(t *testing.T) {
 				GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
 				ScreenControl:   MockScreenControl{},
 				SetGameOver:     func(_ bool) {},
+				IsGameOver:      func() bool { return false },
 			}
 			board, err := New(d)
 			assert.NoError(t, err)
@@ -332,6 +333,7 @@ func TestIsGameOver(t *testing.T) {
 				GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
 				ScreenControl:   MockScreenControl{},
 				SetGameOver:     func(_ bool) {},
+				IsGameOver:      func() bool { return false },
 			}
 			board, err := New(d)
 			assert.NoError(t, err)
@@ -359,6 +361,7 @@ func TestFullBoard(t *testing.T) {
 				GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
 				ScreenControl:   MockScreenControl{},
 				SetGameOver:     func(_ bool) {},
+				IsGameOver:      func() bool { return false },
 			}
 			board, err := New(d)
 			assert.NoError(t, err)
@@ -398,6 +401,7 @@ func TestScore(t *testing.T) {
 		GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
 		ScreenControl:   MockScreenControl{},
 		SetGameOver:     func(_ bool) {},
+		IsGameOver:      func() bool { return false },
 	}
 	board, err := New(d)
 	assert.NoError(t, err)

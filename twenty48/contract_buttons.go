@@ -13,7 +13,7 @@ func NewButtonManager(g *Game, cmds commands.Commands) *buttons.ButtonManager {
 		Input:         g.input,
 		Utils:         g.utils,
 
-		GetFontSet: func() theme.FontSet { return *g.fontSet },
+		GetFontSet: func() theme.FontSet { return g.GetFontSet() },
 		GetState:   func() co.GameState { return g.GetState() },
 	}
 

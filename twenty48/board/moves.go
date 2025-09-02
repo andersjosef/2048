@@ -34,6 +34,10 @@ func (b *Board) updateBoardBeforeChange() {
 }
 
 func (b *Board) Move(dir Direction) {
+	if b.d.IsGameOver() {
+		return
+	}
+
 	b.updateBoardBeforeChange()
 
 	var snap [4][4]int

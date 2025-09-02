@@ -17,7 +17,7 @@ func NewMenu(g *Game) Menu {
 		Buttons:      g.buttonManager,
 		EventHandler: g.eventBus,
 		GetSnapshot: func() menu.Snapshot {
-			w, h := g.GetActualSize()
+			w, h := g.screenControl.GetActualSize()
 			return menu.Snapshot{
 				State:         g.GetState(),
 				PreviousState: g.GetPreviousState(),
@@ -26,7 +26,7 @@ func NewMenu(g *Game) Menu {
 				Score:         g.GetScore(),
 				Width:         w,
 				Height:        h,
-				IsFullScreen:  g.IsFullScreen(),
+				IsFullScreen:  g.screenControl.IsFullScreen(),
 			}
 		},
 	}
