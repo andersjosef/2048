@@ -9,11 +9,12 @@ import (
 )
 
 type MouseInputDeps struct {
-	GetState                    func() co.GameState
-	SetState                    func(co.GameState)
-	CheckForMakingCursorVisible func()
-	IsGameOver                  func() bool
-	Cmds                        commands.Commands
+	GetState   func() co.GameState
+	SetState   func(co.GameState)
+	IsGameOver func() bool
+	Cmds       commands.Commands
+
+	Cursor interface{ MaybeShow() }
 }
 
 type MouseInput struct {
@@ -31,7 +32,7 @@ func NewMouseInput(d MouseInputDeps) *MouseInput {
 }
 
 func (i *MouseInput) Update() {
-	i.d.CheckForMakingCursorVisible()
+	i.d.Cursor.MaybeShow()
 
 	// Can left, right or wheel click
 	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||

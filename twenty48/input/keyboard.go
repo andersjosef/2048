@@ -8,10 +8,10 @@ import (
 )
 
 type KeyboardDeps struct {
-	GetState                   func() co.GameState
-	SetState                   func(co.GameState)
-	CheckForMakingCursorHidden func()
-	cmds                       commands.Commands
+	GetState func() co.GameState
+	SetState func(co.GameState)
+	cmds     commands.Commands
+	Cursor   interface{ Hide() }
 }
 
 type KeyboardInput struct {
@@ -33,7 +33,7 @@ func (i *KeyboardInput) Update() {
 
 	// Take key and prevent retriggering
 	if len(i.keys) > 0 && !i.keyIsBeingPressed {
-		i.d.CheckForMakingCursorHidden()
+		i.d.Cursor.Hide()
 		i.keyIsBeingPressed = true
 		key_pressed := i.keys[len(i.keys)-1]
 
