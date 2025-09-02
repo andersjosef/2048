@@ -111,26 +111,21 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 
 	//TODO: make more dynamic
 	margin := 10
-	var shadowOffsett int = 2
-	var score_text string = fmt.Sprintf("%v", g.score)
+	shadowOffsett := 2
+	score_text := fmt.Sprintf("%v", g.score)
 
-	shadowOpt := &text.DrawOptions{}
+	getOpt := func(x, y float64, col color.Color) *text.DrawOptions {
+		opt := &text.DrawOptions{}
+		opt.GeoM.Translate(x, y)
+		opt.ColorScale.ScaleWithColor(col)
+		return opt
+	}
 
-	shadowOpt.GeoM.Translate(
-		float64((shadowOffsett + margin)),
-		0)
-	shadowOpt.ColorScale.ScaleWithColor(color.Black)
-
+	shadowOpt := getOpt(float64((shadowOffsett + margin)), 0, color.Black)
 	text.Draw(screen, score_text, myFont, shadowOpt)
 
-	mainOpt := &text.DrawOptions{}
-	mainOpt.GeoM.Translate(
-		float64(margin),
-		0)
-	mainOpt.ColorScale.ScaleWithColor(color.White)
-
-	text.Draw(screen, score_text, myFont,
-		mainOpt)
+	mainOpt := getOpt(float64(margin), 0, color.White)
+	text.Draw(screen, score_text, myFont, mainOpt)
 }
 
 // For reinitializing a font with a higher dpi
