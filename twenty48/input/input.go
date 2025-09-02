@@ -12,17 +12,13 @@ const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
 type Input struct {
 	d        Deps
 	keyboard *KeyboardInput
-
-	// Cursor positions
-	startCursorPos [2]int
-	endCursorPos   [2]int
-	justMoved      bool // To make sure only one move is done
+	mouse    *MouseInput
 
 	touchInput *TouchInput
 
-	isHidingMouse     bool
-	lastPosMouse      [2]int
-	movementThreshold float64 // If mouse is moved beyond this show again
+	isHidingMouse      bool
+	lastPosMouse       [2]int
+	showMouseThreshold float64 // If mouse is moved beyond this show again
 }
 
 func New(d Deps) *Input {
@@ -36,9 +32,16 @@ func New(d Deps) *Input {
 		CheckForMakingCursorHidden: func() { i.checkForMakingCursorHidden() },
 		cmds:                       d.Cmds,
 	})
+	i.mouse = NewMouseInput(MouseInputDeps{
+		GetState:                    func() co.GameState { return d.GetState() },
+		SetState:                    func(gs co.GameState) { d.SetState(gs) },
+		CheckForMakingCursorVisible: func() { i.checkForMakingCursorVisible() },
+		IsGameOver:                  func() bool { return d.IsGameOver() },
+		Cmds:                        d.Cmds,
+	})
 
 	i.touchInput = newTouchInput(i)
-	i.movementThreshold = 20 // Set how much the mouse has to move to reappear
+	i.showMouseThreshold = 20 // Set how much the mouse has to move to reappear
 
 	return i
 }
@@ -52,60 +55,10 @@ func (i *Input) UpdateInput() error {
 	if i.d.Buttons.CheckButtons() {
 		return nil
 	}
-	// i.handleKeyboardInput()
 	i.keyboard.Update()
-	i.handleMouseInput()
+	i.mouse.Update()
 	i.touchInput.TouchUpdate()
 	return nil
-}
-
-func (i *Input) handleMouseInput() {
-	i.checkForMakingCursorVisible()
-
-	// Can left, right or wheel click
-	var pressed bool = ebiten.IsMouseButtonPressed(ebiten.MouseButton0) ||
-		ebiten.IsMouseButtonPressed(ebiten.MouseButton1) ||
-		ebiten.IsMouseButtonPressed(ebiten.MouseButton2)
-
-	// Cursor movement updates
-	if pressed {
-		if i.d.GetState() == co.StateMainMenu { // If in main menu click will trigger game state
-			i.d.SetState(co.StateRunning)
-		} else { // If not in menu update only end cursor coordinate
-			i.endCursorPos[0], i.endCursorPos[1] = ebiten.CursorPosition()
-		}
-	} else { // If not clicking: update both values
-		i.resetMouseState()
-	}
-
-	// Check if delta movements is large enough to trigger move
-	if i.shoulTriggerMove() && !i.justMoved {
-		i.performMove()
-		i.justMoved = true
-	}
-}
-
-func (m *Input) shoulTriggerMove() bool {
-	dx := m.endCursorPos[0] - m.startCursorPos[0]
-	dy := m.endCursorPos[1] - m.startCursorPos[1]
-
-	return int(math.Abs(float64(dx))) > MOVE_THRESHOLD || int(math.Abs(float64(dy))) > MOVE_THRESHOLD
-}
-
-func (m *Input) resetMouseState() {
-	m.justMoved = false
-	m.startCursorPos[0], m.startCursorPos[1] = ebiten.CursorPosition()
-	m.endCursorPos[0], m.endCursorPos[1] = ebiten.CursorPosition()
-}
-
-func (i *Input) performMove() {
-	dx := i.endCursorPos[0] - i.startCursorPos[0]
-	dy := i.endCursorPos[1] - i.startCursorPos[1]
-	if i.d.IsGameOver() {
-		return
-	}
-
-	i.SelectMoveDelta(dx, dy)
 }
 
 func (i *Input) SelectMoveDelta(dx, dy int) {
@@ -138,8 +91,8 @@ func (i *Input) checkForMakingCursorVisible() {
 
 		x, y := ebiten.CursorPosition()
 
-		if math.Abs(lastX-float64(x)) > i.movementThreshold ||
-			math.Abs(lastY-float64(y)) > i.movementThreshold {
+		if math.Abs(lastX-float64(x)) > i.showMouseThreshold ||
+			math.Abs(lastY-float64(y)) > i.showMouseThreshold {
 			ebiten.SetCursorMode(ebiten.CursorModeVisible)
 			i.isHidingMouse = false
 		}
