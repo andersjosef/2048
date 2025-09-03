@@ -34,21 +34,17 @@ type Game struct {
 	EventBus      *eventhandler.EventBus
 	Cmds          *commands.Commands
 
-	state         co.GameState // Game is in menu, running, etc
-	previousState co.GameState
-	score         int
-	shouldClose   bool // If yes will close the game
-	currentTheme  theme.Theme
-	gameOver      bool
+	score        int
+	shouldClose  bool // If yes will close the game
+	currentTheme theme.Theme
+	gameOver     bool
 }
 
 func NewGame(d Deps) (*Game, error) {
 	// init game struct
 	g := &Game{
-		d:             d,
-		state:         co.StateMainMenu,
-		previousState: co.StateMainMenu,
-		shouldClose:   false,
+		d:           d,
+		shouldClose: false,
 	}
 
 	g.EventBus = eventhandler.NewEventBus()
@@ -95,11 +91,6 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(g.currentTheme.ColorScreenBackground)
-	// switch g.state {
-	// case co.StateRunning: //game is running loop
-	// 	g.renderer.Draw(screen)
-	// 	DrawScore(screen, g)
-	// }
 	g.buttonManager.Draw(screen)
 	g.Menu.Draw(screen)
 }

@@ -27,7 +27,5 @@ func (s *MainMenu) Update() error {
 }
 
 func (s *MainMenu) Draw(screen *ebiten.Image) {
-	screen.Fill(s.D.G.GetCurrentTheme().ColorScreenBackground)
 	s.D.G.DrawMenu(screen)
-	s.D.G.DrawUI(screen)
 }
