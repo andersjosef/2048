@@ -6,6 +6,7 @@ import (
 	"math"
 
 	"github.com/andersjosef/2048/twenty48/buttons"
+	"github.com/andersjosef/2048/twenty48/commands"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
@@ -28,6 +29,7 @@ type Game struct {
 	themePicker   *theme.ThemePicker
 	utils         Utils
 	EventBus      *eventhandler.EventBus
+	Cmds          *commands.Commands
 
 	state         co.GameState // Game is in menu, running, etc
 	previousState co.GameState
@@ -58,9 +60,9 @@ func NewGame() (*Game, error) {
 	g.renderer = NewRenderer(g)
 	g.utils = NewUtils()
 
-	cmds := NewCommands(g)
-	g.Input = NewInput(g, cmds)
-	g.buttonManager = NewButtonManager(g, cmds)
+	g.Cmds = NewCommands(g)
+	g.Input = NewInput(g, g.Cmds)
+	g.buttonManager = NewButtonManager(g, g.Cmds)
 	g.Input.GiveButtons(g.buttonManager)
 	g.buttonManager.GiveInput(g.Input)
 

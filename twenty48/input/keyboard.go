@@ -13,7 +13,7 @@ type KeyboardDeps struct {
 		GetState() co.GameState
 	}
 	nav    interface{ Switch(co.GameState) }
-	cmds   commands.Commands
+	cmds   *commands.Commands
 	Cursor interface{ Hide() }
 }
 

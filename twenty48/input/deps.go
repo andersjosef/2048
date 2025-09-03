@@ -11,7 +11,7 @@ type Deps struct {
 	Buttons
 	ScreenControl
 
-	Cmds  commands.Commands
+	Cmds  *commands.Commands
 	State interface {
 		GetState() co.GameState
 		SetState(co.GameState)

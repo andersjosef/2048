@@ -11,13 +11,13 @@ import (
 // // Button Manager ////
 type ButtonManager struct {
 	d              Deps
-	Cmds           commands.Commands
+	Cmds           *commands.Commands
 	buttonArrayMap map[co.GameState][]*Button
 	buttonKeyMap   map[string]*Button
 	buttonPressed  bool
 }
 
-func NewButtonManager(d Deps, cmds commands.Commands) *ButtonManager {
+func NewButtonManager(d Deps, cmds *commands.Commands) *ButtonManager {
 	bm := &ButtonManager{
 		d:              d,
 		Cmds:           cmds,

@@ -13,8 +13,8 @@ type Commands struct {
 	ScaleUp, ScaleDown                     func()
 }
 
-func BuildCommands(d Deps) Commands {
-	return Commands{
+func BuildCommands(d Deps) *Commands {
+	return &Commands{
 		MoveLeft:  func() { d.Board.Move(board.Left) },
 		MoveRight: func() { d.Board.Move(board.Right) },
 		MoveUp:    func() { d.Board.Move(board.Up) },
