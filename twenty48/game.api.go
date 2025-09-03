@@ -10,19 +10,19 @@ func (g *Game) GetScore() int {
 }
 
 func (g *Game) GetState() co.GameState {
-	return g.state
+	return g.d.FSM.Current()
 }
 
 func (g *Game) SetState(gs co.GameState) {
-	g.state = gs
+	g.d.FSM.Switch(gs)
 }
 
 func (g Game) IsGameOver() bool {
-	return g.gameOver
+	return g.d.IsGameOver()
 }
 
 func (g *Game) GetPreviousState() co.GameState {
-	return g.previousState
+	return g.d.FSM.Previous()
 }
 
 func (g *Game) GetCurrentTheme() theme.Theme {

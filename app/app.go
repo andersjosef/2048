@@ -20,7 +20,7 @@ func NewApp() *App {
 	f := state.NewFSM[co.GameState]()
 
 	g, err := twenty48.NewGame(twenty48.Deps{
-		FMS: f,
+		FSM: f,
 		IsGameOver: func() bool {
 			return f.Current() == co.StateGameOver
 		},
