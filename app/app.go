@@ -11,6 +11,7 @@ type App struct {
 	fsm     *state.FSM[co.GameState]
 	sc      twenty48.ScreenControl
 	globals []Updater
+	overlay []Drawer
 }
 
 func NewApp(g *twenty48.Game) *App {
@@ -36,6 +37,9 @@ func NewApp(g *twenty48.Game) *App {
 		globals: []Updater{
 			g,
 		},
+		overlay: []Drawer{
+			g,
+		},
 	}
 }
 
@@ -49,7 +53,15 @@ func (a *App) Update() error {
 	// FSM update
 	return a.fsm.Update()
 }
-func (a *App) Draw(screen *ebiten.Image)  { a.fsm.Draw(screen) }
+func (a *App) Draw(screen *ebiten.Image) {
+	// Global overlay drawing
+	for _, g := range a.overlay {
+		g.Draw(screen)
+	}
+
+	// FSM drawing
+	// a.fsm.Draw(screen)
+}
 func (a *App) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
 func (a *App) LayoutF(w, h float64) (float64, float64) {
 	return a.sc.LayoutF(w, h)
