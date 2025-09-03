@@ -52,4 +52,8 @@ func (ki *KeyboardInput) addKeyBindings() {
 			ebiten.KeyR:      ki.d.cmds.ResetGame,
 		},
 	}
+
+	ki.onUnhandeled = map[co.GameState]func(){
+		co.StateMainMenu: func() { ki.d.State.SetState(co.StateRunning) },
+	}
 }

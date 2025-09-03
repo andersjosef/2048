@@ -21,7 +21,8 @@ type KeyboardInput struct {
 	keys              []ebiten.Key
 	keyIsBeingPressed bool
 
-	keyActions map[co.GameState]map[ebiten.Key]func()
+	keyActions   map[co.GameState]map[ebiten.Key]func()
+	onUnhandeled map[co.GameState]func() // What happens an unregistered key is pressed in state
 }
 
 func NewKeyboardInput(d KeyboardDeps) *KeyboardInput {
@@ -40,11 +41,13 @@ func (i *KeyboardInput) Update() {
 		key_pressed := i.keys[len(i.keys)-1]
 
 		// Get the appropriate action map based on the current game state
-		if actionMap, ok := i.keyActions[i.d.State.GetState()]; ok { // Check if actionmap exist for current game state
+		currentState := i.d.State.GetState()
+		if actionMap, ok := i.keyActions[currentState]; ok { // Check if actionmap exist for current game state
 			if action, exists := actionMap[key_pressed]; exists { // Take snapshot of the board and do action
 				action()
-			} else if i.d.State.GetState() == co.StateMainMenu { // If button is not in map and state is main menu
-				i.d.State.SetState(co.StateRunning)
+			} else if onUnhandledAction, exists := i.onUnhandeled[currentState]; exists {
+				// What happens if key not in list is pressed for state
+				onUnhandledAction()
 			}
 		}
 
