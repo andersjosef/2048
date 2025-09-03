@@ -32,3 +32,7 @@ func (g *Game) GetCurrentTheme() theme.Theme {
 func (g *Game) GetFontSet() theme.FontSet {
 	return *g.fontSet
 }
+
+func (g *Game) ScreenControl() ScreenControl {
+	return g.screenControl
+}

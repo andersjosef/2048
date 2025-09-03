@@ -1,6 +1,8 @@
 package screencontrol
 
 import (
+	"math"
+
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -76,4 +78,11 @@ func (sc *ScreenControl) DecrementScale() bool {
 		return true
 	}
 	return false
+}
+
+func (g *ScreenControl) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
+	scale := ebiten.Monitor().DeviceScaleFactor()
+	canvasWidth := math.Ceil(logicWinWidth * scale)
+	canvasHeight := math.Ceil(logicWinHeight * scale)
+	return canvasWidth, canvasHeight
 }

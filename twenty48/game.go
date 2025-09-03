@@ -155,3 +155,17 @@ func (g *Game) registerEvents() {
 		},
 	)
 }
+
+// Temporary wrappers
+func (g *Game) DrawMenu(screen *ebiten.Image) {
+	g.menu.Draw(screen)
+}
+
+func (g *Game) DrawUI(screen *ebiten.Image) {
+	g.buttonManager.Draw(screen)
+}
+
+func (g *Game) DrawRunning(screen *ebiten.Image) {
+	g.renderer.Draw(screen)
+	DrawScore(screen, g)
+}

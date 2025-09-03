@@ -9,6 +9,7 @@ type ScreenControl interface {
 	IncrementScale()
 	DecrementScale() bool
 	GetScale() float64
+	LayoutF(float64, float64) (float64, float64)
 }
 
 func NewScreenControl(g *Game) ScreenControl {
