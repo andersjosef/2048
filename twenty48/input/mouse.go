@@ -14,6 +14,7 @@ type MouseInputDeps struct {
 		SetState(co.GameState)
 		IsGameOver() bool
 	}
+	nav    interface{ Switch(co.GameState) }
 	Cmds   commands.Commands
 	Cursor interface{ MaybeShow() }
 }
@@ -25,10 +26,19 @@ type MouseInput struct {
 	startCursorPos [2]int
 	endCursorPos   [2]int
 	justMoved      bool // To make sure only one move is done
+
+	onPressed map[co.GameState]func()
 }
 
 func NewMouseInput(d MouseInputDeps) *MouseInput {
-	mi := &MouseInput{d: d}
+	mi := &MouseInput{
+		d: d,
+	}
+
+	mi.onPressed = map[co.GameState]func(){
+		co.StateMainMenu: func() { mi.d.nav.Switch(co.StateRunning) },
+	}
+
 	return mi
 }
 
@@ -42,8 +52,8 @@ func (i *MouseInput) Update() {
 
 	// Cursor movement updates
 	if pressed {
-		if i.d.State.GetState() == co.StateMainMenu { // If in main menu click will trigger game state
-			i.d.State.SetState(co.StateRunning)
+		if onPressAction, exist := i.onPressed[i.d.State.GetState()]; exist { // If specified will trigger state change
+			onPressAction()
 		} else { // If not in menu update only end cursor coordinate
 			i.endCursorPos[0], i.endCursorPos[1] = ebiten.CursorPosition()
 		}

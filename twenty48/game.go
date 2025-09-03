@@ -22,7 +22,7 @@ type Game struct {
 	animation     Animation
 	menu          Menu
 	renderer      Renderer
-	input         *input.Input
+	Input         *input.Input
 	buttonManager *buttons.ButtonManager
 	fontSet       *theme.FontSet
 	themePicker   *theme.ThemePicker
@@ -59,10 +59,10 @@ func NewGame() (*Game, error) {
 	g.utils = NewUtils()
 
 	cmds := NewCommands(g)
-	g.input = NewInput(g, cmds)
+	g.Input = NewInput(g, cmds)
 	g.buttonManager = NewButtonManager(g, cmds)
-	g.input.GiveButtons(g.buttonManager)
-	g.buttonManager.GiveInput(g.input)
+	g.Input.GiveButtons(g.buttonManager)
+	g.buttonManager.GiveInput(g.Input)
 
 	g.menu = NewMenu(g)
 	ebiten.SetWindowSize(
@@ -77,7 +77,7 @@ func NewGame() (*Game, error) {
 // Global update which is run regardless of state
 func (g *Game) Update() error {
 	g.EventBus.Dispatch()
-	g.input.UpdateInput()
+	g.Input.UpdateInput()
 
 	if g.shouldClose { // quit game check
 		return ebiten.Termination

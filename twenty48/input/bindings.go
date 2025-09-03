@@ -54,6 +54,8 @@ func (ki *KeyboardInput) addKeyBindings() {
 	}
 
 	ki.onUnhandeled = map[co.GameState]func(){
-		co.StateMainMenu: func() { ki.d.State.SetState(co.StateRunning) },
+		co.StateMainMenu: func() {
+			ki.d.nav.Switch(co.StateRunning)
+		},
 	}
 }

@@ -10,7 +10,7 @@ import (
 func NewButtonManager(g *Game, cmds commands.Commands) *buttons.ButtonManager {
 	deps := buttons.Deps{
 		ScreenControl: g.screenControl,
-		Input:         g.input,
+		Input:         g.Input,
 		Utils:         g.utils,
 		EventHandler:  g.EventBus,
 

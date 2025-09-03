@@ -12,6 +12,7 @@ type KeyboardDeps struct {
 		SetState(co.GameState)
 		GetState() co.GameState
 	}
+	nav    interface{ Switch(co.GameState) }
 	cmds   commands.Commands
 	Cursor interface{ Hide() }
 }
@@ -25,8 +26,10 @@ type KeyboardInput struct {
 	onUnhandeled map[co.GameState]func() // What happens an unregistered key is pressed in state
 }
 
-func NewKeyboardInput(d KeyboardDeps) *KeyboardInput {
-	ki := &KeyboardInput{d: d}
+func NewKeyboardInput(d KeyboardDeps, nav *Navigator) *KeyboardInput {
+	ki := &KeyboardInput{
+		d: d,
+	}
 	ki.addKeyBindings()
 	return ki
 }

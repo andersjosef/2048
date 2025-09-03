@@ -27,6 +27,11 @@ func NewApp(g *twenty48.Game) *App {
 		D: g,
 	}
 
+	// Let keybindings change FSM
+	g.Input.SetNavigator(func(gs co.GameState) {
+		f.Switch(gs)
+	})
+
 	f.Register(co.StateMainMenu, menu)
 	f.Register(co.StateRunning, run)
 	f.Start(co.StateMainMenu)
@@ -37,9 +42,9 @@ func NewApp(g *twenty48.Game) *App {
 		globals: []Updater{
 			g,
 		},
-		overlay: []Drawer{
-			g,
-		},
+		// overlay: []Drawer{
+		// 	g,
+		// },
 	}
 }
 
@@ -60,7 +65,7 @@ func (a *App) Draw(screen *ebiten.Image) {
 	}
 
 	// FSM drawing
-	// a.fsm.Draw(screen)
+	a.fsm.Draw(screen)
 }
 func (a *App) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
 func (a *App) LayoutF(w, h float64) (float64, float64) {
