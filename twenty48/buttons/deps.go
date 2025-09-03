@@ -2,6 +2,7 @@ package buttons
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -12,6 +13,7 @@ type Deps struct {
 	ScreenControl
 	Input
 	Utils
+	EventHandler
 
 	GetFontSet func() theme.FontSet
 	GetState   func() co.GameState
@@ -29,4 +31,8 @@ type Input interface {
 
 type Utils interface {
 	DrawDoubleText(screen *ebiten.Image, message string, xpos int, ypos int, offset float64, fontUsed *text.GoTextFace, isCentered bool)
+}
+
+type EventHandler interface {
+	Register(eventType eventhandler.EventType, handler func(eventhandler.Event))
 }

@@ -69,7 +69,7 @@ func newTouchInput(i *Input) *TouchInput {
 	return ti
 }
 
-func (g *TouchInput) TouchUpdate() error {
+func (g *TouchInput) Update() error {
 	// Clear the previous frame's taps.
 	g.taps = g.taps[:0]
 
@@ -116,8 +116,8 @@ func (g *TouchInput) TouchUpdate() error {
 		shouldTriggerMove, dx, dy := t.shouldTriggerTouchMove()
 
 		if shouldTriggerMove && g.canSwipe {
-			if g.input.d.GetState() == co.StateMainMenu {
-				g.input.d.SetState(co.StateRunning)
+			if g.input.d.State.GetState() == co.StateMainMenu {
+				g.input.d.State.SetState(co.StateRunning)
 
 			}
 			g.input.SelectMoveDelta(dx, dy)
