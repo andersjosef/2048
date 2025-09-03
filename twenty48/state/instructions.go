@@ -1,8 +1,6 @@
 package state
 
 import (
-	"fmt"
-
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -20,9 +18,7 @@ type Instructions struct {
 	D DepsInstructions
 }
 
-func (s *Instructions) Enter() {
-	fmt.Println("Entering instructions")
-}
+func (s *Instructions) Enter() {}
 
 func (s *Instructions) Exit() {}
 

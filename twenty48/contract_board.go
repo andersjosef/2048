@@ -28,7 +28,7 @@ func NewBoard(g *Game) Board {
 		EventHandler:      g.EventBus,
 		ScreenControl:     g.screenControl,
 		SetGameOver:       func(isGameOver bool) { g.gameOver = isGameOver },
-		SetGameState:      func(gs co.GameState) { g.state = gs },
+		SetGameState:      func(gs co.GameState) { g.SetState(gs) },
 		IsGameOver:        func() bool { return g.gameOver },
 		GetCurrentTheme:   func() theme.Theme { return g.currentTheme },
 		GetCurrentFontSet: func() theme.FontSet { return *g.fontSet },

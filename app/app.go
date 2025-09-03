@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/andersjosef/2048/twenty48"
@@ -35,25 +34,30 @@ func NewApp() *App {
 			G: g,
 		},
 	}
+	f.Register(co.StateMainMenu, menu)
 
 	instruction := &state.Instructions{
 		D: state.DepsInstructions{
 			G: g,
 		},
 	}
+	f.Register(co.StateInstructions, instruction)
+
+	gameOver := &state.GameOver{
+		D: g.Menu,
+	}
+	f.Register(co.StateGameOver, gameOver)
 
 	run := &state.Running{
 		D: g,
 	}
+	f.Register(co.StateRunning, run)
 
 	// Let keybindings change FSM
 	g.Input.SetNavigator(func(gs co.GameState) {
 		f.Switch(gs)
 	})
 
-	f.Register(co.StateMainMenu, menu)
-	f.Register(co.StateInstructions, instruction)
-	f.Register(co.StateRunning, run)
 	f.Start(co.StateMainMenu)
 
 	return &App{
@@ -69,7 +73,6 @@ func NewApp() *App {
 }
 
 func (a *App) Update() error {
-	fmt.Println(a.fsm.Previous())
 	// Global updaters which will run regardless
 	for _, g := range a.globals {
 		if err := g.Update(); err != nil {

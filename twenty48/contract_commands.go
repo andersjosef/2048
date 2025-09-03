@@ -22,7 +22,7 @@ func NewCommands(g *Game) *commands.Commands {
 		IncrementCurrentTheme: func() { // Change this
 			g.currentTheme = g.themePicker.IncrementCurrentTheme()
 			g.board.CreateBoardImage()
-			g.menu.UpdateDynamicText()
+			g.Menu.UpdateDynamicText()
 		},
 		ToggleInfo: func() {
 			switch g.GetState() {
@@ -39,7 +39,7 @@ func NewCommands(g *Game) *commands.Commands {
 		ScaleWindow: func() {
 			g.updateFonts()
 			g.board.ScaleBoard()
-			g.menu.UpdateCenteredTitle()
+			g.Menu.UpdateCenteredTitle()
 
 			width, _ := g.screenControl.GetActualSize()
 			g.buttonManager.UpdatePosForButton("II", width-20, 20)

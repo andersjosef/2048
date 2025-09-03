@@ -10,6 +10,7 @@ import (
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
+	"github.com/andersjosef/2048/twenty48/menu"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -23,7 +24,7 @@ type Game struct {
 	board         Board
 	screenControl ScreenControl
 	animation     Animation
-	menu          Menu
+	Menu          *menu.Menu
 	renderer      Renderer
 	Input         *input.Input
 	buttonManager *buttons.ButtonManager
@@ -69,7 +70,7 @@ func NewGame(d Deps) (*Game, error) {
 	g.Input.GiveButtons(g.buttonManager)
 	g.buttonManager.GiveInput(g.Input)
 
-	g.menu = NewMenu(g)
+	g.Menu = NewMenu(g)
 	ebiten.SetWindowSize(
 		co.LOGICAL_WIDTH*int(g.screenControl.GetScale()),
 		co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()),
@@ -100,7 +101,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// 	DrawScore(screen, g)
 	// }
 	g.buttonManager.Draw(screen)
-	g.menu.Draw(screen)
+	g.Menu.Draw(screen)
 }
 func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
 func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
@@ -142,7 +143,7 @@ func (g *Game) registerEvents() {
 		eventhandler.EventResetGame,
 		func(_ eventhandler.Event) {
 			g.score = 0
-			g.state = co.StateMainMenu // Swap to main menu
+			g.SetState(co.StateMainMenu) // Swap to main menu
 			g.gameOver = false
 			shadertools.ResetTimesMapsDissolve()
 
@@ -164,7 +165,7 @@ func (g *Game) registerEvents() {
 
 // Temporary wrappers
 func (g *Game) DrawMenu(screen *ebiten.Image) {
-	g.menu.Draw(screen)
+	g.Menu.Draw(screen)
 }
 
 func (g *Game) DrawUI(screen *ebiten.Image) {

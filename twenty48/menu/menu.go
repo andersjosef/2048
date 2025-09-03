@@ -70,7 +70,7 @@ func (m *Menu) Draw(screen *ebiten.Image) {
 	case co.StateInstructions:
 		m.drawInstructions(screen)
 	case co.StateGameOver:
-		m.drawGameOverScreen(screen)
+		m.DrawGameOver(screen)
 	}
 }
 
@@ -202,7 +202,7 @@ func (m *Menu) drawTitle(screen *ebiten.Image) {
 
 }
 
-func (m *Menu) drawGameOverScreen(screen *ebiten.Image) {
+func (m *Menu) DrawGameOver(screen *ebiten.Image) {
 	scoreString := fmt.Sprintf("Score: %v", m.lastSnap.Score)
 
 	width, height := m.lastSnap.Width, m.lastSnap.Height
