@@ -7,7 +7,7 @@ import (
 )
 
 func TestReset(t *testing.T) {
-	g, err := NewGame()
+	g, err := NewGame(Deps{})
 	assert.NoError(t, err)
 	cmds := NewCommands(g)
 

@@ -1,6 +1,8 @@
 package app
 
 import (
+	"log"
+
 	"github.com/andersjosef/2048/twenty48"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/state"
@@ -14,8 +16,18 @@ type App struct {
 	overlay []Drawer
 }
 
-func NewApp(g *twenty48.Game) *App {
+func NewApp() *App {
 	f := state.NewFSM[co.GameState]()
+
+	g, err := twenty48.NewGame(twenty48.Deps{
+		FMS: f,
+		IsGameOver: func() bool {
+			return f.Current() == co.StateGameOver
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	menu := &state.MainMenu{
 		D: state.DepsMainMenu{

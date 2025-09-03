@@ -11,6 +11,7 @@ type State interface {
 
 type FSM[T comparable] struct {
 	current T
+	prev    T
 	states  map[T]State
 }
 
@@ -20,7 +21,8 @@ func (f *FSM[T]) Register(id T, s State) { f.states[id] = s }
 
 func (f *FSM[T]) Has(id T) bool { _, ok := f.states[id]; return ok }
 
-func (f *FSM[T]) Current() T { return f.current }
+func (f *FSM[T]) Current() T  { return f.current }
+func (f *FSM[T]) Previous() T { return f.current }
 
 // Set the initial state to be
 func (f *FSM[T]) Start(id T) {
@@ -43,6 +45,7 @@ func (f *FSM[T]) Switch(id T) {
 	if current, ok := f.states[id]; ok {
 		current.Exit()
 	}
+	f.prev = f.current
 	f.current = id
 	next.Enter()
 }

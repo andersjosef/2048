@@ -18,6 +18,8 @@ import (
 )
 
 type Game struct {
+	d Deps
+
 	board         Board
 	screenControl ScreenControl
 	animation     Animation
@@ -39,9 +41,10 @@ type Game struct {
 	gameOver      bool
 }
 
-func NewGame() (*Game, error) {
+func NewGame(d Deps) (*Game, error) {
 	// init game struct
 	g := &Game{
+		d:             d,
 		state:         co.StateMainMenu,
 		previousState: co.StateMainMenu,
 		shouldClose:   false,
