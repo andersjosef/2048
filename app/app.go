@@ -8,15 +8,18 @@ import (
 )
 
 type App struct {
-	fsm *state.FSM[co.GameState]
-	sc  twenty48.ScreenControl
+	fsm     *state.FSM[co.GameState]
+	sc      twenty48.ScreenControl
+	globals []Updater
 }
 
 func NewApp(g *twenty48.Game) *App {
 	f := state.NewFSM[co.GameState]()
 
 	menu := &state.MainMenu{
-		D: g,
+		D: state.DepsMainMenu{
+			G: g,
+		},
 	}
 
 	run := &state.Running{
@@ -27,10 +30,25 @@ func NewApp(g *twenty48.Game) *App {
 	f.Register(co.StateRunning, run)
 	f.Start(co.StateMainMenu)
 
-	return &App{fsm: f, sc: g.ScreenControl()}
+	return &App{
+		fsm: f,
+		sc:  g.ScreenControl(),
+		globals: []Updater{
+			g,
+		},
+	}
 }
 
-func (a *App) Update() error              { return a.fsm.Update() }
+func (a *App) Update() error {
+	// Global updaters which will run regardless
+	for _, g := range a.globals {
+		if err := g.Update(); err != nil {
+			return err
+		}
+	}
+	// FSM update
+	return a.fsm.Update()
+}
 func (a *App) Draw(screen *ebiten.Image)  { a.fsm.Draw(screen) }
 func (a *App) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
 func (a *App) LayoutF(w, h float64) (float64, float64) {

@@ -14,7 +14,7 @@ type ScreenControl interface {
 
 func NewScreenControl(g *Game) ScreenControl {
 	d := screencontrol.Deps{
-		EventHandler: g.eventBus,
+		EventHandler: g.EventBus,
 	}
 
 	return screencontrol.New(d)

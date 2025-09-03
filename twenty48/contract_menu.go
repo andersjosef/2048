@@ -15,7 +15,7 @@ func NewMenu(g *Game) Menu {
 	d := menu.Deps{
 		Renderer:     g.utils,
 		Buttons:      g.buttonManager,
-		EventHandler: g.eventBus,
+		EventHandler: g.EventBus,
 		GetSnapshot: func() menu.Snapshot {
 			w, h := g.screenControl.GetActualSize()
 			return menu.Snapshot{

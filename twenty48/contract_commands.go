@@ -15,7 +15,7 @@ func NewCommands(g *Game) commands.Commands {
 	}
 	deps := commands.Deps{
 		Board:         g.board,
-		EventHandler:  g.eventBus,
+		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
 
 		SetCloseGame: func(b bool) { g.shouldClose = b },

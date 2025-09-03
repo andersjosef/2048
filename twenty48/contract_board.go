@@ -25,7 +25,7 @@ type Board interface {
 
 func NewBoard(g *Game) Board {
 	d := board.Deps{
-		EventHandler:      g.eventBus,
+		EventHandler:      g.EventBus,
 		ScreenControl:     g.screenControl,
 		SetGameOver:       func(isGameOver bool) { g.gameOver = isGameOver },
 		SetGameState:      func(gs co.GameState) { g.state = gs },

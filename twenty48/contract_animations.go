@@ -13,7 +13,7 @@ type Animation interface {
 func NewAnimation(g *Game) Animation {
 	deps := animations.Deps{
 		Board:        g.board,
-		EventHandler: g.eventBus,
+		EventHandler: g.EventBus,
 	}
 
 	return animations.New(deps)

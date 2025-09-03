@@ -27,7 +27,7 @@ type Game struct {
 	fontSet       *theme.FontSet
 	themePicker   *theme.ThemePicker
 	utils         Utils
-	eventBus      *eventhandler.EventBus
+	EventBus      *eventhandler.EventBus
 
 	state         co.GameState // Game is in menu, running, etc
 	previousState co.GameState
@@ -45,7 +45,7 @@ func NewGame() (*Game, error) {
 		shouldClose:   false,
 	}
 
-	g.eventBus = eventhandler.NewEventBus()
+	g.EventBus = eventhandler.NewEventBus()
 	g.themePicker = theme.NewThemePicker()
 	g.currentTheme = g.themePicker.GetCurrentTheme()
 	g.screenControl = NewScreenControl(g)
@@ -74,8 +74,9 @@ func NewGame() (*Game, error) {
 	return g, nil
 }
 
+// Global update which is run regardless of state
 func (g *Game) Update() error {
-	g.eventBus.Dispatch()
+	g.EventBus.Dispatch()
 	g.input.UpdateInput()
 
 	if g.shouldClose { // quit game check
@@ -132,7 +133,7 @@ func (g *Game) updateFonts() {
 }
 
 func (g *Game) registerEvents() {
-	g.eventBus.Register(
+	g.EventBus.Register(
 		eventhandler.EventResetGame,
 		func(_ eventhandler.Event) {
 			g.score = 0
@@ -142,7 +143,7 @@ func (g *Game) registerEvents() {
 
 		},
 	)
-	g.eventBus.Register(
+	g.EventBus.Register(
 		eventhandler.EventMoveMade,
 		func(e eventhandler.Event) {
 			data, ok := e.Data.(shared.MoveData)

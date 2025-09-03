@@ -7,7 +7,7 @@ import (
 
 func NewInput(g *Game, cmds commands.Commands) *input.Input {
 	deps := input.Deps{
-		EventHandler:  g.eventBus,
+		EventHandler:  g.EventBus,
 		Buttons:       g.buttonManager,
 		ScreenControl: g.screenControl,
 

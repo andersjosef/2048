@@ -15,7 +15,7 @@ func TestReset(t *testing.T) {
 
 	cmds.ResetGame()
 
-	g.eventBus.Dispatch()
+	g.EventBus.Dispatch()
 
 	assert.Equal(t, 0, g.score)
 }
