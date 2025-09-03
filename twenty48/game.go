@@ -94,11 +94,11 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(g.currentTheme.ColorScreenBackground)
-	switch g.state {
-	case co.StateRunning: //game is running loop
-		g.renderer.Draw(screen)
-		DrawScore(screen, g)
-	}
+	// switch g.state {
+	// case co.StateRunning: //game is running loop
+	// 	g.renderer.Draw(screen)
+	// 	DrawScore(screen, g)
+	// }
 	g.buttonManager.Draw(screen)
 	g.menu.Draw(screen)
 }

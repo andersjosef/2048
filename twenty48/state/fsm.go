@@ -22,7 +22,7 @@ func (f *FSM[T]) Register(id T, s State) { f.states[id] = s }
 func (f *FSM[T]) Has(id T) bool { _, ok := f.states[id]; return ok }
 
 func (f *FSM[T]) Current() T  { return f.current }
-func (f *FSM[T]) Previous() T { return f.current }
+func (f *FSM[T]) Previous() T { return f.prev }
 
 // Set the initial state to be
 func (f *FSM[T]) Start(id T) {

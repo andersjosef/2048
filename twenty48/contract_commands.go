@@ -25,15 +25,15 @@ func NewCommands(g *Game) *commands.Commands {
 			g.menu.UpdateDynamicText()
 		},
 		ToggleInfo: func() {
-			switch g.state {
+			switch g.GetState() {
 			case co.StateMainMenu:
-				g.state = co.StateInstructions
-				g.previousState = co.StateMainMenu
+				g.d.FSM.Switch(co.StateInstructions)
+				// g.previousState = co.StateMainMenu
 			case co.StateRunning:
-				g.state = co.StateInstructions
-				g.previousState = co.StateRunning
+				g.d.FSM.Switch(co.StateInstructions)
+				// g.previousState = co.StateRunning
 			case co.StateInstructions:
-				g.state = g.previousState
+				g.d.FSM.Switch(g.d.FSM.Previous())
 			}
 		},
 		ScaleWindow: func() {

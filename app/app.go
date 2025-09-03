@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/andersjosef/2048/twenty48"
@@ -35,6 +36,12 @@ func NewApp() *App {
 		},
 	}
 
+	instruction := &state.Instructions{
+		D: state.DepsInstructions{
+			G: g,
+		},
+	}
+
 	run := &state.Running{
 		D: g,
 	}
@@ -45,6 +52,7 @@ func NewApp() *App {
 	})
 
 	f.Register(co.StateMainMenu, menu)
+	f.Register(co.StateInstructions, instruction)
 	f.Register(co.StateRunning, run)
 	f.Start(co.StateMainMenu)
 
@@ -54,13 +62,14 @@ func NewApp() *App {
 		globals: []Updater{
 			g,
 		},
-		// overlay: []Drawer{
-		// 	g,
-		// },
+		overlay: []Drawer{
+			g,
+		},
 	}
 }
 
 func (a *App) Update() error {
+	fmt.Println(a.fsm.Previous())
 	// Global updaters which will run regardless
 	for _, g := range a.globals {
 		if err := g.Update(); err != nil {
