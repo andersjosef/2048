@@ -17,8 +17,8 @@ func NewBoard(g *Game) *board.Board {
 		},
 		SetGameState:      func(gs co.GameState) { g.SetState(gs) },
 		IsGameOver:        func() bool { return g.IsGameOver() },
-		GetCurrentTheme:   func() theme.Theme { return g.ThemeManager.Current() },
-		GetCurrentFontSet: func() theme.FontSet { return *g.ThemeManager.Fonts() },
+		GetCurrentTheme:   func() theme.Theme { return g.Theme.Current() },
+		GetCurrentFontSet: func() theme.FontSet { return *g.Theme.Fonts() },
 	}
 
 	b, err := board.New(d)

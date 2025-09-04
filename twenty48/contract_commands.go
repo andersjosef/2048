@@ -20,7 +20,7 @@ func NewCommands(g *Game) *commands.Commands {
 		FSM:           g.d.FSM,
 
 		IncrementCurrentTheme: func() { // Change this
-			g.ThemeManager.NextFont()
+			g.Theme.NextFont()
 
 			g.Board.CreateBoardImage()
 			g.Menu.UpdateDynamicText()

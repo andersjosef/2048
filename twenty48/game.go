@@ -1,7 +1,6 @@
 package twenty48
 
 import (
-	"fmt"
 	"image/color"
 
 	"github.com/andersjosef/2048/twenty48/board"
@@ -17,7 +16,6 @@ import (
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 type Game struct {
@@ -35,7 +33,8 @@ type Game struct {
 	Cmds           *commands.Commands
 	OverlayManager *ui.Manager
 	Core           *core.Core
-	ThemeManager   *theme.ThemeManager
+	Theme          *theme.ThemeManager
+	ScoreOverlay   *ui.ScoreOverlay
 }
 
 func NewGame(d Deps) (*Game, error) {
@@ -46,7 +45,7 @@ func NewGame(d Deps) (*Game, error) {
 
 	g.EventBus = eventhandler.NewEventBus()
 	g.screenControl = NewScreenControl(g)
-	g.ThemeManager = theme.NewThemeService(theme.ThemeManagerDeps{
+	g.Theme = theme.NewThemeService(theme.ThemeManagerDeps{
 		SC: g.screenControl,
 	})
 	g.Core = core.NewCore()
@@ -54,6 +53,10 @@ func NewGame(d Deps) (*Game, error) {
 	g.animation = NewAnimation(g)
 	g.renderer = NewRenderer(g)
 	g.utils = NewUtils()
+	g.ScoreOverlay = ui.NewScoreOverlay(ui.ScoreOverlayDeps{
+		Fonts: g.Theme,
+		Score: g.Core,
+	})
 
 	g.Cmds = NewCommands(g)
 	g.Input = NewInput(g, g.Cmds)
@@ -68,7 +71,7 @@ func NewGame(d Deps) (*Game, error) {
 	)
 
 	g.OverlayManager = ui.NewOverlayManager()
-	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.ThemeManager.Current().ColorScreenBackground }}) // Temporary
+	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.Theme.Current().ColorScreenBackground }}) // Temporary
 	g.OverlayManager.AddAfter(g.buttonManager)
 	g.OverlayManager.AddAfter(g.Menu)
 
@@ -84,31 +87,9 @@ func (g *Game) Update() error {
 	return nil
 }
 
-func DrawScore(screen *ebiten.Image, g *Game) {
-	myFont := g.ThemeManager.Fonts().Smaller
-
-	//TODO: make more dynamic
-	margin := 10
-	shadowOffsett := 2
-	score_text := fmt.Sprintf("%v", g.GetScore())
-
-	getOpt := func(x, y float64, col color.Color) *text.DrawOptions {
-		opt := &text.DrawOptions{}
-		opt.GeoM.Translate(x, y)
-		opt.ColorScale.ScaleWithColor(col)
-		return opt
-	}
-
-	shadowOpt := getOpt(float64((shadowOffsett + margin)), 0, color.Black)
-	text.Draw(screen, score_text, myFont, shadowOpt)
-
-	mainOpt := getOpt(float64(margin), 0, color.White)
-	text.Draw(screen, score_text, myFont, mainOpt)
-}
-
 // For reinitializing a font with a higher dpi
 func (g *Game) updateFonts() {
-	g.ThemeManager.UpdateFonts()
+	g.Theme.UpdateFonts()
 }
 
 func (g *Game) registerEvents() {
@@ -144,5 +125,5 @@ func (g *Game) DrawUI(screen *ebiten.Image) {
 
 func (g *Game) DrawRunning(screen *ebiten.Image) {
 	g.renderer.Draw(screen)
-	DrawScore(screen, g)
+	g.ScoreOverlay.DrawScore(screen)
 }
