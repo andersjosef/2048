@@ -9,10 +9,10 @@ type Renderer interface {
 	Draw(*ebiten.Image)
 }
 
-func NewRenderer(g *Game) Renderer {
+func NewRenderer(g *Router) Renderer {
 	deps := renderer.Deps{
 		Animation: g.animation,
-		Base:      g.board,
+		Base:      g.Board,
 	}
 	return renderer.New(deps)
 }

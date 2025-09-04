@@ -3,11 +3,13 @@ package constants
 // Gamestates Enum style
 type GameState int
 
+//go:generate stringer -type=GameState
 const (
 	StateRunning GameState = iota + 1
 	StateMainMenu
 	StateInstructions
 	StateGameOver
+	StateQuitGame
 )
 
 /* variables and constants */

@@ -5,30 +5,34 @@ import (
 	"github.com/andersjosef/2048/twenty48/theme"
 )
 
-func (g *Game) GetScore() int {
-	return g.score
+func (g *Router) GetScore() int {
+	return g.Core.Score()
 }
 
-func (g *Game) GetState() co.GameState {
-	return g.state
+func (g *Router) GetState() co.GameState {
+	return g.d.FSM.Current()
 }
 
-func (g *Game) SetState(gs co.GameState) {
-	g.state = gs
+func (g *Router) SetState(gs co.GameState) {
+	g.d.FSM.Switch(gs)
 }
 
-func (g Game) IsGameOver() bool {
-	return g.gameOver
+func (g Router) IsGameOver() bool {
+	return g.d.IsGameOver()
 }
 
-func (g *Game) GetPreviousState() co.GameState {
-	return g.previousState
+func (g *Router) GetPreviousState() co.GameState {
+	return g.d.FSM.Previous()
 }
 
-func (g *Game) GetCurrentTheme() theme.Theme {
-	return g.currentTheme
+func (g *Router) GetCurrentTheme() theme.Theme {
+	return g.Theme.Current()
 }
 
-func (g *Game) GetFontSet() theme.FontSet {
-	return *g.fontSet
+func (g *Router) GetFontSet() theme.FontSet {
+	return *g.Theme.Fonts()
+}
+
+func (g *Router) ScreenControl() ScreenControl {
+	return g.screenControl
 }

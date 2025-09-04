@@ -2,20 +2,13 @@ package twenty48
 
 import (
 	"github.com/andersjosef/2048/twenty48/menu"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Menu interface {
-	Draw(screen *ebiten.Image)
-	UpdateDynamicText()
-	UpdateCenteredTitle()
-}
-
-func NewMenu(g *Game) Menu {
+func NewMenu(g *Router) *menu.Menu {
 	d := menu.Deps{
 		Renderer:     g.utils,
-		Buttons:      g.buttonManager,
-		EventHandler: g.eventBus,
+		Buttons:      g.Buttons,
+		EventHandler: g.EventBus,
 		GetSnapshot: func() menu.Snapshot {
 			w, h := g.screenControl.GetActualSize()
 			return menu.Snapshot{

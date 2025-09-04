@@ -120,11 +120,12 @@ func (b *Board) registerEvents() {
 	b.d.Register(
 		eventhandler.EventMoveMade,
 		func(e eventhandler.Event) {
-			moveData, ok := e.Data.(shared.MoveData)
+			data, ok := e.Data.(shared.MoveData)
 			if !ok {
 				return
 			}
-			b.matrix = moveData.NewBoard
+			b.d.Core.AddScore(data.ScoreGain)
+			b.matrix = data.NewBoard
 			b.addNewRandomPieceIfBoardChanged()
 			b.d.SetGameOver(b.isGameOver())
 		},
@@ -169,13 +170,18 @@ func (b *Board) Draw(screen *ebiten.Image) {
 		screen.DrawImage(b.boardForEndScreen, &ebiten.DrawImageOptions{})
 
 	} else {
-		newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
-		if isDone {
-			// After animation go to game over state
-			b.d.SetGameState(co.StateGameOver)
-		}
-		screen.DrawImage(newImage, &ebiten.DrawImageOptions{})
+		b.DrawBoardFadeOut(screen)
 	}
+}
+
+func (b *Board) DrawBoardFadeOut(screen *ebiten.Image) bool {
+	newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
+	if isDone {
+		return true
+	}
+	screen.DrawImage(newImage, &ebiten.DrawImageOptions{})
+	return false
+
 }
 
 // draws one tile of the game with everything background, number, color, etc.

@@ -5,10 +5,10 @@ import (
 	"github.com/andersjosef/2048/twenty48/input"
 )
 
-func NewInput(g *Game, cmds commands.Commands) *input.Input {
+func NewInput(g *Router, cmds *commands.Commands) *input.Input {
 	deps := input.Deps{
-		EventHandler:  g.eventBus,
-		Buttons:       g.buttonManager,
+		EventHandler:  g.EventBus,
+		Buttons:       g.Buttons,
 		ScreenControl: g.screenControl,
 
 		Cmds:  cmds,

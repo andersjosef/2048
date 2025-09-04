@@ -7,44 +7,43 @@ import (
 )
 
 // TODO: Change centerWindwo and Scale Window
-func NewCommands(g *Game) commands.Commands {
+func NewCommands(g *Router) *commands.Commands {
 	centerWindow := func() {
 		mw, mh := ebiten.Monitor().Size()
 		ww, wh := ebiten.WindowSize()
 		ebiten.SetWindowPosition(mw/2-ww/2, mh/2-wh/2)
 	}
 	deps := commands.Deps{
-		Board:         g.board,
-		EventHandler:  g.eventBus,
+		Board:         g.Board,
+		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
+		FSM:           g.d.FSM,
 
-		SetCloseGame: func(b bool) { g.shouldClose = b },
 		IncrementCurrentTheme: func() { // Change this
-			g.currentTheme = g.themePicker.IncrementCurrentTheme()
-			g.board.CreateBoardImage()
-			g.menu.UpdateDynamicText()
+			g.Theme.NextFont()
+
+			g.Board.CreateBoardImage()
+			g.Menu.UpdateDynamicText()
 		},
 		ToggleInfo: func() {
-			switch g.state {
+			switch g.GetState() {
 			case co.StateMainMenu:
-				g.state = co.StateInstructions
-				g.previousState = co.StateMainMenu
+				g.d.FSM.Switch(co.StateInstructions)
 			case co.StateRunning:
-				g.state = co.StateInstructions
-				g.previousState = co.StateRunning
+				g.d.FSM.Switch(co.StateInstructions)
 			case co.StateInstructions:
-				g.state = g.previousState
+				g.d.FSM.Switch(g.d.FSM.Previous())
 			}
 		},
 		ScaleWindow: func() {
-			g.updateFonts()
-			g.board.ScaleBoard()
-			g.menu.UpdateCenteredTitle()
+			g.Theme.UpdateFonts()
+			g.Board.ScaleBoard()
+			g.Menu.UpdateCenteredTitle()
 
 			width, _ := g.screenControl.GetActualSize()
-			g.buttonManager.UpdatePosForButton("II", width-20, 20)
+			g.Buttons.UpdatePosForButton("II", width-20, 20)
 
-			g.buttonManager.UpdateFontsForButtons()
+			g.Buttons.UpdateFontsForButtons()
 			ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(g.screenControl.GetScale()), co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()))
 			centerWindow()
 		},

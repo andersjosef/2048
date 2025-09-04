@@ -9,11 +9,12 @@ type ScreenControl interface {
 	IncrementScale()
 	DecrementScale() bool
 	GetScale() float64
+	LayoutF(float64, float64) (float64, float64)
 }
 
-func NewScreenControl(g *Game) ScreenControl {
+func NewScreenControl(g *Router) ScreenControl {
 	d := screencontrol.Deps{
-		EventHandler: g.eventBus,
+		EventHandler: g.EventBus,
 	}
 
 	return screencontrol.New(d)

@@ -7,12 +7,12 @@ import (
 	"github.com/andersjosef/2048/twenty48/theme"
 )
 
-func NewButtonManager(g *Game, cmds commands.Commands) *buttons.ButtonManager {
+func NewButtonManager(g *Router, cmds *commands.Commands) *buttons.ButtonManager {
 	deps := buttons.Deps{
 		ScreenControl: g.screenControl,
-		Input:         g.input,
+		Input:         g.Input,
 		Utils:         g.utils,
-		EventHandler:  g.eventBus,
+		EventHandler:  g.EventBus,
 
 		GetFontSet: func() theme.FontSet { return g.GetFontSet() },
 		GetState:   func() co.GameState { return g.GetState() },

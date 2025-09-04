@@ -28,6 +28,10 @@ func (MockScreenControl) IncrementScale()           {}
 func (MockScreenControl) DecrementScale() bool      { return false }
 func (MockScreenControl) GetScale() float64         { return 1 }
 
+type MockCore struct{}
+
+func (MockCore) AddScore(int) {}
+
 func TestEmptyBoard(t *testing.T) {
 	board := Board{}
 	want := [co.BOARDSIZE][co.BOARDSIZE]int{}
@@ -39,6 +43,7 @@ func TestInitializeBoard(t *testing.T) {
 	d := Deps{
 		EventHandler:    MockEventHandler{},
 		GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
+		Core:            MockCore{},
 		ScreenControl:   MockScreenControl{},
 	}
 	count := 0
@@ -68,6 +73,7 @@ func TestAddNewRandomPieceIfBoardChanged(t *testing.T) {
 		EventHandler:    MockEventHandler{},
 		GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
 		ScreenControl:   MockScreenControl{},
+		Core:            MockCore{},
 	}
 	board, err := New(d)
 	assert.NoError(t, err)
@@ -255,6 +261,7 @@ func TestMoves(t *testing.T) {
 				ScreenControl:   MockScreenControl{},
 				SetGameOver:     func(_ bool) {},
 				IsGameOver:      func() bool { return false },
+				Core:            MockCore{},
 			}
 			board, err := New(d)
 			assert.NoError(t, err)
@@ -331,6 +338,7 @@ func TestIsGameOver(t *testing.T) {
 			d := Deps{
 				EventHandler:    MockEventHandler{},
 				GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
+				Core:            MockCore{},
 				ScreenControl:   MockScreenControl{},
 				SetGameOver:     func(_ bool) {},
 				IsGameOver:      func() bool { return false },
@@ -360,6 +368,7 @@ func TestFullBoard(t *testing.T) {
 				EventHandler:    MockEventHandler{},
 				GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
 				ScreenControl:   MockScreenControl{},
+				Core:            MockCore{},
 				SetGameOver:     func(_ bool) {},
 				IsGameOver:      func() bool { return false },
 			}
@@ -398,6 +407,7 @@ func TestScore(t *testing.T) {
 
 	d := Deps{
 		EventHandler:    eventHandler,
+		Core:            MockCore{},
 		GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
 		ScreenControl:   MockScreenControl{},
 		SetGameOver:     func(_ bool) {},

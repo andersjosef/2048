@@ -2,6 +2,7 @@ package commands
 
 import (
 	"github.com/andersjosef/2048/twenty48/board"
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -11,10 +12,11 @@ type Commands struct {
 	ResetGame, ToggleFullscreen, CloseGame func()
 	ToggleTheme, ToggleInfo                func()
 	ScaleUp, ScaleDown                     func()
+	GoToRunning                            func()
 }
 
-func BuildCommands(d Deps) Commands {
-	return Commands{
+func BuildCommands(d Deps) *Commands {
+	return &Commands{
 		MoveLeft:  func() { d.Board.Move(board.Left) },
 		MoveRight: func() { d.Board.Move(board.Right) },
 		MoveUp:    func() { d.Board.Move(board.Up) },
@@ -26,7 +28,7 @@ func BuildCommands(d Deps) Commands {
 			})
 		},
 		ToggleFullscreen: d.ScreenControl.ToggleFullScreen,
-		CloseGame:        func() { d.SetCloseGame(true) },
+		CloseGame:        func() { d.Switch(co.StateQuitGame) },
 
 		ToggleTheme: func() {
 			d.IncrementCurrentTheme()
@@ -51,6 +53,9 @@ func BuildCommands(d Deps) Commands {
 			if d.ScreenControl.DecrementScale() {
 				d.ScaleWindow()
 			}
+		},
+		GoToRunning: func() {
+			d.FSM.Switch(co.StateRunning)
 		},
 	}
 }
