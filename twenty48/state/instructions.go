@@ -7,9 +7,11 @@ import (
 
 type DepsInstructions struct {
 	G interface {
-		DrawMenu(*ebiten.Image)
 		DrawUI(*ebiten.Image)
 		GetCurrentTheme() theme.Theme
+	}
+	Menu interface {
+		Draw(*ebiten.Image)
 	}
 }
 
@@ -27,6 +29,6 @@ func (s *Instructions) Update() error {
 
 func (s *Instructions) Draw(screen *ebiten.Image) {
 	screen.Fill(s.D.G.GetCurrentTheme().ColorScreenBackground)
-	s.D.G.DrawMenu(screen)
+	s.D.Menu.Draw(screen)
 	s.D.G.DrawUI(screen)
 }

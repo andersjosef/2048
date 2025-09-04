@@ -6,8 +6,10 @@ import (
 )
 
 type DepsMainMenu struct {
+	Menu interface {
+		Draw(*ebiten.Image)
+	}
 	G interface {
-		DrawMenu(*ebiten.Image)
 		DrawUI(*ebiten.Image)
 		GetCurrentTheme() theme.Theme
 	}
@@ -26,5 +28,5 @@ func (s *MainMenu) Update() error {
 }
 
 func (s *MainMenu) Draw(screen *ebiten.Image) {
-	s.D.G.DrawMenu(screen)
+	s.D.Menu.Draw(screen)
 }

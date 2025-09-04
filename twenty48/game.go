@@ -80,7 +80,6 @@ func NewGame(d Deps) (*Game, error) {
 func (g *Game) Update() error {
 	g.EventBus.Dispatch()
 	g.Input.UpdateInput()
-
 	shadertools.Update()
 	return nil
 }
@@ -139,10 +138,6 @@ func (g *Game) registerEvents() {
 }
 
 // Temporary wrappers
-func (g *Game) DrawMenu(screen *ebiten.Image) {
-	g.Menu.Draw(screen)
-}
-
 func (g *Game) DrawUI(screen *ebiten.Image) {
 	g.buttonManager.Draw(screen)
 }

@@ -31,14 +31,16 @@ func NewApp() *App {
 
 	menu := &state.MainMenu{
 		D: state.DepsMainMenu{
-			G: g,
+			Menu: g.Menu,
+			G:    g,
 		},
 	}
 	f.Register(co.StateMainMenu, menu)
 
 	instruction := &state.Instructions{
 		D: state.DepsInstructions{
-			G: g,
+			G:    g,
+			Menu: g.Menu,
 		},
 	}
 	f.Register(co.StateInstructions, instruction)
