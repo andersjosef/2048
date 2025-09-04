@@ -20,7 +20,6 @@ func NewCommands(g *Game) *commands.Commands {
 
 		SetCloseGame: func(b bool) { g.shouldClose = b },
 		IncrementCurrentTheme: func() { // Change this
-			// g.currentTheme = g.themePicker.IncrementCurrentTheme()
 			g.ThemeManager.NextFont()
 
 			g.Board.CreateBoardImage()
@@ -30,10 +29,8 @@ func NewCommands(g *Game) *commands.Commands {
 			switch g.GetState() {
 			case co.StateMainMenu:
 				g.d.FSM.Switch(co.StateInstructions)
-				// g.previousState = co.StateMainMenu
 			case co.StateRunning:
 				g.d.FSM.Switch(co.StateInstructions)
-				// g.previousState = co.StateRunning
 			case co.StateInstructions:
 				g.d.FSM.Switch(g.d.FSM.Previous())
 			}

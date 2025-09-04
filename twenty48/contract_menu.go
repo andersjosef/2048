@@ -4,12 +4,6 @@ import (
 	"github.com/andersjosef/2048/twenty48/menu"
 )
 
-// type Menu interface {
-// 	Draw(screen *ebiten.Image)
-// 	UpdateDynamicText()
-// 	UpdateCenteredTitle()
-// }
-
 func NewMenu(g *Game) *menu.Menu {
 	d := menu.Deps{
 		Renderer:     g.utils,

@@ -35,12 +35,7 @@ type Game struct {
 	Cmds           *commands.Commands
 	OverlayManager *ui.Manager
 	Core           *core.Core
-
-	// fontSet      *theme.FontSet
-	// themePicker  *theme.ThemePicker
-	// currentTheme theme.Theme
-
-	ThemeManager *theme.ThemeManager
+	ThemeManager   *theme.ThemeManager
 
 	shouldClose bool // If yes will close the game
 }
@@ -53,17 +48,11 @@ func NewGame(d Deps) (*Game, error) {
 	}
 
 	g.EventBus = eventhandler.NewEventBus()
-	// g.themePicker = theme.NewThemePicker()
-	// g.currentTheme = g.themePicker.GetCurrentTheme()
 	g.screenControl = NewScreenControl(g)
 	g.ThemeManager = theme.NewThemeService(theme.ThemeManagerDeps{
 		SC: g.screenControl,
 	})
 	g.Core = core.NewCore()
-
-	// initialize text
-	// g.fontSet = theme.InitFonts(g.screenControl.GetScale())
-
 	g.Board = NewBoard(g)
 	g.animation = NewAnimation(g)
 	g.renderer = NewRenderer(g)
@@ -148,7 +137,6 @@ func (g *Game) registerEvents() {
 				return
 			}
 
-			// g.score +=
 			g.Core.AddScore(data.ScoreGain)
 			if data.IsGameOver {
 				g.d.FSM.Switch(co.StateGameOver)
