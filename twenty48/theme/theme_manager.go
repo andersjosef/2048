@@ -14,6 +14,7 @@ type ThemeManager struct {
 
 func NewThemeService(d ThemeManagerDeps) *ThemeManager {
 	tm := &ThemeManager{
+		d:      d,
 		picker: NewThemePicker(),
 		fonts:  InitFonts(d.SC.GetScale()),
 	}
