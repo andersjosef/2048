@@ -36,7 +36,7 @@ func NewCommands(g *Game) *commands.Commands {
 			}
 		},
 		ScaleWindow: func() {
-			g.updateFonts()
+			g.Theme.UpdateFonts()
 			g.Board.ScaleBoard()
 			g.Menu.UpdateCenteredTitle()
 

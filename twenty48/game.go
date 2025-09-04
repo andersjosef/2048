@@ -12,7 +12,6 @@ import (
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
 	"github.com/andersjosef/2048/twenty48/shadertools"
-	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -87,11 +86,6 @@ func (g *Game) Update() error {
 	return nil
 }
 
-// For reinitializing a font with a higher dpi
-func (g *Game) updateFonts() {
-	g.Theme.UpdateFonts()
-}
-
 func (g *Game) registerEvents() {
 	g.EventBus.Register(
 		eventhandler.EventResetGame,
@@ -99,21 +93,6 @@ func (g *Game) registerEvents() {
 			g.Core.SetScore(0)
 			g.SetState(co.StateMainMenu) // Swap to main menu
 			shadertools.ResetTimesMapsDissolve()
-
-		},
-	)
-	g.EventBus.Register(
-		eventhandler.EventMoveMade,
-		func(e eventhandler.Event) {
-			data, ok := e.Data.(shared.MoveData)
-			if !ok {
-				return
-			}
-
-			g.Core.AddScore(data.ScoreGain)
-			if data.IsGameOver {
-				g.d.FSM.Switch(co.StateGameOver)
-			}
 		},
 	)
 }

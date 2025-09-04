@@ -120,11 +120,12 @@ func (b *Board) registerEvents() {
 	b.d.Register(
 		eventhandler.EventMoveMade,
 		func(e eventhandler.Event) {
-			moveData, ok := e.Data.(shared.MoveData)
+			data, ok := e.Data.(shared.MoveData)
 			if !ok {
 				return
 			}
-			b.matrix = moveData.NewBoard
+			b.d.Core.AddScore(data.ScoreGain)
+			b.matrix = data.NewBoard
 			b.addNewRandomPieceIfBoardChanged()
 			b.d.SetGameOver(b.isGameOver())
 		},

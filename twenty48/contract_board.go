@@ -10,6 +10,7 @@ func NewBoard(g *Game) *board.Board {
 	d := board.Deps{
 		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
+		Core:          g.Core,
 		SetGameOver: func(isGameOver bool) {
 			if isGameOver {
 				g.d.FSM.Switch(co.StateGameOver)

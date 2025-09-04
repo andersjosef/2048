@@ -9,6 +9,7 @@ import (
 type Deps struct {
 	EventHandler
 	ScreenControl
+	Core
 
 	SetGameOver       func(isGameOver bool)
 	SetGameState      func(co.GameState)
@@ -26,4 +27,8 @@ type EventHandler interface {
 type ScreenControl interface {
 	GetScale() float64
 	GetActualSize() (x, y int)
+}
+
+type Core interface {
+	AddScore(int)
 }
