@@ -36,15 +36,12 @@ type Game struct {
 	OverlayManager *ui.Manager
 	Core           *core.Core
 	ThemeManager   *theme.ThemeManager
-
-	shouldClose bool // If yes will close the game
 }
 
 func NewGame(d Deps) (*Game, error) {
 	// init game struct
 	g := &Game{
-		d:           d,
-		shouldClose: false,
+		d: d,
 	}
 
 	g.EventBus = eventhandler.NewEventBus()
@@ -83,10 +80,6 @@ func NewGame(d Deps) (*Game, error) {
 func (g *Game) Update() error {
 	g.EventBus.Dispatch()
 	g.Input.UpdateInput()
-
-	if g.shouldClose { // quit game check
-		return ebiten.Termination
-	}
 
 	shadertools.Update()
 	return nil

@@ -57,6 +57,8 @@ func NewApp() *App {
 	}
 	f.Register(co.StateRunning, run)
 
+	f.Register(co.StateQuitGame, &state.QuitGame{})
+
 	// Let keybindings change FSM
 	g.Input.SetNavigator(func(gs co.GameState) {
 		f.Switch(gs)

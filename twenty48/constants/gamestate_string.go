@@ -12,11 +12,12 @@ func _() {
 	_ = x[StateMainMenu-2]
 	_ = x[StateInstructions-3]
 	_ = x[StateGameOver-4]
+	_ = x[StateQuitGame-5]
 }
 
-const _GameState_name = "StateRunningStateMainMenuStateInstructionsStateGameOver"
+const _GameState_name = "StateRunningStateMainMenuStateInstructionsStateGameOverStateQuitGame"
 
-var _GameState_index = [...]uint8{0, 12, 25, 42, 55}
+var _GameState_index = [...]uint8{0, 12, 25, 42, 55, 68}
 
 func (i GameState) String() string {
 	i -= 1

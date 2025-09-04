@@ -17,8 +17,8 @@ func NewCommands(g *Game) *commands.Commands {
 		Board:         g.Board,
 		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
+		FSM:           g.d.FSM,
 
-		SetCloseGame: func(b bool) { g.shouldClose = b },
 		IncrementCurrentTheme: func() { // Change this
 			g.ThemeManager.NextFont()
 

@@ -11,7 +11,6 @@ type DepsMainMenu struct {
 		DrawUI(*ebiten.Image)
 		GetCurrentTheme() theme.Theme
 	}
-	GoRun func() // Change to running mode
 }
 
 type MainMenu struct {

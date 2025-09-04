@@ -2,6 +2,7 @@ package commands
 
 import (
 	"github.com/andersjosef/2048/twenty48/board"
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 )
 
@@ -9,8 +10,8 @@ type Deps struct {
 	Board
 	EventHandler
 	ScreenControl
+	FSM
 
-	SetCloseGame          func(bool)
 	IncrementCurrentTheme func()
 	ToggleInfo            func()
 	ScaleWindow           func()
@@ -31,4 +32,8 @@ type ScreenControl interface {
 	ToggleFullScreen()
 	IncrementScale()
 	DecrementScale() bool
+}
+
+type FSM interface {
+	Switch(co.GameState)
 }

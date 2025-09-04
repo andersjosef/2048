@@ -2,6 +2,7 @@ package commands
 
 import (
 	"github.com/andersjosef/2048/twenty48/board"
+	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -26,7 +27,7 @@ func BuildCommands(d Deps) *Commands {
 			})
 		},
 		ToggleFullscreen: d.ScreenControl.ToggleFullScreen,
-		CloseGame:        func() { d.SetCloseGame(true) },
+		CloseGame:        func() { d.Switch(co.StateQuitGame) },
 
 		ToggleTheme: func() {
 			d.IncrementCurrentTheme()

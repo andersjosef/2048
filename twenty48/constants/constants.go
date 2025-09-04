@@ -9,6 +9,7 @@ const (
 	StateMainMenu
 	StateInstructions
 	StateGameOver
+	StateQuitGame
 )
 
 /* variables and constants */
