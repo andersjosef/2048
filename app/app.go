@@ -29,35 +29,31 @@ func NewApp() *App {
 		log.Fatal(err)
 	}
 
-	menu := &state.MainMenu{
+	f.Register(co.StateMainMenu, &state.MainMenu{
 		D: state.DepsMainMenu{
 			Menu: g.Menu,
 			G:    g,
 		},
-	}
-	f.Register(co.StateMainMenu, menu)
+	})
 
-	instruction := &state.Instructions{
+	f.Register(co.StateInstructions, &state.Instructions{
 		D: state.DepsInstructions{
 			G:    g,
 			Menu: g.Menu,
 		},
-	}
-	f.Register(co.StateInstructions, instruction)
+	})
 
-	gameOver := &state.GameOver{
+	f.Register(co.StateGameOver, &state.GameOver{
 		D: state.GameOverDeps{
 			Menu:    g.Menu,
 			Board:   g.Board,
 			Overlay: g.OverlayManager,
 		},
-	}
-	f.Register(co.StateGameOver, gameOver)
+	})
 
-	run := &state.Running{
+	f.Register(co.StateRunning, &state.Running{
 		D: g,
-	}
-	f.Register(co.StateRunning, run)
+	})
 
 	f.Register(co.StateQuitGame, &state.QuitGame{})
 
