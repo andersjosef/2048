@@ -69,8 +69,8 @@ func (m *Menu) Draw(screen *ebiten.Image) {
 		m.drawMainMenu(screen)
 	case co.StateInstructions:
 		m.drawInstructions(screen)
-	case co.StateGameOver:
-		m.DrawGameOver(screen)
+		// case co.StateGameOver:
+		// 	m.DrawGameOver(screen)
 	}
 }
 

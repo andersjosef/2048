@@ -17,6 +17,7 @@ type GameOver struct {
 }
 
 func (s *GameOver) Enter() {
+	s.animDone = false
 }
 
 func (s *GameOver) Exit() {}
