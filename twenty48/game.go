@@ -81,8 +81,8 @@ func NewGame(d Deps) (*Game, error) {
 func (g *Game) registerEvents() {
 	g.EventBus.Register(
 		eventhandler.EventResetGame,
-		func(_ eventhandler.Event) {
-			g.Core.SetScore(0)
+		func(eventhandler.Event) {
+			g.Core.Reset()
 			g.SetState(co.StateMainMenu) // Swap to main menu
 			shadertools.ResetTimesMapsDissolve()
 		},
