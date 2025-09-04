@@ -5,6 +5,7 @@ import (
 
 	"github.com/andersjosef/2048/twenty48"
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/state"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -30,6 +31,17 @@ func NewApp() *App {
 		log.Fatal(err)
 	}
 
+	// Events
+	r.EventBus.Register(
+		eventhandler.EventResetGame,
+		func(eventhandler.Event) {
+			r.Core.Reset()
+			r.SetState(co.StateMainMenu) // Swap to main menu
+			shadertools.ResetTimesMapsDissolve()
+		},
+	)
+
+	// States
 	f.Register(co.StateMainMenu, &state.MainMenu{
 		D: state.DepsMainMenu{
 			Menu: r.Menu,
@@ -59,6 +71,12 @@ func NewApp() *App {
 	f.Register(co.StateQuitGame, &state.QuitGame{})
 
 	f.Start(co.StateMainMenu)
+
+	// Window
+	ebiten.SetWindowSize(
+		co.LOGICAL_WIDTH*int(r.ScreenControl().GetScale()),
+		co.LOGICAL_HEIGHT*int(r.ScreenControl().GetScale()),
+	)
 
 	return &App{
 		fsm: f,
