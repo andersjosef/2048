@@ -176,8 +176,6 @@ func (b *Board) Draw(screen *ebiten.Image) {
 func (b *Board) DrawBoardFadeOut(screen *ebiten.Image) bool {
 	newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
 	if isDone {
-		// After animation go to game over state
-		// b.d.SetGameState(co.StateGameOver)
 		return true
 	}
 	screen.DrawImage(newImage, &ebiten.DrawImageOptions{})

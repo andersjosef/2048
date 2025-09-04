@@ -3,7 +3,6 @@ package twenty48
 import (
 	"fmt"
 	"image/color"
-	"math"
 
 	"github.com/andersjosef/2048/twenty48/board"
 	"github.com/andersjosef/2048/twenty48/buttons"
@@ -94,13 +93,14 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.buttonManager.Draw(screen)
 	g.Menu.Draw(screen)
 }
-func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
-func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
-	scale := ebiten.Monitor().DeviceScaleFactor()
-	canvasWidth := math.Ceil(logicWinWidth * scale)
-	canvasHeight := math.Ceil(logicWinHeight * scale)
-	return canvasWidth, canvasHeight
-}
+
+// func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
+// func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
+// 	scale := ebiten.Monitor().DeviceScaleFactor()
+// 	canvasWidth := math.Ceil(logicWinWidth * scale)
+// 	canvasHeight := math.Ceil(logicWinHeight * scale)
+// 	return canvasWidth, canvasHeight
+// }
 
 func DrawScore(screen *ebiten.Image, g *Game) {
 	myFont := g.fontSet.Smaller
