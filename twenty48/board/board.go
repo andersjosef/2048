@@ -169,13 +169,20 @@ func (b *Board) Draw(screen *ebiten.Image) {
 		screen.DrawImage(b.boardForEndScreen, &ebiten.DrawImageOptions{})
 
 	} else {
-		newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
-		if isDone {
-			// After animation go to game over state
-			b.d.SetGameState(co.StateGameOver)
-		}
-		screen.DrawImage(newImage, &ebiten.DrawImageOptions{})
+		b.DrawBoardFadeOut(screen)
 	}
+}
+
+func (b *Board) DrawBoardFadeOut(screen *ebiten.Image) bool {
+	newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
+	if isDone {
+		// After animation go to game over state
+		// b.d.SetGameState(co.StateGameOver)
+		return true
+	}
+	screen.DrawImage(newImage, &ebiten.DrawImageOptions{})
+	return false
+
 }
 
 // draws one tile of the game with everything background, number, color, etc.

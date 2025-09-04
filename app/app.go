@@ -44,7 +44,10 @@ func NewApp() *App {
 	f.Register(co.StateInstructions, instruction)
 
 	gameOver := &state.GameOver{
-		D: g.Menu,
+		D: state.GameOverDeps{
+			Menu:  g.Menu,
+			Board: g.Board,
+		},
 	}
 	f.Register(co.StateGameOver, gameOver)
 
@@ -73,7 +76,7 @@ func NewApp() *App {
 }
 
 func (a *App) Update() error {
-	// Global updaters which will run regardless
+	// Global updaters which will run regardless before fsm
 	for _, g := range a.globals {
 		if err := g.Update(); err != nil {
 			return err

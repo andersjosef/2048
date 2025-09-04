@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"math"
 
+	"github.com/andersjosef/2048/twenty48/board"
 	"github.com/andersjosef/2048/twenty48/buttons"
 	"github.com/andersjosef/2048/twenty48/commands"
 	co "github.com/andersjosef/2048/twenty48/constants"
@@ -21,7 +22,7 @@ import (
 type Game struct {
 	d Deps
 
-	board         Board
+	Board         *board.Board
 	screenControl ScreenControl
 	animation     Animation
 	Menu          *menu.Menu
@@ -37,7 +38,6 @@ type Game struct {
 	score        int
 	shouldClose  bool // If yes will close the game
 	currentTheme theme.Theme
-	gameOver     bool
 }
 
 func NewGame(d Deps) (*Game, error) {
@@ -55,7 +55,7 @@ func NewGame(d Deps) (*Game, error) {
 	// initialize text
 	g.fontSet = theme.InitFonts(g.screenControl.GetScale())
 
-	g.board = NewBoard(g)
+	g.Board = NewBoard(g)
 	g.animation = NewAnimation(g)
 	g.renderer = NewRenderer(g)
 	g.utils = NewUtils()
@@ -135,7 +135,7 @@ func (g *Game) registerEvents() {
 		func(_ eventhandler.Event) {
 			g.score = 0
 			g.SetState(co.StateMainMenu) // Swap to main menu
-			g.gameOver = false
+			// g.gameOver = false
 			shadertools.ResetTimesMapsDissolve()
 
 		},
@@ -149,7 +149,9 @@ func (g *Game) registerEvents() {
 			}
 
 			g.score += data.ScoreGain
-			g.gameOver = data.IsGameOver
+			if data.IsGameOver {
+				g.d.FSM.Switch(co.StateGameOver)
+			}
 		},
 	)
 }

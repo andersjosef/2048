@@ -14,14 +14,14 @@ func NewCommands(g *Game) *commands.Commands {
 		ebiten.SetWindowPosition(mw/2-ww/2, mh/2-wh/2)
 	}
 	deps := commands.Deps{
-		Board:         g.board,
+		Board:         g.Board,
 		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
 
 		SetCloseGame: func(b bool) { g.shouldClose = b },
 		IncrementCurrentTheme: func() { // Change this
 			g.currentTheme = g.themePicker.IncrementCurrentTheme()
-			g.board.CreateBoardImage()
+			g.Board.CreateBoardImage()
 			g.Menu.UpdateDynamicText()
 		},
 		ToggleInfo: func() {
@@ -38,7 +38,7 @@ func NewCommands(g *Game) *commands.Commands {
 		},
 		ScaleWindow: func() {
 			g.updateFonts()
-			g.board.ScaleBoard()
+			g.Board.ScaleBoard()
 			g.Menu.UpdateCenteredTitle()
 
 			width, _ := g.screenControl.GetActualSize()
