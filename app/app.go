@@ -13,7 +13,7 @@ type App struct {
 	fsm     *state.FSM[co.GameState]
 	sc      twenty48.ScreenControl
 	globals []Updater
-	overlay *Overlay
+	overlay Overlay
 }
 
 func NewApp() *App {
@@ -45,8 +45,9 @@ func NewApp() *App {
 
 	gameOver := &state.GameOver{
 		D: state.GameOverDeps{
-			Menu:  g.Menu,
-			Board: g.Board,
+			Menu:    g.Menu,
+			Board:   g.Board,
+			Overlay: g.OverlayManager,
 		},
 	}
 	f.Register(co.StateGameOver, gameOver)
@@ -69,11 +70,7 @@ func NewApp() *App {
 		globals: []Updater{
 			g,
 		},
-		overlay: &Overlay{
-			before: []Drawer{
-				g,
-			},
-		},
+		overlay: g.OverlayManager,
 	}
 }
 

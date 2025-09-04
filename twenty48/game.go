@@ -14,6 +14,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/shared"
 	"github.com/andersjosef/2048/twenty48/theme"
+	"github.com/andersjosef/2048/twenty48/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
@@ -21,18 +22,19 @@ import (
 type Game struct {
 	d Deps
 
-	Board         *board.Board
-	screenControl ScreenControl
-	animation     Animation
-	Menu          *menu.Menu
-	renderer      Renderer
-	Input         *input.Input
-	buttonManager *buttons.ButtonManager
-	fontSet       *theme.FontSet
-	themePicker   *theme.ThemePicker
-	utils         Utils
-	EventBus      *eventhandler.EventBus
-	Cmds          *commands.Commands
+	Board          *board.Board
+	screenControl  ScreenControl
+	animation      Animation
+	Menu           *menu.Menu
+	renderer       Renderer
+	Input          *input.Input
+	buttonManager  *buttons.ButtonManager
+	fontSet        *theme.FontSet
+	themePicker    *theme.ThemePicker
+	utils          Utils
+	EventBus       *eventhandler.EventBus
+	Cmds           *commands.Commands
+	OverlayManager *ui.Manager
 
 	score        int
 	shouldClose  bool // If yes will close the game
@@ -71,6 +73,11 @@ func NewGame(d Deps) (*Game, error) {
 		co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()),
 	)
 
+	g.OverlayManager = ui.NewOverlayManager()
+	g.OverlayManager.AddBefore(g) // Temporary
+	g.OverlayManager.AddAfter(g.buttonManager)
+	g.OverlayManager.AddAfter(g.Menu)
+
 	g.registerEvents()
 	return g, nil
 }
@@ -90,17 +97,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(g.currentTheme.ColorScreenBackground)
-	g.buttonManager.Draw(screen)
-	g.Menu.Draw(screen)
 }
-
-// func (game *Game) Layout(_, _ int) (int, int) { panic("use Ebitengine >=v2.5.0") }
-// func (g *Game) LayoutF(logicWinWidth, logicWinHeight float64) (float64, float64) {
-// 	scale := ebiten.Monitor().DeviceScaleFactor()
-// 	canvasWidth := math.Ceil(logicWinWidth * scale)
-// 	canvasHeight := math.Ceil(logicWinHeight * scale)
-// 	return canvasWidth, canvasHeight
-// }
 
 func DrawScore(screen *ebiten.Image, g *Game) {
 	myFont := g.fontSet.Smaller
@@ -135,7 +132,6 @@ func (g *Game) registerEvents() {
 		func(_ eventhandler.Event) {
 			g.score = 0
 			g.SetState(co.StateMainMenu) // Swap to main menu
-			// g.gameOver = false
 			shadertools.ResetTimesMapsDissolve()
 
 		},
