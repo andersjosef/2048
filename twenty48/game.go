@@ -78,14 +78,6 @@ func NewGame(d Deps) (*Game, error) {
 	return g, nil
 }
 
-// Global update which is run regardless of state
-func (g *Game) Update() error {
-	g.EventBus.Dispatch()
-	g.Input.UpdateInput()
-	shadertools.Update()
-	return nil
-}
-
 func (g *Game) registerEvents() {
 	g.EventBus.Register(
 		eventhandler.EventResetGame,

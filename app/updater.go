@@ -1,12 +1,7 @@
 package app
 
-import "github.com/hajimehoshi/ebiten/v2"
-
 type Updater interface{ Update() error }
 
-type Overlay interface {
-	BeforeDraw(*ebiten.Image)
-	AfterDraw(*ebiten.Image)
-	DisableAfter(b bool)
-	DisableBefore(b bool)
-}
+type updaterFunc func() error
+
+func (f updaterFunc) Update() error { return f() }
