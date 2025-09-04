@@ -30,17 +30,19 @@ type Game struct {
 	renderer       Renderer
 	Input          *input.Input
 	buttonManager  *buttons.ButtonManager
-	fontSet        *theme.FontSet
-	themePicker    *theme.ThemePicker
 	utils          Utils
 	EventBus       *eventhandler.EventBus
 	Cmds           *commands.Commands
 	OverlayManager *ui.Manager
 	Core           *core.Core
 
-	// score        int
-	shouldClose  bool // If yes will close the game
-	currentTheme theme.Theme
+	// fontSet      *theme.FontSet
+	// themePicker  *theme.ThemePicker
+	// currentTheme theme.Theme
+
+	ThemeManager *theme.ThemeManager
+
+	shouldClose bool // If yes will close the game
 }
 
 func NewGame(d Deps) (*Game, error) {
@@ -51,13 +53,16 @@ func NewGame(d Deps) (*Game, error) {
 	}
 
 	g.EventBus = eventhandler.NewEventBus()
-	g.themePicker = theme.NewThemePicker()
-	g.currentTheme = g.themePicker.GetCurrentTheme()
+	// g.themePicker = theme.NewThemePicker()
+	// g.currentTheme = g.themePicker.GetCurrentTheme()
 	g.screenControl = NewScreenControl(g)
+	g.ThemeManager = theme.NewThemeService(theme.ThemeManagerDeps{
+		SC: g.screenControl,
+	})
 	g.Core = core.NewCore()
 
 	// initialize text
-	g.fontSet = theme.InitFonts(g.screenControl.GetScale())
+	// g.fontSet = theme.InitFonts(g.screenControl.GetScale())
 
 	g.Board = NewBoard(g)
 	g.animation = NewAnimation(g)
@@ -77,7 +82,7 @@ func NewGame(d Deps) (*Game, error) {
 	)
 
 	g.OverlayManager = ui.NewOverlayManager()
-	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.currentTheme.ColorScreenBackground }}) // Temporary
+	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.ThemeManager.Current().ColorScreenBackground }}) // Temporary
 	g.OverlayManager.AddAfter(g.buttonManager)
 	g.OverlayManager.AddAfter(g.Menu)
 
@@ -99,7 +104,7 @@ func (g *Game) Update() error {
 }
 
 func DrawScore(screen *ebiten.Image, g *Game) {
-	myFont := g.fontSet.Smaller
+	myFont := g.ThemeManager.Fonts().Smaller
 
 	//TODO: make more dynamic
 	margin := 10
@@ -122,7 +127,7 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 
 // For reinitializing a font with a higher dpi
 func (g *Game) updateFonts() {
-	g.fontSet = theme.InitFonts(g.screenControl.GetScale())
+	g.ThemeManager.UpdateFonts()
 }
 
 func (g *Game) registerEvents() {

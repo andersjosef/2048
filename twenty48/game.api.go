@@ -26,11 +26,11 @@ func (g *Game) GetPreviousState() co.GameState {
 }
 
 func (g *Game) GetCurrentTheme() theme.Theme {
-	return g.currentTheme
+	return g.ThemeManager.Current()
 }
 
 func (g *Game) GetFontSet() theme.FontSet {
-	return *g.fontSet
+	return *g.ThemeManager.Fonts()
 }
 
 func (g *Game) ScreenControl() ScreenControl {

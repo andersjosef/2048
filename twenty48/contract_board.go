@@ -31,10 +31,12 @@ func NewBoard(g *Game) *board.Board {
 				g.d.FSM.Switch(co.StateGameOver)
 			}
 		},
-		SetGameState:      func(gs co.GameState) { g.SetState(gs) },
-		IsGameOver:        func() bool { return g.IsGameOver() },
-		GetCurrentTheme:   func() theme.Theme { return g.currentTheme },
-		GetCurrentFontSet: func() theme.FontSet { return *g.fontSet },
+		SetGameState: func(gs co.GameState) { g.SetState(gs) },
+		IsGameOver:   func() bool { return g.IsGameOver() },
+		// GetCurrentTheme:   func() theme.Theme { return g.currentTheme },
+		GetCurrentTheme: func() theme.Theme { return g.ThemeManager.Current() },
+		// GetCurrentFontSet: func() theme.FontSet { return *g.fontSet },
+		GetCurrentFontSet: func() theme.FontSet { return *g.ThemeManager.Fonts() },
 	}
 
 	b, err := board.New(d)

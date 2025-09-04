@@ -20,7 +20,9 @@ func NewCommands(g *Game) *commands.Commands {
 
 		SetCloseGame: func(b bool) { g.shouldClose = b },
 		IncrementCurrentTheme: func() { // Change this
-			g.currentTheme = g.themePicker.IncrementCurrentTheme()
+			// g.currentTheme = g.themePicker.IncrementCurrentTheme()
+			g.ThemeManager.NextFont()
+
 			g.Board.CreateBoardImage()
 			g.Menu.UpdateDynamicText()
 		},
