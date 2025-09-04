@@ -74,7 +74,7 @@ func NewGame(d Deps) (*Game, error) {
 	)
 
 	g.OverlayManager = ui.NewOverlayManager()
-	g.OverlayManager.AddBefore(g) // Temporary
+	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.currentTheme.ColorScreenBackground }}) // Temporary
 	g.OverlayManager.AddAfter(g.buttonManager)
 	g.OverlayManager.AddAfter(g.Menu)
 
@@ -93,10 +93,6 @@ func (g *Game) Update() error {
 
 	shadertools.Update()
 	return nil
-}
-
-func (g *Game) Draw(screen *ebiten.Image) {
-	screen.Fill(g.currentTheme.ColorScreenBackground)
 }
 
 func DrawScore(screen *ebiten.Image, g *Game) {
