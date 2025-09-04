@@ -14,7 +14,6 @@ type MouseInputDeps struct {
 		SetState(co.GameState)
 		IsGameOver() bool
 	}
-	nav    interface{ Switch(co.GameState) }
 	Cmds   *commands.Commands
 	Cursor interface{ MaybeShow() }
 }
