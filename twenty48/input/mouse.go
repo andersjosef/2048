@@ -36,7 +36,7 @@ func NewMouseInput(d MouseInputDeps) *MouseInput {
 	}
 
 	mi.onPressed = map[co.GameState]func(){
-		co.StateMainMenu: func() { mi.d.nav.Switch(co.StateRunning) },
+		co.StateMainMenu: func() { mi.d.Cmds.GoToRunning() },
 	}
 
 	return mi

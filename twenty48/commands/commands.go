@@ -12,6 +12,7 @@ type Commands struct {
 	ResetGame, ToggleFullscreen, CloseGame func()
 	ToggleTheme, ToggleInfo                func()
 	ScaleUp, ScaleDown                     func()
+	GoToRunning                            func()
 }
 
 func BuildCommands(d Deps) *Commands {
@@ -52,6 +53,9 @@ func BuildCommands(d Deps) *Commands {
 			if d.ScreenControl.DecrementScale() {
 				d.ScaleWindow()
 			}
+		},
+		GoToRunning: func() {
+			d.FSM.Switch(co.StateRunning)
 		},
 	}
 }

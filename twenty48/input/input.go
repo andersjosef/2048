@@ -2,15 +2,12 @@ package input
 
 import (
 	"math"
-
-	"github.com/andersjosef/2048/twenty48/constants"
 )
 
 const MOVE_THRESHOLD = 100 // Delta distance needed to trigger a move
 
 type Input struct {
-	d   Deps
-	nav *Navigator
+	d Deps
 
 	cursor *CursorVisibility
 
@@ -21,23 +18,17 @@ type Input struct {
 
 func New(d Deps) *Input {
 	var i = &Input{
-		d: d,
-		nav: &Navigator{
-			SwitchState: func(_ constants.GameState) {},
-		},
+		d:      d,
 		cursor: NewCursorVisibility(20),
 	}
 
 	i.keyboard = NewKeyboardInput(KeyboardDeps{
 		State:  d.State,
-		nav:    i.nav,
 		cmds:   d.Cmds,
 		Cursor: i.cursor,
-	},
-		i.nav)
+	})
 	i.mouse = NewMouseInput(MouseInputDeps{
 		State:  d.State,
-		nav:    i.nav,
 		Cmds:   d.Cmds,
 		Cursor: i.cursor,
 	})
