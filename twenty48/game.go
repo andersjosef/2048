@@ -8,6 +8,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/buttons"
 	"github.com/andersjosef/2048/twenty48/commands"
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/core"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
@@ -35,8 +36,9 @@ type Game struct {
 	EventBus       *eventhandler.EventBus
 	Cmds           *commands.Commands
 	OverlayManager *ui.Manager
+	Core           *core.Core
 
-	score        int
+	// score        int
 	shouldClose  bool // If yes will close the game
 	currentTheme theme.Theme
 }
@@ -52,6 +54,7 @@ func NewGame(d Deps) (*Game, error) {
 	g.themePicker = theme.NewThemePicker()
 	g.currentTheme = g.themePicker.GetCurrentTheme()
 	g.screenControl = NewScreenControl(g)
+	g.Core = core.NewCore()
 
 	// initialize text
 	g.fontSet = theme.InitFonts(g.screenControl.GetScale())
@@ -101,7 +104,7 @@ func DrawScore(screen *ebiten.Image, g *Game) {
 	//TODO: make more dynamic
 	margin := 10
 	shadowOffsett := 2
-	score_text := fmt.Sprintf("%v", g.score)
+	score_text := fmt.Sprintf("%v", g.GetScore())
 
 	getOpt := func(x, y float64, col color.Color) *text.DrawOptions {
 		opt := &text.DrawOptions{}
@@ -126,7 +129,7 @@ func (g *Game) registerEvents() {
 	g.EventBus.Register(
 		eventhandler.EventResetGame,
 		func(_ eventhandler.Event) {
-			g.score = 0
+			g.Core.SetScore(0)
 			g.SetState(co.StateMainMenu) // Swap to main menu
 			shadertools.ResetTimesMapsDissolve()
 
@@ -140,7 +143,8 @@ func (g *Game) registerEvents() {
 				return
 			}
 
-			g.score += data.ScoreGain
+			// g.score +=
+			g.Core.AddScore(data.ScoreGain)
 			if data.IsGameOver {
 				g.d.FSM.Switch(co.StateGameOver)
 			}

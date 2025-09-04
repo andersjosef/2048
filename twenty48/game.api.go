@@ -6,7 +6,7 @@ import (
 )
 
 func (g *Game) GetScore() int {
-	return g.score
+	return g.Core.Score()
 }
 
 func (g *Game) GetState() co.GameState {
