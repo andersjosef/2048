@@ -4,7 +4,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/menu"
 )
 
-func NewMenu(g *Game) *menu.Menu {
+func NewMenu(g *Router) *menu.Menu {
 	d := menu.Deps{
 		Renderer:     g.utils,
 		Buttons:      g.Buttons,

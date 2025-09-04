@@ -20,7 +20,7 @@ type App struct {
 func NewApp() *App {
 	f := state.NewFSM[co.GameState]()
 
-	g, err := twenty48.NewGame(twenty48.Deps{
+	r, err := twenty48.NewRouter(twenty48.Deps{
 		FSM: f,
 		IsGameOver: func() bool {
 			return f.Current() == co.StateGameOver
@@ -32,28 +32,28 @@ func NewApp() *App {
 
 	f.Register(co.StateMainMenu, &state.MainMenu{
 		D: state.DepsMainMenu{
-			Menu: g.Menu,
+			Menu: r.Menu,
 		},
 	})
 
 	f.Register(co.StateInstructions, &state.Instructions{
 		D: state.DepsInstructions{
-			Menu:    g.Menu,
-			Buttons: g.Buttons,
+			Menu:    r.Menu,
+			Buttons: r.Buttons,
 		},
 	})
 
 	f.Register(co.StateGameOver, &state.GameOver{
 		D: state.GameOverDeps{
-			Menu:    g.Menu,
-			Board:   g.Board,
-			Overlay: g.OverlayManager,
+			Menu:    r.Menu,
+			Board:   r.Board,
+			Overlay: r.OverlayManager,
 		},
 	})
 
 	f.Register(co.StateRunning, &state.Running{
-		Renderer: g.Renderer,
-		ScoreUI:  g.ScoreOverlay,
+		Renderer: r.Renderer,
+		ScoreUI:  r.ScoreOverlay,
 	})
 
 	f.Register(co.StateQuitGame, &state.QuitGame{})
@@ -62,13 +62,13 @@ func NewApp() *App {
 
 	return &App{
 		fsm: f,
-		sc:  g.ScreenControl(),
+		sc:  r.ScreenControl(),
 		globals: []Updater{
-			updaterFunc(func() error { g.EventBus.Dispatch(); return nil }),
-			updaterFunc(func() error { return g.Input.UpdateInput() }),
+			updaterFunc(func() error { r.EventBus.Dispatch(); return nil }),
+			updaterFunc(func() error { return r.Input.UpdateInput() }),
 			updaterFunc(func() error { shadertools.Update(); return nil }),
 		},
-		overlay: g.OverlayManager,
+		overlay: r.OverlayManager,
 	}
 }
 

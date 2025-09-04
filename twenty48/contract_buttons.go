@@ -7,7 +7,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/theme"
 )
 
-func NewButtonManager(g *Game, cmds *commands.Commands) *buttons.ButtonManager {
+func NewButtonManager(g *Router, cmds *commands.Commands) *buttons.ButtonManager {
 	deps := buttons.Deps{
 		ScreenControl: g.screenControl,
 		Input:         g.Input,

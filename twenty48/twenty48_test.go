@@ -21,7 +21,7 @@ func (MockFSM) Has(co.GameState) bool {
 func (MockFSM) Switch(co.GameState) {}
 
 func TestReset(t *testing.T) {
-	g, err := NewGame(Deps{
+	g, err := NewRouter(Deps{
 		FSM: MockFSM{},
 	})
 	assert.NoError(t, err)

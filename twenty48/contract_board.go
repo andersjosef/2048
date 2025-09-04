@@ -6,7 +6,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/theme"
 )
 
-func NewBoard(g *Game) *board.Board {
+func NewBoard(g *Router) *board.Board {
 	d := board.Deps{
 		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,

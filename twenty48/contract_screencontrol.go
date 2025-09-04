@@ -12,7 +12,7 @@ type ScreenControl interface {
 	LayoutF(float64, float64) (float64, float64)
 }
 
-func NewScreenControl(g *Game) ScreenControl {
+func NewScreenControl(g *Router) ScreenControl {
 	d := screencontrol.Deps{
 		EventHandler: g.EventBus,
 	}

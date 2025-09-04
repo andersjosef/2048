@@ -17,7 +17,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Game struct {
+type Router struct {
 	d Deps
 
 	Board          *board.Board
@@ -36,9 +36,8 @@ type Game struct {
 	ScoreOverlay   *ui.ScoreOverlay
 }
 
-func NewGame(d Deps) (*Game, error) {
-	// init game struct
-	g := &Game{
+func NewRouter(d Deps) (*Router, error) {
+	g := &Router{
 		d: d,
 	}
 
@@ -70,7 +69,7 @@ func NewGame(d Deps) (*Game, error) {
 	)
 
 	g.OverlayManager = ui.NewOverlayManager()
-	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.Theme.Current().ColorScreenBackground }}) // Temporary
+	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.Theme.Current().ColorScreenBackground }})
 	g.OverlayManager.AddAfter(g.Buttons)
 	g.OverlayManager.AddAfter(g.Menu)
 
@@ -78,7 +77,7 @@ func NewGame(d Deps) (*Game, error) {
 	return g, nil
 }
 
-func (g *Game) registerEvents() {
+func (g *Router) registerEvents() {
 	g.EventBus.Register(
 		eventhandler.EventResetGame,
 		func(eventhandler.Event) {
