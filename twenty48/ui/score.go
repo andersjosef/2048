@@ -38,6 +38,7 @@ func (so *ScoreOverlay) DrawScore(screen *ebiten.Image) {
 		return opt
 	}
 
+	// TODO: Make colors part of the themes and modular, taken from themeManager
 	shadowOpt := getOpt(float64((shadowOffsett + margin)), 0, color.Black)
 	text.Draw(screen, score_text, myFont, shadowOpt)
 

@@ -41,9 +41,9 @@ func NewCommands(g *Game) *commands.Commands {
 			g.Menu.UpdateCenteredTitle()
 
 			width, _ := g.screenControl.GetActualSize()
-			g.buttonManager.UpdatePosForButton("II", width-20, 20)
+			g.Buttons.UpdatePosForButton("II", width-20, 20)
 
-			g.buttonManager.UpdateFontsForButtons()
+			g.Buttons.UpdateFontsForButtons()
 			ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(g.screenControl.GetScale()), co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()))
 			centerWindow()
 		},

@@ -25,9 +25,9 @@ type Game struct {
 	screenControl  ScreenControl
 	animation      Animation
 	Menu           *menu.Menu
-	renderer       Renderer
+	Renderer       Renderer
 	Input          *input.Input
-	buttonManager  *buttons.ButtonManager
+	Buttons        *buttons.ButtonManager
 	utils          Utils
 	EventBus       *eventhandler.EventBus
 	Cmds           *commands.Commands
@@ -51,7 +51,7 @@ func NewGame(d Deps) (*Game, error) {
 	g.Core = core.NewCore()
 	g.Board = NewBoard(g)
 	g.animation = NewAnimation(g)
-	g.renderer = NewRenderer(g)
+	g.Renderer = NewRenderer(g)
 	g.utils = NewUtils()
 	g.ScoreOverlay = ui.NewScoreOverlay(ui.ScoreOverlayDeps{
 		Fonts: g.Theme,
@@ -60,9 +60,9 @@ func NewGame(d Deps) (*Game, error) {
 
 	g.Cmds = NewCommands(g)
 	g.Input = NewInput(g, g.Cmds)
-	g.buttonManager = NewButtonManager(g, g.Cmds)
-	g.Input.GiveButtons(g.buttonManager)
-	g.buttonManager.GiveInput(g.Input)
+	g.Buttons = NewButtonManager(g, g.Cmds)
+	g.Input.GiveButtons(g.Buttons)
+	g.Buttons.GiveInput(g.Input)
 
 	g.Menu = NewMenu(g)
 	ebiten.SetWindowSize(
@@ -72,7 +72,7 @@ func NewGame(d Deps) (*Game, error) {
 
 	g.OverlayManager = ui.NewOverlayManager()
 	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.Theme.Current().ColorScreenBackground }}) // Temporary
-	g.OverlayManager.AddAfter(g.buttonManager)
+	g.OverlayManager.AddAfter(g.Buttons)
 	g.OverlayManager.AddAfter(g.Menu)
 
 	g.registerEvents()
@@ -116,14 +116,4 @@ func (g *Game) registerEvents() {
 			}
 		},
 	)
-}
-
-// Temporary wrappers
-func (g *Game) DrawUI(screen *ebiten.Image) {
-	g.buttonManager.Draw(screen)
-}
-
-func (g *Game) DrawRunning(screen *ebiten.Image) {
-	g.renderer.Draw(screen)
-	g.ScoreOverlay.DrawScore(screen)
 }

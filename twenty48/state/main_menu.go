@@ -1,17 +1,12 @@
 package state
 
 import (
-	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type DepsMainMenu struct {
 	Menu interface {
 		Draw(*ebiten.Image)
-	}
-	G interface {
-		DrawUI(*ebiten.Image)
-		GetCurrentTheme() theme.Theme
 	}
 }
 

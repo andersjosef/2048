@@ -5,8 +5,11 @@ import (
 )
 
 type Running struct {
-	D interface {
-		DrawRunning(*ebiten.Image)
+	Renderer interface {
+		Draw(*ebiten.Image)
+	}
+	ScoreUI interface {
+		DrawScore(*ebiten.Image)
 	}
 }
 
@@ -17,5 +20,6 @@ func (s *Running) Exit() {}
 func (s *Running) Update() error { return nil }
 
 func (s *Running) Draw(screen *ebiten.Image) {
-	s.D.DrawRunning(screen)
+	s.Renderer.Draw(screen)
+	s.ScoreUI.DrawScore(screen)
 }

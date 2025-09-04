@@ -32,14 +32,13 @@ func NewApp() *App {
 	f.Register(co.StateMainMenu, &state.MainMenu{
 		D: state.DepsMainMenu{
 			Menu: g.Menu,
-			G:    g,
 		},
 	})
 
 	f.Register(co.StateInstructions, &state.Instructions{
 		D: state.DepsInstructions{
-			G:    g,
-			Menu: g.Menu,
+			Menu:    g.Menu,
+			Buttons: g.Buttons,
 		},
 	})
 
@@ -52,7 +51,8 @@ func NewApp() *App {
 	})
 
 	f.Register(co.StateRunning, &state.Running{
-		D: g,
+		Renderer: g.Renderer,
+		ScoreUI:  g.ScoreOverlay,
 	})
 
 	f.Register(co.StateQuitGame, &state.QuitGame{})
