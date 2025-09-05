@@ -10,7 +10,7 @@ type Animation interface {
 	IsAnimating() bool
 }
 
-func NewAnimation(g *Router) Animation {
+func NewAnimation(g *Systems) Animation {
 	deps := animations.Deps{
 		Board:        g.Board,
 		EventHandler: g.EventBus,

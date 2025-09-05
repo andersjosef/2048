@@ -9,9 +9,12 @@ import (
 )
 
 func main() {
-	a := app.NewApp()
+	a, err := app.NewApp()
+	if err != nil {
+		log.Fatal(err)
+	}
 	ebiten.SetWindowTitle("2048")
-	err := ebiten.RunGame(a)
+	err = ebiten.RunGame(a)
 	if err != nil {
 		log.Fatal(err)
 	}

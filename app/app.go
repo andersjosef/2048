@@ -1,8 +1,6 @@
 package app
 
 import (
-	"log"
-
 	"github.com/andersjosef/2048/twenty48"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
@@ -18,25 +16,25 @@ type App struct {
 	overlay Overlay
 }
 
-func NewApp() *App {
+func NewApp() (*App, error) {
 	f := state.NewFSM[co.GameState]()
 
-	r, err := twenty48.NewRouter(twenty48.Deps{
+	sys, err := twenty48.Build(twenty48.Deps{
 		FSM: f,
 		IsGameOver: func() bool {
 			return f.Current() == co.StateGameOver
 		},
 	})
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	// Events
-	r.EventBus.Register(
+	sys.EventBus.Register(
 		eventhandler.EventResetGame,
 		func(eventhandler.Event) {
-			r.Core.Reset()
-			r.SetState(co.StateMainMenu) // Swap to main menu
+			sys.Core.Reset()
+			sys.SetState(co.StateMainMenu) // Swap to main menu
 			shadertools.ResetTimesMapsDissolve()
 		},
 	)
@@ -44,28 +42,28 @@ func NewApp() *App {
 	// States
 	f.Register(co.StateMainMenu, &state.MainMenu{
 		D: state.DepsMainMenu{
-			Menu: r.Menu,
+			Menu: sys.Menu,
 		},
 	})
 
 	f.Register(co.StateInstructions, &state.Instructions{
 		D: state.DepsInstructions{
-			Menu:    r.Menu,
-			Buttons: r.Buttons,
+			Menu:    sys.Menu,
+			Buttons: sys.Buttons,
 		},
 	})
 
 	f.Register(co.StateGameOver, &state.GameOver{
 		D: state.GameOverDeps{
-			Menu:    r.Menu,
-			Board:   r.Board,
-			Overlay: r.OverlayManager,
+			Menu:    sys.Menu,
+			Board:   sys.Board,
+			Overlay: sys.OverlayManager,
 		},
 	})
 
 	f.Register(co.StateRunning, &state.Running{
-		Renderer: r.Renderer,
-		ScoreUI:  r.ScoreOverlay,
+		Renderer: sys.Renderer,
+		ScoreUI:  sys.ScoreOverlay,
 	})
 
 	f.Register(co.StateQuitGame, &state.QuitGame{})
@@ -74,20 +72,20 @@ func NewApp() *App {
 
 	// Window
 	ebiten.SetWindowSize(
-		co.LOGICAL_WIDTH*int(r.ScreenControl().GetScale()),
-		co.LOGICAL_HEIGHT*int(r.ScreenControl().GetScale()),
+		co.LOGICAL_WIDTH*int(sys.ScreenControl().GetScale()),
+		co.LOGICAL_HEIGHT*int(sys.ScreenControl().GetScale()),
 	)
 
 	return &App{
 		fsm: f,
-		sc:  r.ScreenControl(),
+		sc:  sys.ScreenControl(),
 		globals: []Updater{
-			updaterFunc(func() error { r.EventBus.Dispatch(); return nil }),
-			updaterFunc(func() error { return r.Input.UpdateInput() }),
+			updaterFunc(func() error { sys.EventBus.Dispatch(); return nil }),
+			updaterFunc(func() error { return sys.Input.UpdateInput() }),
 			updaterFunc(func() error { shadertools.Update(); return nil }),
 		},
-		overlay: r.OverlayManager,
-	}
+		overlay: sys.OverlayManager,
+	}, nil
 }
 
 func (a *App) Update() error {

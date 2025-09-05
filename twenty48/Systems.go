@@ -14,7 +14,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/ui"
 )
 
-type Router struct {
+type Systems struct {
 	d Deps
 
 	Board          *board.Board
@@ -33,8 +33,8 @@ type Router struct {
 	ScoreOverlay   *ui.ScoreOverlay
 }
 
-func NewRouter(d Deps) (*Router, error) {
-	g := &Router{
+func Build(d Deps) (*Systems, error) {
+	g := &Systems{
 		d: d,
 	}
 
