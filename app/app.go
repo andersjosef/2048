@@ -1,11 +1,11 @@
 package app
 
 import (
+	"github.com/andersjosef/2048/app/state"
 	"github.com/andersjosef/2048/twenty48"
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
-	"github.com/andersjosef/2048/twenty48/state"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
