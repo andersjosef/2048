@@ -12,7 +12,7 @@ type BoardViewDeps struct {
 	Theme
 	Board interface {
 		CurMatrixSnapshot() [co.BOARDSIZE][co.BOARDSIZE]int
-		// PrevMatrixSnapshot() [co.BOARDSIZE][co.BOARDSIZE]int
+		GetBoardDimentions() (x, y int)
 	}
 	IsGameOver func() bool
 }

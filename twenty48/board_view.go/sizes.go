@@ -81,6 +81,14 @@ func (b *BoardView) scaleBoard() {
 	newOpt := &ebiten.DrawImageOptions{}
 	x, y := b.sizes.GetStartPos()
 	newOpt.GeoM.Translate(float64(x), float64(y))
-	b.boardImageOptions = newOpt
+	b.boardOpts = newOpt
 	b.CreateBoardImage()
+}
+
+func (s *Sizes) TileSize() float32 {
+	return s.tileSize
+}
+
+func (s *Sizes) StartPos() (x, y float32) {
+	return s.startPosX, s.startPosY
 }

@@ -14,10 +14,11 @@ import (
 type BoardView struct {
 	d BoardViewDeps
 
-	sizes             *Sizes
-	boardImage        *ebiten.Image
-	boardImageOptions *ebiten.DrawImageOptions
-	boardForEndScreen *ebiten.Image
+	sizes      *Sizes
+	EmptyBoard *ebiten.Image
+	boardOpts  *ebiten.DrawImageOptions
+
+	BoardSnapshot *ebiten.Image // For making it dissapear in the game over
 }
 
 func NewBoardView(d BoardViewDeps) *BoardView {
@@ -37,50 +38,55 @@ func NewBoardView(d BoardViewDeps) *BoardView {
 }
 
 func (b *BoardView) CreateBoardImage() {
-	var (
-		sizeX int = int(float64((co.BOARDSIZE * int(b.sizes.tileSize)) + (int(b.sizes.bordersize) * 2)))
-		sizeY     = sizeX
-	)
-	b.boardImage = ebiten.NewImage(sizeX, sizeY)
-	for y := range co.BOARDSIZE {
-		for x := range co.BOARDSIZE {
-			b.DrawBorderBackground(b.boardImage, float32(x)*b.sizes.tileSize, float32(y)*b.sizes.tileSize)
+	sizeX := int(float64((co.BOARDSIZE * int(b.sizes.tileSize)) + (int(b.sizes.bordersize) * 2)))
+	sizeY := sizeX
+
+	b.EmptyBoard = ebiten.NewImage(sizeX, sizeY)
+	length, height := b.d.Board.GetBoardDimentions()
+	for y := range height {
+		for x := range length {
+			b.DrawBorderBackground(
+				float32(x)*b.sizes.tileSize,
+				float32(y)*b.sizes.tileSize,
+			)
 		}
 
 	}
-	b.boardImageOptions = &ebiten.DrawImageOptions{}
-	b.boardImageOptions.GeoM.Translate(float64(b.sizes.startPosX), float64(b.sizes.startPosY))
+	b.boardOpts = &ebiten.DrawImageOptions{}
+	b.boardOpts.GeoM.Translate(float64(b.sizes.startPosX), float64(b.sizes.startPosY))
 
 	// Will update the size of it for screensize changes
 	b.initBoardForEndScreen()
 }
 
 func (b *BoardView) Draw(screen *ebiten.Image) {
-	// draw the backgroundimage of the game
-	b.boardForEndScreen.DrawImage(b.boardImage, b.boardImageOptions)
+	// Draw onto the snapshot so it contains both the empty board and tiles
+	b.BoardSnapshot.DrawImage(b.EmptyBoard, b.boardOpts)
+	b.drawTiles(b.BoardSnapshot)
+	screen.DrawImage(b.BoardSnapshot, &ebiten.DrawImageOptions{})
+}
 
+// Draw tiles
+func (b *BoardView) drawTiles(img *ebiten.Image) {
 	matrix := b.d.Board.CurMatrixSnapshot()
-	// draw tiles
-	for y := range len(matrix) {
-		for x := range len(matrix[0]) {
-			b.DrawTile(b.boardForEndScreen, b.sizes.startPosX, b.sizes.startPosY, x, y, matrix[y][x], 0, 0)
+	length, height := b.d.Board.GetBoardDimentions()
+	for y := range height {
+		for x := range length {
+			b.drawTile(
+				img,
+				x, y, matrix[y][x], 0, 0)
 		}
 	}
-	if !b.d.IsGameOver() {
-		screen.DrawImage(b.boardForEndScreen, &ebiten.DrawImageOptions{})
 
-	} else {
-		b.DrawBoardFadeOut(screen)
-	}
 }
 
 func (b *BoardView) initBoardForEndScreen() {
 	width, height := b.d.GetActualSize()
-	b.boardForEndScreen = ebiten.NewImage(width, height)
+	b.BoardSnapshot = ebiten.NewImage(width, height)
 }
 
 func (b *BoardView) DrawBoardFadeOut(screen *ebiten.Image) bool {
-	newImage, isDone := shadertools.GetImageFadeOut(b.boardForEndScreen)
+	newImage, isDone := shadertools.GetImageFadeOut(b.BoardSnapshot)
 	if isDone {
 		return true
 	}
@@ -89,11 +95,11 @@ func (b *BoardView) DrawBoardFadeOut(screen *ebiten.Image) bool {
 }
 
 // draws one tile of the game with everything background, number, color, etc.
-func (b *BoardView) DrawTile(screen *ebiten.Image, startX, startY float32, x, y int, value int, movDistX, movDistY float32) {
-	var (
-		xpos float32 = (startX + float32(x)*b.sizes.tileSize + movDistX*b.sizes.tileSize)
-		ypos float32 = (startY + float32(y)*b.sizes.tileSize + movDistY*b.sizes.tileSize)
-	)
+func (b *BoardView) drawTile(screen *ebiten.Image, x, y int, value int, movDistX, movDistY float32) {
+	startX, startY := b.sizes.StartPos()
+	tileSize := b.sizes.TileSize()
+	xpos := startX + (float32(x)+movDistX)*tileSize
+	ypos := startY + (float32(y)+movDistY)*tileSize
 
 	if value != 0 {
 		// Set tile color to default color
@@ -108,9 +114,11 @@ func (b *BoardView) DrawTile(screen *ebiten.Image, startX, startY float32, x, y 
 	}
 }
 
-func (b *BoardView) DrawBorderBackground(screen *ebiten.Image, xpos, ypos float32) {
+func (b *BoardView) DrawBorderBackground(xpos, ypos float32) {
 	var sizeBorder float32 = (float32(b.sizes.tileSize) + b.sizes.bordersize)
 	var sizeInside float32 = (b.sizes.tileSize - b.sizes.bordersize)
+
+	screen := b.EmptyBoard
 
 	vector.DrawFilledRect(screen, xpos, ypos,
 		sizeBorder, sizeBorder, b.d.Theme.Current().ColorBorder, false) //outer
