@@ -50,25 +50,32 @@ func InitSizes(b *BoardView, d SizesDeps) *Sizes {
 
 	sfb.d.EventHandler.Register(
 		eventhandler.EventScreenChanged,
-		func(evt eventhandler.Event) {
-			sfb.scaleBoard()
-			// Scale boardview after scaling values
-			sfb.d.EventHandler.Emit(eventhandler.Event{
-				Type: eventhandler.EventScaleBoardView,
-			})
-			val := int(sfb.baseTileSize)
-			shadertools.UpdateScaleNoiseImage(val, val)
+		func(eventhandler.Event) {
+			sfb.onScreenChange()
 		},
 	)
 
 	return sfb
 }
 
+func (s *Sizes) onScreenChange() {
+	s.scaleValues()
+
+	// Scale boardview after scaling values
+	s.d.EventHandler.Emit(eventhandler.Event{
+		Type: eventhandler.EventScaleBoardView,
+	})
+
+	val := int(s.baseTileSize)
+	shadertools.UpdateScaleNoiseImage(val, val)
+
+}
+
 func (s *Sizes) GetStartPos() (x, y float32) {
 	return s.startPosX, s.startPosY
 }
 
-func (s *Sizes) scaleBoard() {
+func (s *Sizes) scaleValues() {
 	scale := s.d.ScreenControl.GetScale()
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 
