@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -33,6 +34,13 @@ func NewBoardView(d BoardViewDeps) *BoardView {
 
 	// create boardImage
 	bv.CreateBoardImage()
+
+	bv.d.EventHandler.Register(
+		eventhandler.EventScaleBoardView,
+		func(eventhandler.Event) {
+			bv.scaleBoard()
+		},
+	)
 
 	return bv
 }

@@ -7,6 +7,7 @@ const (
 	EventResetGame
 	EventMoveMade
 	EventThemeChanged
+	EventScaleBoardView
 )
 
 type Event struct {
@@ -37,6 +38,7 @@ func (b *EventBus) Emit(event Event) {
 
 // Swallow away events form the queue
 func (b *EventBus) Dispatch() {
+	lenStart := len(b.queue)
 	for _, evt := range b.queue {
 		if handlers, ok := b.listeners[evt.Type]; ok {
 			for _, h := range handlers {
@@ -44,5 +46,12 @@ func (b *EventBus) Dispatch() {
 			}
 		}
 	}
+
+	// In case handlers are emitted in an registered function
+	if len(b.queue) > lenStart {
+		b.queue = b.queue[lenStart-1:]
+		b.Dispatch()
+	}
+
 	b.queue = b.queue[:0] // Clear queue after all event have been processed
 }

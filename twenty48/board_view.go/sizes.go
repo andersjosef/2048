@@ -10,6 +10,8 @@ import (
 type SizesDeps struct {
 	EventHandler interface {
 		Register(eventType eventhandler.EventType, handler func(eventhandler.Event))
+		Dispatch()
+		Emit(event eventhandler.Event)
 	}
 	ScreenControl
 }
@@ -18,7 +20,6 @@ type SizesDeps struct {
 type Sizes struct {
 	d SizesDeps
 
-	board      *BoardView
 	tileSize   float32
 	bordersize float32
 	startPosX  float32
@@ -41,17 +42,20 @@ func InitSizes(b *BoardView, d SizesDeps) *Sizes {
 		d:              d,
 		baseTileSize:   BASE_TILESIZE,
 		baseBorderSize: BASE_BORDERSIZE,
-		board:          b,
 		tileSize:       BASE_TILESIZE * float32(dpiScale),
 		bordersize:     BASE_BORDERSIZE * float32(dpiScale),
 		startPosX:      START_POS_X * float32(dpiScale),
 		startPosY:      START_POS_Y * float32(dpiScale),
 	}
 
-	sfb.board.d.Register(
+	sfb.d.EventHandler.Register(
 		eventhandler.EventScreenChanged,
 		func(evt eventhandler.Event) {
 			sfb.scaleBoard()
+			// Scale boardview after scaling values
+			sfb.d.EventHandler.Emit(eventhandler.Event{
+				Type: eventhandler.EventScaleBoardView,
+			})
 			val := int(sfb.baseTileSize)
 			shadertools.UpdateScaleNoiseImage(val, val)
 		},
@@ -74,7 +78,6 @@ func (s *Sizes) scaleBoard() {
 	s.startPosX = float32((width - (co.BOARDSIZE * int(s.tileSize))) / 2)
 	s.startPosY = float32((height - (co.BOARDSIZE * int(s.tileSize))) / 2)
 
-	s.board.scaleBoard()
 }
 
 func (b *BoardView) scaleBoard() {
