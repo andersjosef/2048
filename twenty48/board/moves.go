@@ -29,16 +29,10 @@ func (d *Direction) String() string {
 	return str
 }
 
-func (b *Board) updateBoardBeforeChange() {
-	b.matrixBeforeChange = b.matrix
-}
-
 func (b *Board) Move(dir Direction) {
 	if b.d.IsGameOver() {
 		return
 	}
-
-	b.updateBoardBeforeChange()
 
 	var snap [4][4]int
 	copy(snap[:], b.matrix[:])

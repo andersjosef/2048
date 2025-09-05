@@ -9,9 +9,8 @@ import (
 )
 
 type Board struct {
-	matrix             [co.BOARDSIZE][co.BOARDSIZE]int
-	matrixBeforeChange [co.BOARDSIZE][co.BOARDSIZE]int
-	d                  Deps
+	matrix [co.BOARDSIZE][co.BOARDSIZE]int
+	d      Deps
 }
 
 func New(d Deps) (*Board, error) {
@@ -48,7 +47,7 @@ func (b *Board) registerEvents() {
 				return
 			}
 			b.d.Core.AddScore(data.ScoreGain)
-			b.UpdateMatrix(data.NewBoard)
+			b.updateMatrix(data.NewBoard)
 			b.d.SetGameOver(b.isGameOver())
 		},
 	)
@@ -73,17 +72,10 @@ func (b *Board) randomNewPiece() {
 	}
 }
 
-func (b *Board) UpdateMatrix(newBoard [co.BOARDSIZE][co.BOARDSIZE]int) {
+// Set new matrix and add a random new piece
+func (b *Board) updateMatrix(newBoard [co.BOARDSIZE][co.BOARDSIZE]int) {
 	if b.matrix != newBoard {
 		b.matrix = newBoard
-		b.randomNewPiece()
-	}
-	// b.addNewRandomPieceIfBoardChanged(b.matrixBeforeChange, b.matrix)
-}
-
-// the functions for adding a random piece if the board is
-func (b *Board) addNewRandomPieceIfBoardChanged(old, new [co.BOARDSIZE][co.BOARDSIZE]int) {
-	if old != new { // there will only be a new piece if it is a change
 		b.randomNewPiece()
 	}
 }

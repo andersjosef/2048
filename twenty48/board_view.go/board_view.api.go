@@ -12,15 +12,16 @@ func (b *BoardView) DrawMovingMatrix(
 	y int,
 	movDistX,
 	movDistY float32,
+	value int,
 ) {
-	matrix := b.d.Board.PrevMatrixSnapshot()
+	// matrix := b.d.Board.CurMatrixSnapshot()
 	b.DrawTile(
 		screen,
 		b.sizes.startPosX,
 		b.sizes.startPosY,
 		x,
 		y,
-		matrix[y][x],
+		value,
 		movDistX,
 		movDistY,
 	)

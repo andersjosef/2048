@@ -20,5 +20,5 @@ type Board interface {
 }
 type BoardView interface {
 	DrawBackgoundBoard(screen *ebiten.Image)
-	DrawMovingMatrix(screen *ebiten.Image, x, y int, movDistX, movDistY float32)
+	DrawMovingMatrix(screen *ebiten.Image, x, y int, movDistX, movDistY float32, value int)
 }

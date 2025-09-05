@@ -107,6 +107,7 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 			d.FromRow,
 			moveX,
 			moveY,
+			d.ValueMoved,
 		)
 	}
 
