@@ -7,6 +7,7 @@ import (
 
 type Deps struct {
 	Board
+	BoardView
 	EventHandler
 }
 
@@ -15,7 +16,9 @@ type EventHandler interface {
 }
 
 type Board interface {
-	DrawBackgoundBoard(screen *ebiten.Image)
 	GetBoardDimentions() (x, y int)
+}
+type BoardView interface {
+	DrawBackgoundBoard(screen *ebiten.Image)
 	DrawMovingMatrix(screen *ebiten.Image, x, y int, movDistX, movDistY float32)
 }

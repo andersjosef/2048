@@ -13,6 +13,7 @@ type Animation interface {
 func NewAnimation(g *Systems) Animation {
 	deps := animations.Deps{
 		Board:        g.Board,
+		BoardView:    g.BoardView,
 		EventHandler: g.EventBus,
 	}
 

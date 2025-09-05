@@ -4,6 +4,7 @@ import (
 	"image/color"
 
 	"github.com/andersjosef/2048/twenty48/board"
+	"github.com/andersjosef/2048/twenty48/board_view.go"
 	"github.com/andersjosef/2048/twenty48/buttons"
 	"github.com/andersjosef/2048/twenty48/commands"
 	"github.com/andersjosef/2048/twenty48/core"
@@ -18,6 +19,7 @@ type Systems struct {
 	d Deps
 
 	Board          *board.Board
+	BoardView      *board_view.BoardView
 	screenControl  ScreenControl
 	animation      Animation
 	Menu           *menu.Menu
@@ -45,6 +47,13 @@ func Build(d Deps) (*Systems, error) {
 	})
 	g.Core = core.NewCore()
 	g.Board = NewBoard(g)
+	g.BoardView = board_view.NewBoardView(board_view.BoardViewDeps{
+		EventHandler:  g.EventBus,
+		ScreenControl: g.screenControl,
+		Board:         g.Board,
+		Theme:         g.Theme,
+		IsGameOver:    d.IsGameOver,
+	})
 	g.animation = NewAnimation(g)
 	g.Renderer = NewRenderer(g)
 	g.utils = NewUtils()

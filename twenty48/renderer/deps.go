@@ -4,7 +4,7 @@ import "github.com/hajimehoshi/ebiten/v2"
 
 type Deps struct {
 	Animation
-	Base
+	BoardView
 }
 
 type Animation interface {
@@ -12,6 +12,6 @@ type Animation interface {
 	IsAnimating() bool
 }
 
-type Base interface {
+type BoardView interface {
 	Draw(*ebiten.Image)
 }

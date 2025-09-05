@@ -32,7 +32,7 @@ func BuildCommands(d Deps) *Commands {
 
 		ToggleTheme: func() {
 			d.IncrementCurrentTheme()
-			d.Board.CreateBoardImage()
+			d.BoardView.CreateBoardImage()
 			d.EventHandler.Emit(eventhandler.Event{
 				Type: eventhandler.EventThemeChanged,
 			})

@@ -8,8 +8,8 @@ type GameOverDeps struct {
 	Menu interface {
 		DrawGameOver(*ebiten.Image)
 	}
-	Board   interface{ DrawBoardFadeOut(*ebiten.Image) bool }
-	Overlay interface{ DisableAfter(bool) }
+	BoardView interface{ DrawBoardFadeOut(*ebiten.Image) bool }
+	Overlay   interface{ DisableAfter(bool) }
 }
 
 type GameOver struct {
@@ -30,7 +30,7 @@ func (s *GameOver) Update() error { return nil }
 
 func (s *GameOver) Draw(screen *ebiten.Image) {
 	if !s.animDone {
-		s.animDone = s.D.Board.DrawBoardFadeOut(screen)
+		s.animDone = s.D.BoardView.DrawBoardFadeOut(screen)
 		s.D.Overlay.DisableAfter(!s.animDone)
 	} else {
 		s.D.Menu.DrawGameOver(screen)
