@@ -3,7 +3,6 @@ package board_view
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
-	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -65,10 +64,6 @@ func (s *Sizes) onScreenChange() {
 	s.d.EventHandler.Emit(eventhandler.Event{
 		Type: eventhandler.EventScaleBoardView,
 	})
-
-	val := int(s.baseTileSize)
-	shadertools.UpdateScaleNoiseImage(val, val)
-
 }
 
 func (s *Sizes) GetStartPos() (x, y float32) {
