@@ -54,7 +54,7 @@ func (b *Board) registerEvents() {
 }
 
 func (b *Board) randomNewPiece() {
-	x, y := len(b.matrix), len(b.matrix[0])
+	x, y := b.GetBoardDimentions()
 
 	// Will start at a random position, then check every available spot after
 	// until all tiles are checked
@@ -83,8 +83,11 @@ func (b *Board) updateMatrix(newBoard [co.BOARDSIZE][co.BOARDSIZE]int) {
 // Check if its gameOver
 func (b *Board) isGameOver() bool {
 	// Check if there are any empty spaces left, meaning its possible to play
-	for i := range co.BOARDSIZE {
-		for j := range co.BOARDSIZE {
+	length, height := b.GetBoardDimentions()
+
+	// Check for empty tiles
+	for i := range height {
+		for j := range length {
 			if b.matrix[i][j] == 0 {
 				return false
 			}
@@ -92,8 +95,8 @@ func (b *Board) isGameOver() bool {
 	}
 
 	// Check for vertical merges
-	for i := range co.BOARDSIZE - 1 {
-		for j := range co.BOARDSIZE {
+	for i := range height - 1 {
+		for j := range length {
 			if b.matrix[i][j] == b.matrix[i+1][j] {
 				return false
 			}
@@ -101,8 +104,8 @@ func (b *Board) isGameOver() bool {
 	}
 
 	// Check for horisontal merges
-	for i := range co.BOARDSIZE {
-		for j := range co.BOARDSIZE - 1 {
+	for i := range height {
+		for j := range length - 1 {
 			if b.matrix[i][j] == b.matrix[i][j+1] {
 				return false
 			}
