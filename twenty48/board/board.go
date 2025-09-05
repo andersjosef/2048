@@ -9,7 +9,7 @@ import (
 )
 
 type Board struct {
-	matrix             [co.BOARDSIZE][co.BOARDSIZE]int // 2d array for the board :)
+	matrix             [co.BOARDSIZE][co.BOARDSIZE]int
 	matrixBeforeChange [co.BOARDSIZE][co.BOARDSIZE]int
 	d                  Deps
 }
@@ -20,16 +20,7 @@ func New(d Deps) (*Board, error) {
 		d: d,
 	}
 
-	// TEMPORARY
-	// b.boardView = NewBoardView(BoardViewDeps{
-	// 	EventHandler:      d.EventHandler,
-	// 	ScreenControl:     d.ScreenControl,
-	// 	IsGameOver:        d.IsGameOver,
-	// 	GetCurrentTheme:   d.GetCurrentTheme,
-	// 	GetCurrentFontSet: d.GetCurrentFontSet,
-	// })
-
-	// add the two start pieces
+	// Add the two start pieces
 	for range 2 {
 		b.randomNewPiece()
 	}
@@ -57,8 +48,7 @@ func (b *Board) registerEvents() {
 				return
 			}
 			b.d.Core.AddScore(data.ScoreGain)
-			b.matrix = data.NewBoard
-			b.addNewRandomPieceIfBoardChanged()
+			b.UpdateMatrix(data.NewBoard)
 			b.d.SetGameOver(b.isGameOver())
 		},
 	)
@@ -83,9 +73,17 @@ func (b *Board) randomNewPiece() {
 	}
 }
 
+func (b *Board) UpdateMatrix(newBoard [co.BOARDSIZE][co.BOARDSIZE]int) {
+	if b.matrix != newBoard {
+		b.matrix = newBoard
+		b.randomNewPiece()
+	}
+	// b.addNewRandomPieceIfBoardChanged(b.matrixBeforeChange, b.matrix)
+}
+
 // the functions for adding a random piece if the board is
-func (b *Board) addNewRandomPieceIfBoardChanged() {
-	if b.matrixBeforeChange != b.matrix { // there will only be a new piece if it is a change
+func (b *Board) addNewRandomPieceIfBoardChanged(old, new [co.BOARDSIZE][co.BOARDSIZE]int) {
+	if old != new { // there will only be a new piece if it is a change
 		b.randomNewPiece()
 	}
 }
