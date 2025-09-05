@@ -6,18 +6,15 @@ import (
 	"github.com/andersjosef/2048/twenty48/board"
 	"github.com/andersjosef/2048/twenty48/buttons"
 	"github.com/andersjosef/2048/twenty48/commands"
-	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/core"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
-	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Router struct {
+type Systems struct {
 	d Deps
 
 	Board          *board.Board
@@ -36,8 +33,8 @@ type Router struct {
 	ScoreOverlay   *ui.ScoreOverlay
 }
 
-func NewRouter(d Deps) (*Router, error) {
-	g := &Router{
+func Build(d Deps) (*Systems, error) {
+	g := &Systems{
 		d: d,
 	}
 
@@ -59,31 +56,15 @@ func NewRouter(d Deps) (*Router, error) {
 	g.Cmds = NewCommands(g)
 	g.Input = NewInput(g, g.Cmds)
 	g.Buttons = NewButtonManager(g, g.Cmds)
-	g.Input.GiveButtons(g.Buttons)
+	g.Input.GiveButtons(g.Buttons) // TODO: fix this
 	g.Buttons.GiveInput(g.Input)
 
 	g.Menu = NewMenu(g)
-	ebiten.SetWindowSize(
-		co.LOGICAL_WIDTH*int(g.screenControl.GetScale()),
-		co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()),
-	)
 
 	g.OverlayManager = ui.NewOverlayManager()
 	g.OverlayManager.AddBefore(ui.Background{Color: func() color.RGBA { return g.Theme.Current().ColorScreenBackground }})
 	g.OverlayManager.AddAfter(g.Buttons)
 	g.OverlayManager.AddAfter(g.Menu)
 
-	g.registerEvents()
 	return g, nil
-}
-
-func (g *Router) registerEvents() {
-	g.EventBus.Register(
-		eventhandler.EventResetGame,
-		func(eventhandler.Event) {
-			g.Core.Reset()
-			g.SetState(co.StateMainMenu) // Swap to main menu
-			shadertools.ResetTimesMapsDissolve()
-		},
-	)
 }

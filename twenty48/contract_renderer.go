@@ -9,7 +9,7 @@ type Renderer interface {
 	Draw(*ebiten.Image)
 }
 
-func NewRenderer(g *Router) Renderer {
+func NewRenderer(g *Systems) Renderer {
 	deps := renderer.Deps{
 		Animation: g.animation,
 		Base:      g.Board,

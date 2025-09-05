@@ -7,7 +7,7 @@ import (
 )
 
 // TODO: Change centerWindwo and Scale Window
-func NewCommands(g *Router) *commands.Commands {
+func NewCommands(g *Systems) *commands.Commands {
 	centerWindow := func() {
 		mw, mh := ebiten.Monitor().Size()
 		ww, wh := ebiten.WindowSize()
