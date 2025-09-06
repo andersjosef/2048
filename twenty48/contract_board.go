@@ -1,8 +1,8 @@
 package twenty48
 
 import (
-	"github.com/andersjosef/2048/twenty48/board"
 	co "github.com/andersjosef/2048/twenty48/constants"
+	"github.com/andersjosef/2048/twenty48/core/board"
 	"github.com/andersjosef/2048/twenty48/theme"
 )
 

@@ -3,10 +3,10 @@ package twenty48
 import (
 	"image/color"
 
-	"github.com/andersjosef/2048/twenty48/board"
 	"github.com/andersjosef/2048/twenty48/buttons"
 	"github.com/andersjosef/2048/twenty48/commands"
 	"github.com/andersjosef/2048/twenty48/core"
+	"github.com/andersjosef/2048/twenty48/core/board"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
