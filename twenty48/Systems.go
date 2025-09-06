@@ -3,6 +3,7 @@ package twenty48
 import (
 	"image/color"
 
+	"github.com/andersjosef/2048/twenty48/animations"
 	"github.com/andersjosef/2048/twenty48/board"
 	"github.com/andersjosef/2048/twenty48/board_view.go"
 	"github.com/andersjosef/2048/twenty48/buttons"
@@ -11,9 +12,9 @@ import (
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
-	"github.com/andersjosef/2048/twenty48/sizes"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
+	"github.com/andersjosef/2048/twenty48/ui/layout"
 )
 
 type Systems struct {
@@ -22,7 +23,7 @@ type Systems struct {
 	Board          *board.Board
 	BoardView      *board_view.BoardView
 	screenControl  ScreenControl
-	animation      Animation
+	animation      *animations.Animation
 	Menu           *menu.Menu
 	Renderer       Renderer
 	Input          *input.Input
@@ -34,7 +35,7 @@ type Systems struct {
 	Core           *core.Core
 	Theme          *theme.ThemeManager
 	ScoreOverlay   *ui.ScoreOverlay
-	Sizes          *sizes.Sizes
+	Layout         *layout.Layout
 }
 
 func Build(d Deps) (*Systems, error) {
@@ -49,7 +50,7 @@ func Build(d Deps) (*Systems, error) {
 	})
 	g.Core = core.NewCore()
 	g.Board = NewBoard(g)
-	g.Sizes = sizes.New(sizes.SizesDeps{
+	g.Layout = layout.New(layout.SizesDeps{
 		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
 	})
@@ -58,7 +59,7 @@ func Build(d Deps) (*Systems, error) {
 		ScreenControl: g.screenControl,
 		Board:         g.Board,
 		Theme:         g.Theme,
-		Sizes:         g.Sizes,
+		Layout:        g.Layout,
 		IsGameOver:    d.IsGameOver,
 	})
 	g.animation = NewAnimation(g)

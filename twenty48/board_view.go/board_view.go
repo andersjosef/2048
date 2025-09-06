@@ -41,7 +41,7 @@ func NewBoardView(d BoardViewDeps) *BoardView {
 }
 
 func (b *BoardView) CreateBoardImage() {
-	sizeX := int(float64((co.BOARDSIZE * int(b.d.Sizes.TileSize())) + (int(b.d.Sizes.BorderSize()) * 2)))
+	sizeX := int(float64((co.BOARDSIZE * int(b.d.Layout.TileSize())) + (int(b.d.Layout.BorderSize()) * 2)))
 	sizeY := sizeX
 
 	b.EmptyBoard = ebiten.NewImage(sizeX, sizeY)
@@ -49,13 +49,13 @@ func (b *BoardView) CreateBoardImage() {
 	for y := range height {
 		for x := range length {
 			b.DrawBorderBackground(
-				float32(x)*b.d.Sizes.TileSize(),
-				float32(y)*b.d.Sizes.TileSize(),
+				float32(x)*b.d.Layout.TileSize(),
+				float32(y)*b.d.Layout.TileSize(),
 			)
 		}
 
 	}
-	x, y := b.d.Sizes.GetStartPos()
+	x, y := b.d.Layout.GetStartPos()
 	b.boardOpts = &ebiten.DrawImageOptions{}
 	b.boardOpts.GeoM.Translate(float64(x), float64(y))
 
@@ -65,7 +65,7 @@ func (b *BoardView) CreateBoardImage() {
 
 func (b *BoardView) scaleBoard() {
 	newOpt := &ebiten.DrawImageOptions{}
-	x, y := b.d.Sizes.GetStartPos()
+	x, y := b.d.Layout.GetStartPos()
 	newOpt.GeoM.Translate(float64(x), float64(y))
 	b.boardOpts = newOpt
 	b.CreateBoardImage()
@@ -108,8 +108,8 @@ func (b *BoardView) DrawBoardFadeOut(screen *ebiten.Image) bool {
 
 // draws one tile of the game with everything background, number, color, etc.
 func (b *BoardView) drawTile(screen *ebiten.Image, x, y int, value int, movDistX, movDistY float32) {
-	startX, startY := b.d.Sizes.StartPos()
-	tileSize := b.d.Sizes.TileSize()
+	startX, startY := b.d.Layout.StartPos()
+	tileSize := b.d.Layout.TileSize()
 	xpos := startX + (float32(x)+movDistX)*tileSize
 	ypos := startY + (float32(y)+movDistY)*tileSize
 
@@ -127,8 +127,8 @@ func (b *BoardView) drawTile(screen *ebiten.Image, x, y int, value int, movDistX
 }
 
 func (b *BoardView) DrawBorderBackground(xpos, ypos float32) {
-	tileSize := b.d.Sizes.TileSize()
-	borderSize := b.d.Sizes.BorderSize()
+	tileSize := b.d.Layout.TileSize()
+	borderSize := b.d.Layout.BorderSize()
 
 	sizeBorder := tileSize + borderSize
 	sizeInside := tileSize - borderSize
@@ -143,8 +143,8 @@ func (b *BoardView) DrawBorderBackground(xpos, ypos float32) {
 
 // background of a number, since they have colors
 func (b *BoardView) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8, movDistX, movDistY float32) {
-	tileSize := b.d.Sizes.TileSize()
-	borderSize := b.d.Sizes.BorderSize()
+	tileSize := b.d.Layout.TileSize()
+	borderSize := b.d.Layout.BorderSize()
 
 	xpos := startX + float32(x)*tileSize + borderSize + movDistX*tileSize
 	ypos := startY + float32(y)*tileSize + borderSize + movDistY*tileSize
@@ -158,8 +158,8 @@ func (b *BoardView) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int,
 	fontSet := b.d.Fonts()
 	msg := fmt.Sprintf("%v", value)
 
-	tileSize := b.d.Sizes.TileSize()
-	borderSize := b.d.Sizes.BorderSize()
+	tileSize := b.d.Layout.TileSize()
+	borderSize := b.d.Layout.BorderSize()
 
 	var fontUsed *text.GoTextFace
 	if float32(text.Advance(msg, fontSet.Big)) > tileSize {

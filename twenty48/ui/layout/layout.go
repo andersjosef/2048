@@ -1,4 +1,4 @@
-package sizes
+package layout
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
@@ -19,7 +19,7 @@ type SizesDeps struct {
 }
 
 // The sizes for the board that can be scaled up and down with window size changes
-type Sizes struct {
+type Layout struct {
 	d SizesDeps
 
 	tileSize   float32
@@ -31,7 +31,7 @@ type Sizes struct {
 	baseBorderSize float32
 }
 
-func New(d SizesDeps) *Sizes {
+func New(d SizesDeps) *Layout {
 	const (
 		BASE_TILESIZE   float32 = float32(co.LOGICAL_WIDTH) / 6.4
 		BASE_BORDERSIZE float32 = BASE_TILESIZE / 25
@@ -40,7 +40,7 @@ func New(d SizesDeps) *Sizes {
 	)
 
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
-	sfb := &Sizes{
+	sfb := &Layout{
 		d:              d,
 		baseTileSize:   BASE_TILESIZE,
 		baseBorderSize: BASE_BORDERSIZE,
@@ -60,7 +60,7 @@ func New(d SizesDeps) *Sizes {
 	return sfb
 }
 
-func (s *Sizes) onScreenChange() {
+func (s *Layout) onScreenChange() {
 	s.scaleValues()
 
 	// Scale boardview after scaling values
@@ -69,7 +69,7 @@ func (s *Sizes) onScreenChange() {
 	})
 }
 
-func (s *Sizes) scaleValues() {
+func (s *Layout) scaleValues() {
 	scale := s.d.ScreenControl.GetScale()
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 
@@ -81,18 +81,18 @@ func (s *Sizes) scaleValues() {
 
 }
 
-func (s *Sizes) BorderSize() float32 {
+func (s *Layout) BorderSize() float32 {
 	return s.bordersize
 }
 
-func (s *Sizes) GetStartPos() (x, y float32) {
+func (s *Layout) GetStartPos() (x, y float32) {
 	return s.startPosX, s.startPosY
 }
 
-func (s *Sizes) TileSize() float32 {
+func (s *Layout) TileSize() float32 {
 	return s.tileSize
 }
 
-func (s *Sizes) StartPos() (x, y float32) {
+func (s *Layout) StartPos() (x, y float32) {
 	return s.startPosX, s.startPosY
 }
