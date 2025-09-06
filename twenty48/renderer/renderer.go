@@ -20,5 +20,5 @@ func (r *Renderer) Draw(screen *ebiten.Image) {
 		return
 	}
 
-	r.d.Base.Draw(screen)
+	r.d.BoardView.Draw(screen)
 }

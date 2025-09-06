@@ -364,8 +364,10 @@ func TestFullBoard(t *testing.T) {
 
 	for i, tc := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			eventBus := eventhandler.NewEventBus()
+
 			d := Deps{
-				EventHandler:    MockEventHandler{},
+				EventHandler:    eventBus,
 				GetCurrentTheme: func() theme.Theme { return theme.Theme{} },
 				ScreenControl:   MockScreenControl{},
 				Core:            MockCore{},
@@ -384,7 +386,7 @@ func TestFullBoard(t *testing.T) {
 			want := board.matrix
 
 			board.Move(tc.direction)
-			board.addNewRandomPieceIfBoardChanged()
+			eventBus.Dispatch()
 
 			assert.Equal(t, want, board.matrix)
 		})

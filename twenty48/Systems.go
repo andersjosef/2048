@@ -10,16 +10,20 @@ import (
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
+	"github.com/andersjosef/2048/twenty48/renderer/animations"
+	"github.com/andersjosef/2048/twenty48/renderer/board_view.go"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
+	"github.com/andersjosef/2048/twenty48/ui/layout"
 )
 
 type Systems struct {
 	d Deps
 
 	Board          *board.Board
+	BoardView      *board_view.BoardView
 	screenControl  ScreenControl
-	animation      Animation
+	animation      *animations.Animation
 	Menu           *menu.Menu
 	Renderer       Renderer
 	Input          *input.Input
@@ -31,6 +35,7 @@ type Systems struct {
 	Core           *core.Core
 	Theme          *theme.ThemeManager
 	ScoreOverlay   *ui.ScoreOverlay
+	Layout         *layout.Layout
 }
 
 func Build(d Deps) (*Systems, error) {
@@ -45,6 +50,18 @@ func Build(d Deps) (*Systems, error) {
 	})
 	g.Core = core.NewCore()
 	g.Board = NewBoard(g)
+	g.Layout = layout.New(layout.SizesDeps{
+		EventHandler:  g.EventBus,
+		ScreenControl: g.screenControl,
+	})
+	g.BoardView = board_view.NewBoardView(board_view.BoardViewDeps{
+		EventHandler:  g.EventBus,
+		ScreenControl: g.screenControl,
+		Board:         g.Board,
+		Theme:         g.Theme,
+		Layout:        g.Layout,
+		IsGameOver:    d.IsGameOver,
+	})
 	g.animation = NewAnimation(g)
 	g.Renderer = NewRenderer(g)
 	g.utils = NewUtils()

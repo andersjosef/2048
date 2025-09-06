@@ -8,15 +8,15 @@ import (
 )
 
 type Commands struct {
-	MoveLeft, MoveRight, MoveUp, MoveDown  func()
-	ResetGame, ToggleFullscreen, CloseGame func()
-	ToggleTheme, ToggleInfo                func()
-	ScaleUp, ScaleDown                     func()
-	GoToRunning                            func()
+	MoveLeft, MoveRight, MoveUp, MoveDown, TurboMove func()
+	ResetGame, ToggleFullscreen, CloseGame           func()
+	ToggleTheme, ToggleInfo                          func()
+	ScaleUp, ScaleDown                               func()
+	GoToRunning                                      func()
 }
 
 func BuildCommands(d Deps) *Commands {
-	return &Commands{
+	c := &Commands{
 		MoveLeft:  func() { d.Board.Move(board.Left) },
 		MoveRight: func() { d.Board.Move(board.Right) },
 		MoveUp:    func() { d.Board.Move(board.Up) },
@@ -32,7 +32,7 @@ func BuildCommands(d Deps) *Commands {
 
 		ToggleTheme: func() {
 			d.IncrementCurrentTheme()
-			d.Board.CreateBoardImage()
+			d.BoardView.CreateBoardImage()
 			d.EventHandler.Emit(eventhandler.Event{
 				Type: eventhandler.EventThemeChanged,
 			})
@@ -58,4 +58,13 @@ func BuildCommands(d Deps) *Commands {
 			d.FSM.Switch(co.StateRunning)
 		},
 	}
+	c.TurboMove = func() {
+		for range 10 {
+			c.MoveUp()
+			c.MoveRight()
+			c.MoveLeft()
+			c.MoveDown()
+		}
+	}
+	return c
 }

@@ -12,7 +12,7 @@ type Renderer interface {
 func NewRenderer(g *Systems) Renderer {
 	deps := renderer.Deps{
 		Animation: g.animation,
-		Base:      g.Board,
+		BoardView: g.BoardView,
 	}
 	return renderer.New(deps)
 }

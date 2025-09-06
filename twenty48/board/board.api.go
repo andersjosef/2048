@@ -1,11 +1,11 @@
 package board
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
+	co "github.com/andersjosef/2048/twenty48/constants"
 )
 
-func (b *Board) DrawBackgoundBoard(screen *ebiten.Image) {
-	screen.DrawImage(b.boardImage, b.boardImageOptions)
+func (b *Board) CurMatrixSnapshot() [co.BOARDSIZE][co.BOARDSIZE]int {
+	return b.matrix
 }
 
 func (b *Board) GetBoardDimentions() (x, y int) {
@@ -13,29 +13,4 @@ func (b *Board) GetBoardDimentions() (x, y int) {
 		return 0, 0
 	}
 	return len(b.matrix[0]), len(b.matrix)
-}
-
-func (b *Board) DrawMovingMatrix(
-	screen *ebiten.Image,
-	x,
-	y int,
-	movDistX,
-	movDistY float32,
-) {
-	b.DrawTile(
-		screen,
-		b.sizes.startPosX,
-		b.sizes.startPosY,
-		x,
-		y,
-		b.matrixBeforeChange[y][x],
-		movDistX,
-		movDistY,
-	)
-
-}
-
-// Should be temporary
-func (b *Board) ScaleBoard() {
-	b.sizes.scaleBoard()
 }

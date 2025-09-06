@@ -8,6 +8,7 @@ import (
 
 type Deps struct {
 	Board
+	BoardView
 	EventHandler
 	ScreenControl
 	FSM
@@ -19,6 +20,9 @@ type Deps struct {
 
 type Board interface {
 	Move(board.Direction)
+}
+
+type BoardView interface {
 	CreateBoardImage()
 }
 

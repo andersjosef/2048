@@ -1,18 +1,13 @@
 package twenty48
 
 import (
-	"github.com/andersjosef/2048/twenty48/animations"
-	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/andersjosef/2048/twenty48/renderer/animations"
 )
 
-type Animation interface {
-	Draw(screen *ebiten.Image)
-	IsAnimating() bool
-}
-
-func NewAnimation(g *Systems) Animation {
+func NewAnimation(g *Systems) *animations.Animation {
 	deps := animations.Deps{
 		Board:        g.Board,
+		BoardView:    g.BoardView,
 		EventHandler: g.EventBus,
 	}
 
