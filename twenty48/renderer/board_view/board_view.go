@@ -87,20 +87,7 @@ func (b *BoardView) RebuildBoard() {
 	b.initBoardForEndScreen()
 }
 
-// func (b *BoardView) scaleBoard() {
-// 	newOpt := &ebiten.DrawImageOptions{}
-// 	x, y := b.d.Layout.GetStartPos()
-// 	newOpt.GeoM.Translate(float64(x), float64(y))
-// 	b.opts = newOpt
-// 	b.rebuildBoard()
-// }
-
 func (b *BoardView) Draw(screen *ebiten.Image) {
-	// // Draw onto the snapshot so it contains both the empty board and tiles
-	// b.BoardSnapshot.DrawImage(b.emptyBoard, b.opts)
-	// b.drawTiles(b.BoardSnapshot)
-	// screen.DrawImage(b.BoardSnapshot, &ebiten.DrawImageOptions{})
-
 	themeSnap := b.d.Theme.Current()
 	tileSize, borderSize := b.d.Layout.TileSize(), b.d.Layout.BorderSize()
 	startX, startY := b.d.Layout.GetStartPos()
@@ -235,11 +222,11 @@ func (b *BoardView) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int,
 	dx := float32(width)
 	dy := float32(height)
 
-	textPosX := int(xpos + (borderSize/2 + tileSize/2) - dx/2)
-	textPosY := int(ypos + (borderSize/2 + tileSize/2) - dy/2)
+	textPosX := float64(xpos + (borderSize/2 + tileSize/2) - dx/2)
+	textPosY := float64(ypos + (borderSize/2 + tileSize/2) - dy/2)
 
 	op := &text.DrawOptions{}
-	op.GeoM.Translate(float64(textPosX), float64(textPosY))
+	op.GeoM.Translate(textPosX, textPosY)
 	op.ColorScale.ScaleWithColor(b.d.Theme.Current().ColorText)
 	text.Draw(screen, msg, fontUsed, op)
 }
