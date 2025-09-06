@@ -11,7 +11,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
 	"github.com/andersjosef/2048/twenty48/renderer/animations"
-	"github.com/andersjosef/2048/twenty48/renderer/board_view.go"
+	"github.com/andersjosef/2048/twenty48/renderer/board_view"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
 	"github.com/andersjosef/2048/twenty48/ui/layout"
