@@ -11,6 +11,7 @@ import (
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
+	"github.com/andersjosef/2048/twenty48/sizes"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
 )
@@ -33,6 +34,7 @@ type Systems struct {
 	Core           *core.Core
 	Theme          *theme.ThemeManager
 	ScoreOverlay   *ui.ScoreOverlay
+	Sizes          *sizes.Sizes
 }
 
 func Build(d Deps) (*Systems, error) {
@@ -47,11 +49,16 @@ func Build(d Deps) (*Systems, error) {
 	})
 	g.Core = core.NewCore()
 	g.Board = NewBoard(g)
+	g.Sizes = sizes.New(sizes.SizesDeps{
+		EventHandler:  g.EventBus,
+		ScreenControl: g.screenControl,
+	})
 	g.BoardView = board_view.NewBoardView(board_view.BoardViewDeps{
 		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
 		Board:         g.Board,
 		Theme:         g.Theme,
+		Sizes:         g.Sizes,
 		IsGameOver:    d.IsGameOver,
 	})
 	g.animation = NewAnimation(g)

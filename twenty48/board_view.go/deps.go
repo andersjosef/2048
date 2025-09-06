@@ -10,6 +10,7 @@ type BoardViewDeps struct {
 	EventHandler
 	ScreenControl
 	Theme
+	Sizes
 	Board interface {
 		CurMatrixSnapshot() [co.BOARDSIZE][co.BOARDSIZE]int
 		GetBoardDimentions() (x, y int)
@@ -31,4 +32,11 @@ type ScreenControl interface {
 type Theme interface {
 	Current() theme.Theme
 	Fonts() *theme.FontSet
+}
+
+type Sizes interface {
+	BorderSize() float32
+	GetStartPos() (x, y float32)
+	TileSize() float32
+	StartPos() (x, y float32)
 }

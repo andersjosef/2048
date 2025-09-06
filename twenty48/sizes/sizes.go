@@ -1,4 +1,4 @@
-package board_view
+package sizes
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
@@ -12,7 +12,10 @@ type SizesDeps struct {
 		Dispatch()
 		Emit(event eventhandler.Event)
 	}
-	ScreenControl
+	ScreenControl interface {
+		GetScale() float64
+		GetActualSize() (x, y int)
+	}
 }
 
 // The sizes for the board that can be scaled up and down with window size changes
@@ -28,7 +31,7 @@ type Sizes struct {
 	baseBorderSize float32
 }
 
-func InitSizes(b *BoardView, d SizesDeps) *Sizes {
+func New(d SizesDeps) *Sizes {
 	const (
 		BASE_TILESIZE   float32 = float32(co.LOGICAL_WIDTH) / 6.4
 		BASE_BORDERSIZE float32 = BASE_TILESIZE / 25
@@ -66,10 +69,6 @@ func (s *Sizes) onScreenChange() {
 	})
 }
 
-func (s *Sizes) GetStartPos() (x, y float32) {
-	return s.startPosX, s.startPosY
-}
-
 func (s *Sizes) scaleValues() {
 	scale := s.d.ScreenControl.GetScale()
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
@@ -82,12 +81,12 @@ func (s *Sizes) scaleValues() {
 
 }
 
-func (b *BoardView) scaleBoard() {
-	newOpt := &ebiten.DrawImageOptions{}
-	x, y := b.sizes.GetStartPos()
-	newOpt.GeoM.Translate(float64(x), float64(y))
-	b.boardOpts = newOpt
-	b.CreateBoardImage()
+func (s *Sizes) BorderSize() float32 {
+	return s.bordersize
+}
+
+func (s *Sizes) GetStartPos() (x, y float32) {
+	return s.startPosX, s.startPosY
 }
 
 func (s *Sizes) TileSize() float32 {
