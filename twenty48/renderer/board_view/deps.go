@@ -35,6 +35,7 @@ type Theme interface {
 }
 
 type Layout interface {
+	Recalculate()
 	BorderSize() float32
 	GetStartPos() (x, y float32)
 	TileSize() float32

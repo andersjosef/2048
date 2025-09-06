@@ -2,16 +2,10 @@ package layout
 
 import (
 	co "github.com/andersjosef/2048/twenty48/constants"
-	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type SizesDeps struct {
-	EventHandler interface {
-		Register(eventType eventhandler.EventType, handler func(eventhandler.Event))
-		Dispatch()
-		Emit(event eventhandler.Event)
-	}
 	ScreenControl interface {
 		GetScale() float64
 		GetActualSize() (x, y int)
@@ -50,26 +44,10 @@ func New(d SizesDeps) *Layout {
 		startPosY:      START_POS_Y * float32(dpiScale),
 	}
 
-	sfb.d.EventHandler.Register(
-		eventhandler.EventScreenChanged,
-		func(eventhandler.Event) {
-			sfb.onScreenChange()
-		},
-	)
-
 	return sfb
 }
 
-func (s *Layout) onScreenChange() {
-	s.scaleValues()
-
-	// Scale boardview after scaling values
-	s.d.EventHandler.Emit(eventhandler.Event{
-		Type: eventhandler.EventScaleBoardView,
-	})
-}
-
-func (s *Layout) scaleValues() {
+func (s *Layout) Recalculate() {
 	scale := s.d.ScreenControl.GetScale()
 	dpiScale := ebiten.Monitor().DeviceScaleFactor()
 

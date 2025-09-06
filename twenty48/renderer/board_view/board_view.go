@@ -31,8 +31,9 @@ func NewBoardView(d BoardViewDeps) *BoardView {
 	bv.CreateBoardImage()
 
 	bv.d.EventHandler.Register(
-		eventhandler.EventScaleBoardView,
+		eventhandler.EventScreenChanged,
 		func(eventhandler.Event) {
+			bv.d.Layout.Recalculate()
 			bv.scaleBoard()
 		},
 	)

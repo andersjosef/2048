@@ -51,7 +51,6 @@ func Build(d Deps) (*Systems, error) {
 	g.Core = core.NewCore()
 	g.Board = NewBoard(g)
 	g.Layout = layout.New(layout.SizesDeps{
-		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
 	})
 	g.BoardView = board_view.NewBoardView(board_view.BoardViewDeps{
