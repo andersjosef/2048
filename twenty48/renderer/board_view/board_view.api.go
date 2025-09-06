@@ -3,7 +3,7 @@ package board_view
 import "github.com/hajimehoshi/ebiten/v2"
 
 func (b *BoardView) DrawBackgoundBoard(screen *ebiten.Image) {
-	screen.DrawImage(b.EmptyBoard, b.boardOpts)
+	screen.DrawImage(b.emptyBoard, b.opts)
 }
 
 func (b *BoardView) DrawMovingMatrix(

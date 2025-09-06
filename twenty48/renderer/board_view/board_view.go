@@ -1,9 +1,8 @@
 package board_view
 
 import (
-	"fmt"
+	"strconv"
 
-	co "github.com/andersjosef/2048/twenty48/constants"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/shadertools"
 	"github.com/andersjosef/2048/twenty48/theme"
@@ -15,82 +14,158 @@ import (
 type BoardView struct {
 	d BoardViewDeps
 
-	// sizes      *Sizes
-	EmptyBoard *ebiten.Image
-	boardOpts  *ebiten.DrawImageOptions
+	emptyBoard *ebiten.Image
+	opts       *ebiten.DrawImageOptions
+	tiles      map[int]*ebiten.Image
 
 	BoardSnapshot *ebiten.Image // For making it dissapear in the game over
 }
 
 func NewBoardView(d BoardViewDeps) *BoardView {
 	bv := &BoardView{
-		d: d,
+		d:    d,
+		opts: &ebiten.DrawImageOptions{},
 	}
 
 	// create boardImage
-	bv.CreateBoardImage()
+	// bv.CreateBoardImage()
+	bv.RebuildBoard()
 
 	bv.d.EventHandler.Register(
 		eventhandler.EventScreenChanged,
 		func(eventhandler.Event) {
 			bv.d.Layout.Recalculate()
-			bv.scaleBoard()
+			bv.RebuildBoard()
 		},
 	)
 
+	bv.d.EventHandler.Register(
+		eventhandler.EventThemeChanged,
+		func(eventhandler.Event) {
+			bv.d.Layout.Recalculate()
+			bv.RebuildBoard()
+		},
+	)
 	return bv
 }
 
-func (b *BoardView) CreateBoardImage() {
-	sizeX := int(float64((co.BOARDSIZE * int(b.d.Layout.TileSize())) + (int(b.d.Layout.BorderSize()) * 2)))
-	sizeY := sizeX
+func (b *BoardView) RebuildBoard() {
+	tileSize, borderSize := b.d.Layout.TileSize(), b.d.Layout.BorderSize()
 
-	b.EmptyBoard = ebiten.NewImage(sizeX, sizeY)
-	length, height := b.d.Board.GetBoardDimentions()
-	for y := range height {
-		for x := range length {
+	// Background image
+	l, h := b.d.Board.GetBoardDimentions()
+	sizeX := int(float32(l)*tileSize + 2*borderSize)
+	sizeY := int(float32(h)*tileSize + 2*borderSize)
+	b.emptyBoard = ebiten.NewImage(sizeX, sizeY)
+
+	// Empty tiles
+	for y := range h {
+		for x := range l {
 			b.DrawBorderBackground(
-				float32(x)*b.d.Layout.TileSize(),
-				float32(y)*b.d.Layout.TileSize(),
+				b.emptyBoard,
+				float32(x)*tileSize,
+				float32(y)*tileSize,
 			)
 		}
-
 	}
-	x, y := b.d.Layout.GetStartPos()
-	b.boardOpts = &ebiten.DrawImageOptions{}
-	b.boardOpts.GeoM.Translate(float64(x), float64(y))
 
-	// Will update the size of it for screensize changes
+	// The color tiles
+	b.tiles = make(map[int]*ebiten.Image, 15)
+	for v, rgba := range b.d.Theme.Current().ColorMap {
+		innerSize := int(tileSize - borderSize)
+		img := ebiten.NewImage(innerSize, innerSize)
+		img.Fill(theme.GetColor(rgba))
+		b.tiles[v] = img
+	}
+
+	b.opts.GeoM.Reset() // Set the new opts
+	x, y := b.d.Layout.StartPos()
+	b.opts.GeoM.Translate(float64(x), float64(y))
+
 	b.initBoardForEndScreen()
 }
 
-func (b *BoardView) scaleBoard() {
-	newOpt := &ebiten.DrawImageOptions{}
-	x, y := b.d.Layout.GetStartPos()
-	newOpt.GeoM.Translate(float64(x), float64(y))
-	b.boardOpts = newOpt
-	b.CreateBoardImage()
-}
+// func (b *BoardView) scaleBoard() {
+// 	newOpt := &ebiten.DrawImageOptions{}
+// 	x, y := b.d.Layout.GetStartPos()
+// 	newOpt.GeoM.Translate(float64(x), float64(y))
+// 	b.opts = newOpt
+// 	b.rebuildBoard()
+// }
 
 func (b *BoardView) Draw(screen *ebiten.Image) {
-	// Draw onto the snapshot so it contains both the empty board and tiles
-	b.BoardSnapshot.DrawImage(b.EmptyBoard, b.boardOpts)
-	b.drawTiles(b.BoardSnapshot)
-	screen.DrawImage(b.BoardSnapshot, &ebiten.DrawImageOptions{})
-}
+	// // Draw onto the snapshot so it contains both the empty board and tiles
+	// b.BoardSnapshot.DrawImage(b.emptyBoard, b.opts)
+	// b.drawTiles(b.BoardSnapshot)
+	// screen.DrawImage(b.BoardSnapshot, &ebiten.DrawImageOptions{})
 
-// Draw tiles
-func (b *BoardView) drawTiles(img *ebiten.Image) {
-	matrix := b.d.Board.CurMatrixSnapshot()
+	themeSnap := b.d.Theme.Current()
+	tileSize, borderSize := b.d.Layout.TileSize(), b.d.Layout.BorderSize()
+	startX, startY := b.d.Layout.GetStartPos()
+
+	// Empty board
+	screen.DrawImage(b.emptyBoard, b.opts)
+
+	// Tiles and numbers
+	mat := b.d.Board.CurMatrixSnapshot()
 	length, height := b.d.Board.GetBoardDimentions()
+	var textOps text.DrawOptions
 	for y := range height {
 		for x := range length {
-			b.drawTile(
-				img,
-				x, y, matrix[y][x], 0, 0)
+			val := mat[y][x]
+			if val == 0 {
+				continue
+			}
+
+			// Colored tile
+			if img, ok := b.tiles[val]; ok {
+				var o ebiten.DrawImageOptions
+				o.GeoM.Translate(float64(startX+float32(x)*tileSize+borderSize), float64(startY+float32(y)*tileSize+borderSize))
+				screen.DrawImage(img, &o)
+			}
+
+			// Text
+			msg := strconv.Itoa(val)
+			font := b.pickFont(msg, tileSize)
+			width, height := text.Measure(msg, font, 0)
+			tx := float64(startX + float32(x)*tileSize + borderSize/2 + (tileSize-float32(width))/2)
+			ty := float64(startY + float32(y)*tileSize + borderSize/2 + (tileSize-float32(height))/2)
+
+			textOps.GeoM.Reset()
+			textOps.GeoM.Translate(tx, ty)
+			textOps.ColorScale.Reset()
+			textOps.ColorScale.ScaleWithColor(themeSnap.ColorText)
+			text.Draw(screen, msg, font, &textOps)
+
 		}
 	}
 
+}
+
+// // Draw tiles
+// func (b *BoardView) drawTiles(img *ebiten.Image) {
+// 	matrix := b.d.Board.CurMatrixSnapshot()
+// 	length, height := b.d.Board.GetBoardDimentions()
+// 	for y := range height {
+// 		for x := range length {
+// 			b.drawTile(
+// 				img,
+// 				x, y, matrix[y][x], 0, 0)
+// 		}
+// 	}
+
+// }
+
+func (b *BoardView) pickFont(s string, size float32) *text.GoTextFace {
+	fontSet := b.d.Fonts()
+	var fontUsed *text.GoTextFace
+	if float32(text.Advance(s, fontSet.Big)) > size {
+		fontUsed = fontSet.Smaller
+	} else {
+		fontUsed = fontSet.Normal
+	}
+
+	return fontUsed
 }
 
 func (b *BoardView) initBoardForEndScreen() {
@@ -127,18 +202,16 @@ func (b *BoardView) drawTile(screen *ebiten.Image, x, y int, value int, movDistX
 	}
 }
 
-func (b *BoardView) DrawBorderBackground(xpos, ypos float32) {
+func (b *BoardView) DrawBorderBackground(img *ebiten.Image, xpos, ypos float32) {
 	tileSize := b.d.Layout.TileSize()
 	borderSize := b.d.Layout.BorderSize()
 
 	sizeBorder := tileSize + borderSize
 	sizeInside := tileSize - borderSize
 
-	screen := b.EmptyBoard
-
-	vector.DrawFilledRect(screen, xpos, ypos,
+	vector.DrawFilledRect(img, xpos, ypos,
 		sizeBorder, sizeBorder, b.d.Theme.Current().ColorBorder, false) //outer
-	vector.DrawFilledRect(screen, xpos+borderSize, ypos+borderSize,
+	vector.DrawFilledRect(img, xpos+borderSize, ypos+borderSize,
 		sizeInside, sizeInside, b.d.Theme.Current().ColorBackgroundTile, false) // inner
 }
 
@@ -156,18 +229,18 @@ func (b *BoardView) DrawNumberBackground(screen *ebiten.Image, startX, startY fl
 }
 
 func (b *BoardView) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, value int) {
-	fontSet := b.d.Fonts()
-	msg := fmt.Sprintf("%v", value)
+	msg := strconv.Itoa(value)
 
 	tileSize := b.d.Layout.TileSize()
 	borderSize := b.d.Layout.BorderSize()
 
-	var fontUsed *text.GoTextFace
-	if float32(text.Advance(msg, fontSet.Big)) > tileSize {
-		fontUsed = fontSet.Smaller
-	} else {
-		fontUsed = fontSet.Normal
-	}
+	// var fontUsed *text.GoTextFace
+	// if float32(text.Advance(msg, fontSet.Big)) > tileSize {
+	// 	fontUsed = fontSet.Smaller
+	// } else {
+	// 	fontUsed = fontSet.Normal
+	// }
+	fontUsed := b.pickFont(msg, tileSize)
 
 	width, height := text.Measure(msg, fontUsed, 0)
 
