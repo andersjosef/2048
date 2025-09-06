@@ -19,12 +19,14 @@ type BoardView struct {
 	tiles      map[int]*ebiten.Image
 
 	BoardSnapshot *ebiten.Image // For making it dissapear in the game over
+	endOpts       *ebiten.DrawImageOptions
 }
 
 func NewBoardView(d BoardViewDeps) *BoardView {
 	bv := &BoardView{
-		d:    d,
-		opts: &ebiten.DrawImageOptions{},
+		d:       d,
+		opts:    &ebiten.DrawImageOptions{},
+		endOpts: &ebiten.DrawImageOptions{},
 	}
 
 	// create boardImage
@@ -104,7 +106,7 @@ func (b *BoardView) Draw(screen *ebiten.Image) {
 	startX, startY := b.d.Layout.GetStartPos()
 
 	// Empty board
-	screen.DrawImage(b.emptyBoard, b.opts)
+	b.BoardSnapshot.DrawImage(b.emptyBoard, b.opts)
 
 	// Tiles and numbers
 	mat := b.d.Board.CurMatrixSnapshot()
@@ -121,7 +123,7 @@ func (b *BoardView) Draw(screen *ebiten.Image) {
 			if img, ok := b.tiles[val]; ok {
 				var o ebiten.DrawImageOptions
 				o.GeoM.Translate(float64(startX+float32(x)*tileSize+borderSize), float64(startY+float32(y)*tileSize+borderSize))
-				screen.DrawImage(img, &o)
+				b.BoardSnapshot.DrawImage(img, &o)
 			}
 
 			// Text
@@ -135,26 +137,12 @@ func (b *BoardView) Draw(screen *ebiten.Image) {
 			textOps.GeoM.Translate(tx, ty)
 			textOps.ColorScale.Reset()
 			textOps.ColorScale.ScaleWithColor(themeSnap.ColorText)
-			text.Draw(screen, msg, font, &textOps)
+			text.Draw(b.BoardSnapshot, msg, font, &textOps)
 
 		}
 	}
-
+	screen.DrawImage(b.BoardSnapshot, b.endOpts)
 }
-
-// // Draw tiles
-// func (b *BoardView) drawTiles(img *ebiten.Image) {
-// 	matrix := b.d.Board.CurMatrixSnapshot()
-// 	length, height := b.d.Board.GetBoardDimentions()
-// 	for y := range height {
-// 		for x := range length {
-// 			b.drawTile(
-// 				img,
-// 				x, y, matrix[y][x], 0, 0)
-// 		}
-// 	}
-
-// }
 
 func (b *BoardView) pickFont(s string, size float32) *text.GoTextFace {
 	fontSet := b.d.Fonts()
