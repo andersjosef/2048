@@ -1,7 +1,7 @@
 package twenty48
 
 import (
-	"github.com/andersjosef/2048/twenty48/animations"
+	"github.com/andersjosef/2048/twenty48/renderer/animations"
 )
 
 func NewAnimation(g *Systems) *animations.Animation {

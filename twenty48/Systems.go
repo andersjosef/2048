@@ -3,15 +3,15 @@ package twenty48
 import (
 	"image/color"
 
-	"github.com/andersjosef/2048/twenty48/animations"
 	"github.com/andersjosef/2048/twenty48/board"
-	"github.com/andersjosef/2048/twenty48/board_view.go"
 	"github.com/andersjosef/2048/twenty48/buttons"
 	"github.com/andersjosef/2048/twenty48/commands"
 	"github.com/andersjosef/2048/twenty48/core"
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
+	"github.com/andersjosef/2048/twenty48/renderer/animations"
+	"github.com/andersjosef/2048/twenty48/renderer/board_view.go"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
 	"github.com/andersjosef/2048/twenty48/ui/layout"
