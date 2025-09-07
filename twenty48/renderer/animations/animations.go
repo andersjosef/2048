@@ -15,9 +15,9 @@ type Animation struct {
 	isAnimating     bool
 	deltas          []shared.MoveDelta
 	currentDir      string
-	animationLength float32           // Seconds
-	directionMap    map[string][2]int // Multiply this to get x y movement of tiles
-	startTime       time.Time
+	animationLength float32 // Seconds
+	// directionMap    map[string][2]int // Multiply this to get x y movement of tiles
+	startTime time.Time
 }
 
 func New(d Deps) *Animation {
@@ -25,12 +25,6 @@ func New(d Deps) *Animation {
 		isAnimating:     false,
 		d:               d,
 		animationLength: 0.20, // Animation duration in seconds
-		directionMap: map[string][2]int{
-			"UP":    {0, -1},
-			"DOWN":  {0, 1},
-			"LEFT":  {-1, 0},
-			"RIGHT": {1, 0},
-		},
 	}
 
 	a.d.Register(
@@ -49,26 +43,6 @@ func New(d Deps) *Animation {
 }
 
 func (a *Animation) play(deltas []shared.MoveDelta, dir string) {
-	for i, d := range deltas {
-		nd := d
-		switch dir {
-		case "RIGHT":
-			nd.FromCol = co.BOARDSIZE - 1 - d.FromCol
-			nd.ToCol = co.BOARDSIZE - 1 - d.ToCol
-
-		case "UP":
-			nd.FromRow, nd.FromCol = d.FromCol, d.FromRow
-			nd.ToRow, nd.ToCol = d.ToCol, d.ToRow
-
-		case "DOWN":
-			nd.FromRow, nd.FromCol = d.FromCol, d.FromRow
-			nd.ToRow, nd.ToCol = d.ToCol, d.ToRow
-			nd.FromRow = co.BOARDSIZE - 1 - nd.FromRow
-			nd.ToRow = co.BOARDSIZE - 1 - nd.ToRow
-		}
-		deltas[i] = nd
-	}
-
 	a.deltas = deltas
 	a.currentDir = dir
 	a.isAnimating = true

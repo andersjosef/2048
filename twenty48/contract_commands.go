@@ -22,8 +22,6 @@ func NewCommands(g *Systems) *commands.Commands {
 
 		IncrementCurrentTheme: func() { // Change this
 			g.Theme.NextFont()
-
-			// g.Board.CreateBoardImage()
 			g.BoardView.RebuildBoard()
 			g.Menu.UpdateDynamicText()
 		},
