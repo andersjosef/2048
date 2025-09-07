@@ -62,7 +62,7 @@ func (b *BoardView) RebuildBoard() {
 	// Empty tiles
 	for y := range h {
 		for x := range l {
-			b.DrawBorderBackground(
+			b.drawBorderBackground(
 				b.emptyBoard,
 				float32(x)*tileSize,
 				float32(y)*tileSize,
@@ -158,27 +158,7 @@ func (b *BoardView) DrawBoardFadeOut(screen *ebiten.Image) bool {
 	return false
 }
 
-// draws one tile of the game with everything background, number, color, etc.
-func (b *BoardView) drawTile(screen *ebiten.Image, x, y int, value int, movDistX, movDistY float32) {
-	startX, startY := b.d.Layout.StartPos()
-	tileSize := b.d.Layout.TileSize()
-	xpos := startX + (float32(x)+movDistX)*tileSize
-	ypos := startY + (float32(y)+movDistY)*tileSize
-
-	if value != 0 {
-		// Set tile color to default color
-		colorMap := b.d.Theme.Current().ColorMap
-
-		val, ok := colorMap[value] // checks if num in map, if it is make the background else draw normal
-
-		if ok { // If the key exists draw the coresponding color background
-			b.DrawNumberBackground(screen, startX, startY, y, x, val, movDistX, movDistY)
-		}
-		b.DrawText(screen, xpos, ypos, x, y, value)
-	}
-}
-
-func (b *BoardView) DrawBorderBackground(img *ebiten.Image, xpos, ypos float32) {
+func (b *BoardView) drawBorderBackground(img *ebiten.Image, xpos, ypos float32) {
 	tileSize := b.d.Layout.TileSize()
 	borderSize := b.d.Layout.BorderSize()
 
@@ -189,45 +169,4 @@ func (b *BoardView) DrawBorderBackground(img *ebiten.Image, xpos, ypos float32) 
 		sizeBorder, sizeBorder, b.d.Theme.Current().ColorBorder, false) //outer
 	vector.DrawFilledRect(img, xpos+borderSize, ypos+borderSize,
 		sizeInside, sizeInside, b.d.Theme.Current().ColorBackgroundTile, false) // inner
-}
-
-// background of a number, since they have colors
-func (b *BoardView) DrawNumberBackground(screen *ebiten.Image, startX, startY float32, y, x int, val [4]uint8, movDistX, movDistY float32) {
-	tileSize := b.d.Layout.TileSize()
-	borderSize := b.d.Layout.BorderSize()
-
-	xpos := startX + float32(x)*tileSize + borderSize + movDistX*tileSize
-	ypos := startY + float32(y)*tileSize + borderSize + movDistY*tileSize
-	size_tile := tileSize - borderSize
-
-	vector.DrawFilledRect(screen, xpos, ypos,
-		size_tile, size_tile, theme.GetColor(val), false) // tiles
-}
-
-func (b *BoardView) DrawText(screen *ebiten.Image, xpos, ypos float32, x, y int, value int) {
-	msg := strconv.Itoa(value)
-
-	tileSize := b.d.Layout.TileSize()
-	borderSize := b.d.Layout.BorderSize()
-
-	// var fontUsed *text.GoTextFace
-	// if float32(text.Advance(msg, fontSet.Big)) > tileSize {
-	// 	fontUsed = fontSet.Smaller
-	// } else {
-	// 	fontUsed = fontSet.Normal
-	// }
-	fontUsed := b.pickFont(msg, tileSize)
-
-	width, height := text.Measure(msg, fontUsed, 0)
-
-	dx := float32(width)
-	dy := float32(height)
-
-	textPosX := float64(xpos + (borderSize/2 + tileSize/2) - dx/2)
-	textPosY := float64(ypos + (borderSize/2 + tileSize/2) - dy/2)
-
-	op := &text.DrawOptions{}
-	op.GeoM.Translate(textPosX, textPosY)
-	op.ColorScale.ScaleWithColor(b.d.Theme.Current().ColorText)
-	text.Draw(screen, msg, fontUsed, op)
 }

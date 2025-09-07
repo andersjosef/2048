@@ -88,6 +88,11 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 	startX, startY := a.d.Layout.GetStartPos()
 	tileSize := a.d.Layout.TileSize()
 	for _, d := range a.deltas {
+		// Get tile image form boardview
+		img, ok := a.d.BoardView.GetTile(d.ValueMoved)
+		if !ok {
+			continue
+		}
 
 		// Signed cell‐deltas
 		dxCells := d.ToCol - d.FromCol
@@ -104,24 +109,12 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 		moveX := dirX * min(fullDist, needX)
 		moveY := dirY * min(fullDist, needY)
 
-		if img, ok := a.d.GetTile(d.ValueMoved); ok {
-
-			x := float64(startX + float32(d.FromCol)*tileSize + a.d.BorderSize() + moveX*tileSize)
-			y := float64(startY + float32(d.FromRow)*tileSize + a.d.BorderSize() + moveY*tileSize)
-
-			ImgOpts.GeoM.Reset()
-			ImgOpts.GeoM.Translate(x, y)
-			screen.DrawImage(img, &ImgOpts)
-		}
-
-		// a.d.DrawMovingMatrix(
-		// 	screen,
-		// 	d.FromCol,
-		// 	d.FromRow,
-		// 	moveX,
-		// 	moveY,
-		// 	d.ValueMoved,
-		// )
+		// Draw tiles
+		x := float64(startX + float32(d.FromCol)*tileSize + a.d.BorderSize() + moveX*tileSize)
+		y := float64(startY + float32(d.FromRow)*tileSize + a.d.BorderSize() + moveY*tileSize)
+		ImgOpts.GeoM.Reset()
+		ImgOpts.GeoM.Translate(x, y)
+		screen.DrawImage(img, &ImgOpts)
 	}
 
 	if progress >= 1 {
