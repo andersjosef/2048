@@ -29,8 +29,6 @@ func NewBoardView(d BoardViewDeps) *BoardView {
 		endOpts: &ebiten.DrawImageOptions{},
 	}
 
-	// create boardImage
-	// bv.CreateBoardImage()
 	bv.RebuildBoard()
 
 	bv.d.EventHandler.Register(

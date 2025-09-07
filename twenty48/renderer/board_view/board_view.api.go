@@ -24,3 +24,8 @@ func (b *BoardView) DrawMovingMatrix(
 	)
 
 }
+
+func (b *BoardView) GetTile(v int) (img *ebiten.Image, ok bool) {
+	img, ok = b.tiles[v]
+	return img, ok
+}
