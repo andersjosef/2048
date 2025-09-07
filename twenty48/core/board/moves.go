@@ -45,7 +45,8 @@ func (b *Board) Move(dir Direction) {
 	for rowIndex, row := range snap {
 		newRow, d1, scoreGain := processRow(rowIndex, row)
 		allScoreGained += scoreGain
-		allDeltas = append(allDeltas, d1...)
+		allDeltas = append(allDeltas, b.shiftDeltas(dir, d1)...)
+		// allDeltas = append(allDeltas, d1...)
 		newMat[rowIndex] = newRow
 	}
 
@@ -66,6 +67,31 @@ func (b *Board) Move(dir Direction) {
 	// Dispatch immediatley to prevent false states
 	b.d.Dispatch()
 
+}
+
+// shift deltas to reflect their actual positions, not just a left move
+func (b *Board) shiftDeltas(dir Direction, deltas []shared.MoveDelta) []shared.MoveDelta {
+	length, height := b.GetBoardDimentions()
+	for i, d := range deltas {
+		nd := d
+		switch dir {
+		case Right:
+			nd.FromCol = height - 1 - d.FromCol
+			nd.ToCol = height - 1 - d.ToCol
+
+		case Up:
+			nd.FromRow, nd.FromCol = d.FromCol, d.FromRow
+			nd.ToRow, nd.ToCol = d.ToCol, d.ToRow
+
+		case Down:
+			nd.FromRow, nd.FromCol = d.FromCol, d.FromRow
+			nd.ToRow, nd.ToCol = d.ToCol, d.ToRow
+			nd.FromRow = length - 1 - nd.FromRow
+			nd.ToRow = length - 1 - nd.ToRow
+		}
+		deltas[i] = nd
+	}
+	return deltas
 }
 
 type transform struct {

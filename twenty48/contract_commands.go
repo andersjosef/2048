@@ -16,16 +16,13 @@ func NewCommands(g *Systems) *commands.Commands {
 	}
 	deps := commands.Deps{
 		Board:         g.Board,
-		BoardView:     g.BoardView,
 		EventHandler:  g.EventBus,
 		ScreenControl: g.screenControl,
 		FSM:           g.d.FSM,
 
 		IncrementCurrentTheme: func() { // Change this
 			g.Theme.NextFont()
-
-			// g.Board.CreateBoardImage()
-			g.BoardView.CreateBoardImage()
+			g.BoardView.RebuildBoard()
 			g.Menu.UpdateDynamicText()
 		},
 		ToggleInfo: func() {
