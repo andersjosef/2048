@@ -59,6 +59,7 @@ func (b *BoardView) RebuildBoard() {
 	sizeX := int(float32(l)*tileSize + 2*borderSize)
 	sizeY := int(float32(h)*tileSize + 2*borderSize)
 	b.emptyBoard = ebiten.NewImage(sizeX, sizeY)
+	b.initBoardForEndScreen()
 
 	// Empty tiles
 	for y := range h {
@@ -73,10 +74,29 @@ func (b *BoardView) RebuildBoard() {
 
 	// The color tiles
 	b.tiles = make(map[int]*ebiten.Image, 15)
+	// themeSnap := b.d.Theme.Current()
+	// var textOps text.DrawOptions
 	for v, rgba := range b.d.Theme.Current().ColorMap {
 		innerSize := int(tileSize - borderSize)
 		img := ebiten.NewImage(innerSize, innerSize)
+
+		// Background
 		img.Fill(theme.GetColor(rgba))
+
+		// Text
+		// msg := strconv.Itoa(v)
+		// font := b.pickFont(msg, tileSize)
+		// width, height := text.Measure(msg, font, 0)
+		// tx := float64(startX + float32(x)*tileSize + borderSize/2 + (tileSize-float32(width))/2)
+		// ty := float64(startY + float32(y)*tileSize + borderSize/2 + (tileSize-float32(height))/2)
+
+		// textOps.GeoM.Reset()
+		// textOps.GeoM.Translate(tx, ty)
+		// textOps.ColorScale.Reset()
+		// textOps.ColorScale.ScaleWithColor(themeSnap.ColorText)
+		// text.Draw(b.BoardSnapshot, msg, font, &textOps)
+
+		// Store
 		b.tiles[v] = img
 	}
 
@@ -84,7 +104,6 @@ func (b *BoardView) RebuildBoard() {
 	x, y := b.d.Layout.StartPos()
 	b.opts.GeoM.Translate(float64(x), float64(y))
 
-	b.initBoardForEndScreen()
 }
 
 func (b *BoardView) Draw(screen *ebiten.Image) {
