@@ -95,7 +95,6 @@ func (b *BoardView) RebuildBoard() {
 		textOps.ColorScale.Reset()
 		textOps.ColorScale.ScaleWithColor(themeSnap.ColorText)
 		text.Draw(img, msg, font, &textOps)
-		// text.Draw(b.BoardSnapshot, msg, font, &textOps)
 
 		// Store
 		b.tiles[v] = img
@@ -108,7 +107,6 @@ func (b *BoardView) RebuildBoard() {
 }
 
 func (b *BoardView) Draw(screen *ebiten.Image) {
-	// themeSnap := b.d.Theme.Current()
 	tileSize, borderSize := b.d.Layout.TileSize(), b.d.Layout.BorderSize()
 	startX, startY := b.d.Layout.GetStartPos()
 
@@ -118,7 +116,6 @@ func (b *BoardView) Draw(screen *ebiten.Image) {
 	// Tiles and numbers
 	mat := b.d.Board.CurMatrixSnapshot()
 	length, height := b.d.Board.GetBoardDimentions()
-	// var textOps text.DrawOptions
 	for y := range height {
 		for x := range length {
 			val := mat[y][x]
@@ -126,26 +123,12 @@ func (b *BoardView) Draw(screen *ebiten.Image) {
 				continue
 			}
 
-			// Colored tile
+			// Draw tile from map
 			if img, ok := b.tiles[val]; ok {
 				var o ebiten.DrawImageOptions
 				o.GeoM.Translate(float64(startX+float32(x)*tileSize+borderSize), float64(startY+float32(y)*tileSize+borderSize))
 				b.BoardSnapshot.DrawImage(img, &o)
 			}
-
-			// Text
-			// msg := strconv.Itoa(val)
-			// font := b.pickFont(msg, tileSize)
-			// width, height := text.Measure(msg, font, 0)
-			// tx := float64(startX + float32(x)*tileSize + borderSize/2 + (tileSize-float32(width))/2)
-			// ty := float64(startY + float32(y)*tileSize + borderSize/2 + (tileSize-float32(height))/2)
-
-			// textOps.GeoM.Reset()
-			// textOps.GeoM.Translate(tx, ty)
-			// textOps.ColorScale.Reset()
-			// textOps.ColorScale.ScaleWithColor(themeSnap.ColorText)
-			// text.Draw(b.BoardSnapshot, msg, font, &textOps)
-
 		}
 	}
 	screen.DrawImage(b.BoardSnapshot, b.endOpts)
