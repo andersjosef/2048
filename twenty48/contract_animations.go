@@ -9,6 +9,7 @@ func NewAnimation(g *Systems) *animations.Animation {
 		Board:        g.Board,
 		BoardView:    g.BoardView,
 		EventHandler: g.EventBus,
+		Layout:       g.Layout,
 	}
 
 	return animations.New(deps)

@@ -84,6 +84,9 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 	// How far any tile would go if it had to move the full width/height
 	fullDist := float32(co.BOARDSIZE-1) * progress
 
+	var ImgOpts ebiten.DrawImageOptions
+	startX, startY := a.d.Layout.GetStartPos()
+	tileSize := a.d.Layout.TileSize()
 	for _, d := range a.deltas {
 
 		// Signed cell‐deltas
@@ -101,14 +104,24 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 		moveX := dirX * min(fullDist, needX)
 		moveY := dirY * min(fullDist, needY)
 
-		a.d.DrawMovingMatrix(
-			screen,
-			d.FromCol,
-			d.FromRow,
-			moveX,
-			moveY,
-			d.ValueMoved,
-		)
+		if img, ok := a.d.GetTile(d.ValueMoved); ok {
+
+			x := float64(startX + float32(d.FromCol)*tileSize + a.d.BorderSize() + moveX*tileSize)
+			y := float64(startY + float32(d.FromRow)*tileSize + a.d.BorderSize() + moveY*tileSize)
+
+			ImgOpts.GeoM.Reset()
+			ImgOpts.GeoM.Translate(x, y)
+			screen.DrawImage(img, &ImgOpts)
+		}
+
+		// a.d.DrawMovingMatrix(
+		// 	screen,
+		// 	d.FromCol,
+		// 	d.FromRow,
+		// 	moveX,
+		// 	moveY,
+		// 	d.ValueMoved,
+		// )
 	}
 
 	if progress >= 1 {
