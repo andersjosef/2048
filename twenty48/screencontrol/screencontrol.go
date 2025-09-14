@@ -9,11 +9,13 @@ import (
 )
 
 type ScreenControl struct {
-	isFullscreen bool
-	d            Deps
-	actualWidth  int
-	actualHeight int
-	scale        float64
+	isFullscreen   bool
+	d              Deps
+	windowWidth    int
+	windowHeight   int
+	scale          float64
+	fraction       float64
+	scaleThreshold float64
 }
 
 func New(d Deps) *ScreenControl {
@@ -21,8 +23,10 @@ func New(d Deps) *ScreenControl {
 		isFullscreen: false,
 		d:            d,
 		scale:        1,
+		fraction:     1.5,
 	}
 
+	sc.scaleThreshold = sc.scale / (sc.fraction * 2)
 	sc.updateActualDimentions()
 	return sc
 }
@@ -30,17 +34,17 @@ func New(d Deps) *ScreenControl {
 func (sc *ScreenControl) updateActualDimentions() {
 	dpiScale := ebiten.Monitor().DeviceScaleFactor() // Accounting for high dpi monitors
 	if sc.isFullscreen {
-		sc.actualWidth, sc.actualHeight = ebiten.Monitor().Size()
-		sc.actualWidth *= int(dpiScale)
-		sc.actualHeight *= int(dpiScale)
+		sc.windowWidth, sc.windowHeight = ebiten.Monitor().Size()
+		sc.windowWidth *= int(dpiScale)
+		sc.windowHeight *= int(dpiScale)
 	} else {
-		sc.actualWidth = co.LOGICAL_WIDTH * int(sc.scale) * int(dpiScale)
-		sc.actualHeight = co.LOGICAL_HEIGHT * int(sc.scale) * int(dpiScale)
+		sc.windowWidth = int(float64(co.LOGICAL_WIDTH) * sc.scale * dpiScale)
+		sc.windowHeight = int(float64(co.LOGICAL_HEIGHT) * sc.scale * dpiScale)
 	}
 }
 
 func (sc *ScreenControl) GetActualSize() (x, y int) {
-	return sc.actualWidth, sc.actualHeight
+	return sc.windowWidth, sc.windowHeight
 }
 
 func (sc *ScreenControl) ToggleFullScreen() {
@@ -67,13 +71,21 @@ func (sc *ScreenControl) GetScale() float64 {
 }
 
 func (sc *ScreenControl) IncrementScale() {
-	sc.scale++
+	if sc.scale >= 1 {
+		sc.scale++
+	} else {
+		sc.scale *= sc.fraction
+	}
 	sc.updateActualDimentions()
 }
 
 func (sc *ScreenControl) DecrementScale() bool {
 	if sc.scale > 1 {
 		sc.scale--
+		sc.updateActualDimentions()
+		return true
+	} else if sc.scale > sc.scaleThreshold {
+		sc.scale /= sc.fraction
 		sc.updateActualDimentions()
 		return true
 	}

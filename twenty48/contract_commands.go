@@ -45,7 +45,11 @@ func NewCommands(g *Systems) *commands.Commands {
 			g.Buttons.UpdatePosForButton("II", width-20, 20)
 
 			g.Buttons.UpdateFontsForButtons()
-			ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(g.screenControl.GetScale()), co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()))
+			scale := g.screenControl.GetScale()
+			newWindowWidth := int(float64(co.LOGICAL_WIDTH) * scale)
+			newWindowHeight := int(float64(co.LOGICAL_HEIGHT) * scale)
+			// ebiten.SetWindowSize(co.LOGICAL_WIDTH*int(g.screenControl.GetScale()), co.LOGICAL_HEIGHT*int(g.screenControl.GetScale()))
+			ebiten.SetWindowSize(newWindowWidth, newWindowHeight)
 			centerWindow()
 		},
 	}
