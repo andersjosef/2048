@@ -14,6 +14,7 @@ type ScreenControl struct {
 	actualWidth  int
 	actualHeight int
 	scale        float64
+	fraction     float64
 }
 
 func New(d Deps) *ScreenControl {
@@ -21,6 +22,7 @@ func New(d Deps) *ScreenControl {
 		isFullscreen: false,
 		d:            d,
 		scale:        1,
+		fraction:     1.5,
 	}
 
 	sc.updateActualDimentions()
@@ -34,8 +36,8 @@ func (sc *ScreenControl) updateActualDimentions() {
 		sc.actualWidth *= int(dpiScale)
 		sc.actualHeight *= int(dpiScale)
 	} else {
-		sc.actualWidth = co.LOGICAL_WIDTH * int(sc.scale) * int(dpiScale)
-		sc.actualHeight = co.LOGICAL_HEIGHT * int(sc.scale) * int(dpiScale)
+		sc.actualWidth = int(float64(co.LOGICAL_WIDTH) * sc.scale * dpiScale)
+		sc.actualHeight = int(float64(co.LOGICAL_HEIGHT) * sc.scale * dpiScale)
 	}
 }
 
@@ -67,13 +69,21 @@ func (sc *ScreenControl) GetScale() float64 {
 }
 
 func (sc *ScreenControl) IncrementScale() {
-	sc.scale++
+	if sc.scale >= 1 {
+		sc.scale++
+	} else {
+		sc.scale *= sc.fraction
+	}
 	sc.updateActualDimentions()
 }
 
 func (sc *ScreenControl) DecrementScale() bool {
 	if sc.scale > 1 {
 		sc.scale--
+		sc.updateActualDimentions()
+		return true
+	} else if sc.scale > 0 {
+		sc.scale /= sc.fraction
 		sc.updateActualDimentions()
 		return true
 	}
