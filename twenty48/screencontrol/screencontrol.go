@@ -9,12 +9,13 @@ import (
 )
 
 type ScreenControl struct {
-	isFullscreen bool
-	d            Deps
-	actualWidth  int
-	actualHeight int
-	scale        float64
-	fraction     float64
+	isFullscreen   bool
+	d              Deps
+	windowWidth    int
+	windowHeight   int
+	scale          float64
+	fraction       float64
+	scaleThreshold float64
 }
 
 func New(d Deps) *ScreenControl {
@@ -25,6 +26,7 @@ func New(d Deps) *ScreenControl {
 		fraction:     1.5,
 	}
 
+	sc.scaleThreshold = sc.scale / (sc.fraction * 2)
 	sc.updateActualDimentions()
 	return sc
 }
@@ -32,17 +34,17 @@ func New(d Deps) *ScreenControl {
 func (sc *ScreenControl) updateActualDimentions() {
 	dpiScale := ebiten.Monitor().DeviceScaleFactor() // Accounting for high dpi monitors
 	if sc.isFullscreen {
-		sc.actualWidth, sc.actualHeight = ebiten.Monitor().Size()
-		sc.actualWidth *= int(dpiScale)
-		sc.actualHeight *= int(dpiScale)
+		sc.windowWidth, sc.windowHeight = ebiten.Monitor().Size()
+		sc.windowWidth *= int(dpiScale)
+		sc.windowHeight *= int(dpiScale)
 	} else {
-		sc.actualWidth = int(float64(co.LOGICAL_WIDTH) * sc.scale * dpiScale)
-		sc.actualHeight = int(float64(co.LOGICAL_HEIGHT) * sc.scale * dpiScale)
+		sc.windowWidth = int(float64(co.LOGICAL_WIDTH) * sc.scale * dpiScale)
+		sc.windowHeight = int(float64(co.LOGICAL_HEIGHT) * sc.scale * dpiScale)
 	}
 }
 
 func (sc *ScreenControl) GetActualSize() (x, y int) {
-	return sc.actualWidth, sc.actualHeight
+	return sc.windowWidth, sc.windowHeight
 }
 
 func (sc *ScreenControl) ToggleFullScreen() {
@@ -82,7 +84,7 @@ func (sc *ScreenControl) DecrementScale() bool {
 		sc.scale--
 		sc.updateActualDimentions()
 		return true
-	} else if sc.scale > 0 {
+	} else if sc.scale > sc.scaleThreshold {
 		sc.scale /= sc.fraction
 		sc.updateActualDimentions()
 		return true
