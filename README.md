@@ -2,8 +2,6 @@
 
 A clone of the popular 2048 game implemented in Go using the Ebitengine framework. Slide and merge tiles to reach the 2048 tile!
 
-## Demo
-
 ![2048 Gameplay](2048.gif)
 
 ## Features
