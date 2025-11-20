@@ -31,7 +31,7 @@ func NewButtonManager(d Deps, cmds *commands.Commands) *ButtonManager {
 	bm.d.Register(
 		eventhandler.EventScreenChanged,
 		func(_ eventhandler.Event) {
-			bm.updatePauseButtonLocation()
+			bm.UpdatePauseButtonLocation()
 		},
 	)
 
@@ -111,9 +111,12 @@ func (bm *ButtonManager) initButtons() {
 	)
 
 	// Running loop
+	dsf := int(ebiten.Monitor().DeviceScaleFactor())
 	bm.AddButton(
 		"II",
-		[2]int{width - 20, 20},
+		[2]int{
+			width - co.PAUSE_BUTTON_MARGIN*dsf,
+			co.PAUSE_BUTTON_MARGIN * dsf},
 		smallOffsett,
 		bm.d.GetFontSet().Mini,
 		-1, // Something not in enum for now, needs update to size
@@ -256,7 +259,9 @@ func (bm *ButtonManager) GetButton(identifier string) (button *Button, exists bo
 
 // Helper function for updating the pause button location
 // When changing screen size
-func (i *ButtonManager) updatePauseButtonLocation() {
+func (i *ButtonManager) UpdatePauseButtonLocation() {
 	width, _ := i.d.ScreenControl.GetActualSize()
-	i.UpdatePosForButton("II", width-20, 20)
+	ss := int(ebiten.Monitor().DeviceScaleFactor())
+	// TODO: refactor out position calculation from button manager
+	i.UpdatePosForButton("II", width-20*ss, 20*ss)
 }
