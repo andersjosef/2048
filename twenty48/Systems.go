@@ -10,25 +10,27 @@ import (
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
+	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/renderer/animations"
 	"github.com/andersjosef/2048/twenty48/renderer/board_view"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
 	"github.com/andersjosef/2048/twenty48/ui/layout"
+	"github.com/andersjosef/2048/twenty48/utils"
 )
 
 type Systems struct {
 	d Deps
 
+	screenControl  ScreenControl
 	Board          *board.Board
 	BoardView      *board_view.BoardView
-	screenControl  ScreenControl
 	animation      *animations.Animation
 	Menu           *menu.Menu
-	Renderer       Renderer
+	Renderer       *renderer.Renderer
 	Input          *input.Input
 	Buttons        *buttons.ButtonManager
-	utils          Utils
+	utils          *utils.Utils
 	EventBus       *eventhandler.EventBus
 	Cmds           *commands.Commands
 	OverlayManager *ui.Manager
