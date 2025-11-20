@@ -19,6 +19,7 @@ type Deps struct {
 
 type Board interface {
 	Move(board.Direction)
+	SetBoard([4][4]int)
 }
 
 type EventHandler interface {

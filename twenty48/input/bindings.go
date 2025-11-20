@@ -24,7 +24,9 @@ func (ki *KeyboardInput) addKeyBindings() {
 			ebiten.KeyI:          ki.d.cmds.ToggleInfo,
 			ebiten.KeyMinus:      ki.d.cmds.ScaleUp,
 			ebiten.KeyPeriod:     ki.d.cmds.ScaleDown,
-			ebiten.Key1:          ki.d.cmds.TurboMove,
+			// For debugging
+			ebiten.Key1: ki.d.cmds.TurboMove,
+			ebiten.Key2: ki.d.cmds.OneBeforeGameOver,
 		},
 		co.StateMainMenu: { // Menu
 			ebiten.KeyEscape: ki.d.cmds.CloseGame,

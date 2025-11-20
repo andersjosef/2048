@@ -8,11 +8,12 @@ import (
 )
 
 type Commands struct {
-	MoveLeft, MoveRight, MoveUp, MoveDown, TurboMove func()
-	ResetGame, ToggleFullscreen, CloseGame           func()
-	ToggleTheme, ToggleInfo                          func()
-	ScaleUp, ScaleDown                               func()
-	GoToRunning                                      func()
+	MoveLeft, MoveRight, MoveUp, MoveDown  func()
+	ResetGame, ToggleFullscreen, CloseGame func()
+	ToggleTheme, ToggleInfo                func()
+	ScaleUp, ScaleDown                     func()
+	GoToRunning                            func()
+	TurboMove, OneBeforeGameOver           func()
 }
 
 func BuildCommands(d Deps) *Commands {
@@ -55,6 +56,14 @@ func BuildCommands(d Deps) *Commands {
 		},
 		GoToRunning: func() {
 			d.FSM.Switch(co.StateRunning)
+		},
+		OneBeforeGameOver: func() {
+			d.Board.SetBoard([4][4]int{
+				{8, 2, 4, 128},
+				{2048, 128, 2, 4},
+				{8, 2, 4, 128},
+				{4096, 128, 2, 2},
+			})
 		},
 	}
 	c.TurboMove = func() {
