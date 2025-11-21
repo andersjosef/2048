@@ -9,7 +9,7 @@ import (
 
 func NewButtonManager(g *Systems, cmds *commands.Commands) *buttons.ButtonManager {
 	deps := buttons.Deps{
-		ScreenControl: g.screenControl,
+		ScreenControl: g.ScreenControl,
 		Input:         g.Input,
 		Utils:         g.utils,
 		EventHandler:  g.EventBus,

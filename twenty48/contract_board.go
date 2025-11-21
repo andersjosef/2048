@@ -9,7 +9,7 @@ import (
 func NewBoard(g *Systems) *board.Board {
 	d := board.Deps{
 		EventHandler:  g.EventBus,
-		ScreenControl: g.screenControl,
+		ScreenControl: g.ScreenControl,
 		Core:          g.Core,
 		SetGameOver: func(isGameOver bool) {
 			if isGameOver {

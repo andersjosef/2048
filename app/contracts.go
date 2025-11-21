@@ -8,3 +8,12 @@ type Overlay interface {
 	DisableAfter(b bool)
 	DisableBefore(b bool)
 }
+type ScreenControl interface {
+	GetActualSize() (x, y int)
+	ToggleFullScreen()
+	IsFullScreen() bool
+	IncrementScale()
+	DecrementScale() bool
+	GetScale() float64
+	LayoutF(float64, float64) (float64, float64)
+}

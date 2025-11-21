@@ -9,7 +9,7 @@ func NewInput(g *Systems, cmds *commands.Commands) *input.Input {
 	deps := input.Deps{
 		EventHandler:  g.EventBus,
 		Buttons:       g.Buttons,
-		ScreenControl: g.screenControl,
+		ScreenControl: g.ScreenControl,
 
 		Cmds:  cmds,
 		State: g,
