@@ -46,7 +46,6 @@ func (b *Board) Move(dir Direction) {
 		newRow, d1, scoreGain := processRow(rowIndex, row)
 		allScoreGained += scoreGain
 		allDeltas = append(allDeltas, b.shiftDeltas(dir, d1)...)
-		// allDeltas = append(allDeltas, d1...)
 		newMat[rowIndex] = newRow
 	}
 
@@ -69,7 +68,7 @@ func (b *Board) Move(dir Direction) {
 
 }
 
-// shift deltas to reflect their actual positions, not just a left move
+// Shift deltas to reflect their actual positions, not just a left move
 func (b *Board) shiftDeltas(dir Direction, deltas []shared.MoveDelta) []shared.MoveDelta {
 	length, height := b.GetBoardDimentions()
 	for i, d := range deltas {

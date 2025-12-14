@@ -19,7 +19,6 @@ const (
 
 // // Button ////
 type Button struct {
-	// game           *Game
 	d              Deps
 	startPos       [2]int
 	endPos         [2]int
@@ -86,7 +85,6 @@ func (bu *Button) OnTrigger() {
 
 func (bu *Button) Draw(screen *ebiten.Image) {
 	startX, startY := bu.startPos[0], bu.startPos[1]
-	// width, height := bu.endPos[0]-startX, bu.endPos[1]-startY
 
 	bu.d.Utils.DrawDoubleText(
 		screen,

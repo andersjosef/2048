@@ -21,7 +21,6 @@ type Deps struct {
 
 type EventHandler interface {
 	Register(eventType eventhandler.EventType, handler func(eventhandler.Event))
-	// Dispatch()
 	Emit(event eventhandler.Event)
 }
 

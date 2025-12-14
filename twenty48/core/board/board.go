@@ -56,6 +56,7 @@ func (b *Board) registerEvents() {
 func (b *Board) randomNewPiece() {
 	x, y := b.GetBoardDimentions()
 
+	// TODO: fix flawed logic, there is a much larger chance for a tile after a big block
 	// Will start at a random position, then check every available spot after
 	// until all tiles are checked
 	for count := rand.Intn(x * y); count < count+x*y-1; count++ {

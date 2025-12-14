@@ -16,8 +16,7 @@ type Animation struct {
 	deltas          []shared.MoveDelta
 	currentDir      string
 	animationLength float32 // Seconds
-	// directionMap    map[string][2]int // Multiply this to get x y movement of tiles
-	startTime time.Time
+	startTime       time.Time
 }
 
 func New(d Deps) *Animation {
