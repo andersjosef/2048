@@ -10,10 +10,12 @@ type Deps struct {
 	BoardView
 	EventHandler
 	Layout
+	State
 }
 
 type EventHandler interface {
 	Register(eventType eventhandler.EventType, handler func(eventhandler.Event))
+	Emit(eventhandler.Event)
 }
 
 type Board interface {
@@ -28,4 +30,7 @@ type Layout interface {
 	GetStartPos() (x, y float32)
 	TileSize() float32
 	BorderSize() float32
+}
+type State interface {
+	IsGameOver() bool
 }

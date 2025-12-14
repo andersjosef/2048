@@ -55,9 +55,11 @@ func NewApp() (*App, error) {
 
 	f.Register(co.StateGameOver, &state.GameOver{
 		D: state.GameOverDeps{
-			Menu:      sys.Menu,
-			BoardView: sys.BoardView,
-			Overlay:   sys.OverlayManager,
+			Menu:         sys.Menu,
+			BoardView:    sys.BoardView,
+			Overlay:      sys.OverlayManager,
+			Renderer:     sys.Renderer,
+			EventHandler: sys.EventBus,
 		},
 	})
 
