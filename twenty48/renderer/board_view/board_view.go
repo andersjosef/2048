@@ -104,7 +104,7 @@ func (b *BoardView) RebuildBoard() {
 
 }
 
-func (b *BoardView) Draw(screen *ebiten.Image) {
+func (b *BoardView) makeBoardSnapshot() {
 	tileSize, borderSize := b.d.Layout.TileSize(), b.d.Layout.BorderSize()
 	startX, startY := b.d.Layout.GetStartPos()
 
@@ -129,6 +129,10 @@ func (b *BoardView) Draw(screen *ebiten.Image) {
 			}
 		}
 	}
+}
+
+func (b *BoardView) Draw(screen *ebiten.Image) {
+	b.makeBoardSnapshot()
 	screen.DrawImage(b.BoardSnapshot, b.endOpts)
 }
 
@@ -150,6 +154,7 @@ func (b *BoardView) initBoardForEndScreen() {
 }
 
 func (b *BoardView) DrawBoardFadeOut(screen *ebiten.Image) bool {
+	b.makeBoardSnapshot() // TODO: improve this
 	newImage, isDone := shadertools.GetImageFadeOut(b.BoardSnapshot)
 	if isDone {
 		return true
