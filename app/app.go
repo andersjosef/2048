@@ -36,6 +36,7 @@ func NewApp() (*App, error) {
 			sys.Core.Reset()
 			sys.SetState(co.StateMainMenu) // Swap to main menu
 			shadertools.ResetTimesMapsDissolve()
+			sys.OverlayManager.DisableAfter(false)
 		},
 	)
 

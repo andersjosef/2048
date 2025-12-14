@@ -45,13 +45,11 @@ func (s *GameOver) Exit() {
 func (s *GameOver) Update() error { return nil }
 
 func (s *GameOver) Draw(screen *ebiten.Image) {
-	if !s.animDone {
-
+	if !s.animDone { // Move animation
 		s.D.Renderer.Draw(screen)
-		// s.D.Overlay.DisableAfter(!s.animDone)
-	} else if !s.shaderDone {
+	} else if !s.shaderDone { // Shader animation
 		s.shaderDone = s.D.BoardView.DrawBoardFadeOut(screen)
-	} else {
+	} else { // Display results
 		s.D.Overlay.DisableAfter(false)
 		s.D.Menu.DrawGameOver(screen)
 	}

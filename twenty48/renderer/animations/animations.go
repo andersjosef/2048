@@ -1,7 +1,6 @@
 package animations
 
 import (
-	"fmt"
 	"math"
 	"time"
 
@@ -92,7 +91,6 @@ func (a *Animation) Draw(screen *ebiten.Image) {
 
 	if progress >= 1 {
 		a.isAnimating = false
-		fmt.Println("Animation done")
 		if a.d.IsGameOver() {
 			a.d.EventHandler.Emit(eventhandler.Event{
 				Type: eventhandler.EventAnimationDoneGameOver,
