@@ -2,14 +2,9 @@ package twenty48
 
 import (
 	"github.com/andersjosef/2048/twenty48/renderer"
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type Renderer interface {
-	Draw(*ebiten.Image)
-}
-
-func NewRenderer(g *Systems) Renderer {
+func NewRenderer(g *Systems) *renderer.Renderer {
 	deps := renderer.Deps{
 		Animation: g.animation,
 		BoardView: g.BoardView,

@@ -32,7 +32,3 @@ func (g *Systems) GetCurrentTheme() theme.Theme {
 func (g *Systems) GetFontSet() theme.FontSet {
 	return *g.Theme.Fonts()
 }
-
-func (g *Systems) ScreenControl() ScreenControl {
-	return g.screenControl
-}

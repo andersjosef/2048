@@ -11,7 +11,7 @@ import (
 
 type App struct {
 	fsm     *state.FSM[co.GameState]
-	sc      twenty48.ScreenControl
+	sc      ScreenControl
 	globals []Updater
 	overlay Overlay
 }
@@ -72,13 +72,13 @@ func NewApp() (*App, error) {
 
 	// Window
 	ebiten.SetWindowSize(
-		co.LOGICAL_WIDTH*int(sys.ScreenControl().GetScale()),
-		co.LOGICAL_HEIGHT*int(sys.ScreenControl().GetScale()),
+		co.LOGICAL_WIDTH*int(sys.ScreenControl.GetScale()),
+		co.LOGICAL_HEIGHT*int(sys.ScreenControl.GetScale()),
 	)
 
 	return &App{
 		fsm: f,
-		sc:  sys.ScreenControl(),
+		sc:  sys.ScreenControl,
 		globals: []Updater{
 			updaterFunc(func() error { sys.EventBus.Dispatch(); return nil }),
 			updaterFunc(func() error { return sys.Input.UpdateInput() }),

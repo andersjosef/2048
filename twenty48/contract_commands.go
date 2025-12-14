@@ -17,7 +17,7 @@ func NewCommands(g *Systems) *commands.Commands {
 	deps := commands.Deps{
 		Board:         g.Board,
 		EventHandler:  g.EventBus,
-		ScreenControl: g.screenControl,
+		ScreenControl: g.ScreenControl,
 		FSM:           g.d.FSM,
 
 		IncrementCurrentTheme: func() { // Change this
@@ -44,7 +44,7 @@ func NewCommands(g *Systems) *commands.Commands {
 			g.Buttons.UpdatePauseButtonLocation()
 
 			g.Buttons.UpdateFontsForButtons()
-			scale := g.screenControl.GetScale()
+			scale := g.ScreenControl.GetScale()
 			newWindowWidth := int(float64(co.LOGICAL_WIDTH) * scale)
 			newWindowHeight := int(float64(co.LOGICAL_HEIGHT) * scale)
 			ebiten.SetWindowSize(newWindowWidth, newWindowHeight)

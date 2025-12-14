@@ -10,25 +10,28 @@ import (
 	"github.com/andersjosef/2048/twenty48/eventhandler"
 	"github.com/andersjosef/2048/twenty48/input"
 	"github.com/andersjosef/2048/twenty48/menu"
+	"github.com/andersjosef/2048/twenty48/renderer"
 	"github.com/andersjosef/2048/twenty48/renderer/animations"
 	"github.com/andersjosef/2048/twenty48/renderer/board_view"
+	"github.com/andersjosef/2048/twenty48/screencontrol"
 	"github.com/andersjosef/2048/twenty48/theme"
 	"github.com/andersjosef/2048/twenty48/ui"
 	"github.com/andersjosef/2048/twenty48/ui/layout"
+	"github.com/andersjosef/2048/twenty48/utils"
 )
 
 type Systems struct {
 	d Deps
 
+	ScreenControl  *screencontrol.ScreenControl
 	Board          *board.Board
 	BoardView      *board_view.BoardView
-	screenControl  ScreenControl
 	animation      *animations.Animation
 	Menu           *menu.Menu
-	Renderer       Renderer
+	Renderer       *renderer.Renderer
 	Input          *input.Input
 	Buttons        *buttons.ButtonManager
-	utils          Utils
+	utils          *utils.Utils
 	EventBus       *eventhandler.EventBus
 	Cmds           *commands.Commands
 	OverlayManager *ui.Manager
@@ -44,18 +47,18 @@ func Build(d Deps) (*Systems, error) {
 	}
 
 	g.EventBus = eventhandler.NewEventBus()
-	g.screenControl = NewScreenControl(g)
+	g.ScreenControl = NewScreenControl(g)
 	g.Theme = theme.NewThemeService(theme.ThemeManagerDeps{
-		SC: g.screenControl,
+		SC: g.ScreenControl,
 	})
 	g.Core = core.NewCore()
 	g.Board = NewBoard(g)
 	g.Layout = layout.New(layout.SizesDeps{
-		ScreenControl: g.screenControl,
+		ScreenControl: g.ScreenControl,
 	})
 	g.BoardView = board_view.NewBoardView(board_view.BoardViewDeps{
 		EventHandler:  g.EventBus,
-		ScreenControl: g.screenControl,
+		ScreenControl: g.ScreenControl,
 		Board:         g.Board,
 		Theme:         g.Theme,
 		Layout:        g.Layout,

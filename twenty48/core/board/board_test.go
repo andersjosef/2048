@@ -52,7 +52,7 @@ func TestInitializeBoard(t *testing.T) {
 	board, err := New(d)
 	assert.NoError(t, err)
 
-	// counts the number of pieces on the board
+	// Counts the number of pieces on the board
 	for x := range len(board.matrix) {
 		for y := range len(board.matrix[0]) {
 			val := board.matrix[x][y]
@@ -239,7 +239,7 @@ func TestMoves(t *testing.T) {
 		},
 	}
 
-	// creates a test for every entry in the list above
+	// Creates a test for every entry in the list above
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			eventHandler := eventhandler.NewEventBus()

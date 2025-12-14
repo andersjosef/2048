@@ -5,6 +5,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// TODO: refactor out actual setting of keybindings to function and set it outside input
 // Keybindings
 func (ki *KeyboardInput) addKeyBindings() {
 	ki.keyActions = map[co.GameState]map[ebiten.Key]func(){
